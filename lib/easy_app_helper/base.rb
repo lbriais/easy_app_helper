@@ -17,7 +17,7 @@ module EasyAppHelper::Base
     @slop_definition.nil? ? {} : @slop_definition.to_hash
   end
 
-  def app_helper_init(script_filename,
+  def init_app_helper(script_filename,
                       app_name="Undefined application name",
                       app_description="No description available",
                       app_version="unknown")
