@@ -1,8 +1,10 @@
 ################################################################################
-# DesktopAppHelper 
+# EasyAppHelper 
 #
-# (c)2013 L.Briais
+# Copyright (c) 2013 L.Briais under MIT license
+# http://opensource.org/licenses/MIT
 ################################################################################
+
 require "easy_app_helper/version"
 require "easy_app_helper/common"
 require "easy_app_helper/base"

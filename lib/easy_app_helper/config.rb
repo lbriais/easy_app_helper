@@ -1,6 +1,8 @@
 ################################################################################
+# EasyAppHelper 
 #
-# (c)2013 L.Briais
+# Copyright (c) 2013 L.Briais under MIT license
+# http://opensource.org/licenses/MIT
 ################################################################################
 
 # This is the only file to have an independant logger as before application configuration
