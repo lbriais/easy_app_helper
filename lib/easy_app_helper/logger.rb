@@ -10,20 +10,17 @@ require 'logger'
 
 # This module provides access to logger fully configured according to command line options
 # or config files.
+# It will replace the stupid EasyAppHelper::Common::DummyLogger 
 module EasyAppHelper::Logger
   MODULE_PRIORITY = 1
 
   include EasyAppHelper::Common
 
-  # Provides access to a standard logger, fully configured according to command line options
-  # or config files.
-  attr_reader :logger
-
   # Build logger for the application. Depending on config may end-up up to nowhere 
-  # (DEFAULT_LOGGER), STDOUT, STDERR or a file. See --help or EasyAppHelper::Config#help
+  # (by default), STDOUT, STDERR or a file. See --help or EasyAppHelper::Config#help
   # for all options.
   def build_logger
-    logger_type = DEFAULT_LOGGER
+    @logger = EasyAppHelper::Common::DummyLogger.instance
     issue_report = nil
     if app_config[:debug]
       unless app_config[:"log-file"].nil?
@@ -40,12 +37,13 @@ module EasyAppHelper::Logger
       else
         logger_type =  STDOUT
       end
+      logger_type = STDERR if app_config[:"debug-on-err"]
+      @logger = Logger.new(logger_type)
     end
-    logger_type = STDERR if app_config[:"debug-on-err"]
-    @logger = Logger.new(logger_type)
     app_config[:'log-level'] = DEFAULT_LOG_LEVEL if app_config[:'log-level'].nil?
     logger.level = app_config[:"log-level"]
     logger.error issue_report if issue_report
+    logger.debug "Logger is created."
   end
 
   # Returns the current log_level.

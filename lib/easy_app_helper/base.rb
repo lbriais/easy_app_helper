@@ -7,6 +7,26 @@
 
 require 'slop'
 
+# Once this module is included in your class which may be in the "application class",
+# you probably want to call the init_app_helper method as first statement of your
+# initialize method.
+#
+# This module provides some basic command line options ({using the slop gem}[https://rubygems.org/gems/slop])
+# and 
+# initializes all included EasyAppHelper modules (which may themselves add their
+# own command line options). Calling the init_app_helper method is the only thing
+# required to instanciate the whole framework.
+#
+# You can access to any command line option value through the app_config hash attribute.
+#
+# If you want to add any extra command line option to the one provided by default 
+# by this module or by any other EasyAppHelper modules, then your class just needs
+# to respond to add_specifc_command_line_options(opt).
+# The opt object is a Slop object that enables to define any extra command line
+# options.
+#
+# Passing the --help option to the program will cause this module to display the 
+# inline help and to exit.
 module EasyAppHelper::Base
   MODULE_PRIORITY = 10
 
@@ -18,12 +38,16 @@ module EasyAppHelper::Base
   # Gives access to the application config. This should be the only attribute you will
   # use once this module is fully configured.
   attr_reader :app_config
+
   # Gives access to the initial command line options. Just for information as already 
   # merged into the app_config.
   def app_cmd_line_options
     @slop_definition.nil? ? {} : @slop_definition.to_hash
   end
 
+  # This method initializes the whole EasyAppHelper helpers framework.
+  # Even if only the first parameter is mandatory, you may pass all of them if you want
+  # consistent inline help to be displayed.
   def init_app_helper(script_filename,
                       app_name="Undefined application name",
                       app_description="No description available",
@@ -41,6 +65,10 @@ module EasyAppHelper::Base
     merge_cmd_line_options_into_config
     # Performs modules entry points
     process_helper_modules_entry_points
+    # check if help is requested.
+    check_help_option_invoked
+    # Log useful debug info
+    log_debug_info
   end
 
 
@@ -50,6 +78,12 @@ module EasyAppHelper::Base
     @slop_definition.to_s
   end
 
+  # Provides access to a standard logger, fully configured according to command line options
+  # or config files.
+  def logger
+    return @logger unless @logger.nil?
+    return EasyAppHelper::Common::DummyLogger.instance
+  end
 
 
   ################################################################################
@@ -57,14 +91,16 @@ module EasyAppHelper::Base
 
   # Checks EasyAppHelper modules and perform some actions on them.
   # - Does it add some command line options? Then add them by calling add_cmd_line_options
-  # - Does it modify app_config? Then call update_config. 
+  # - Does it modify app_config? Then call provides_config. 
   def process_helper_modules_init_config_actions(script_filename, app_name, app_description, app_version)
     process_helper_modules do |mod|
       # Checks if th emodule adds some command line options
-      mod.add_cmd_line_options @slop_definition if mod.respond_to? :add_cmd_line_options
+      if mod.respond_to? :add_cmd_line_options
+        mod.add_cmd_line_options @slop_definition
+      end
       # Does the module changing the application config
-      if mod.respond_to? :update_config
-        module_config = mod.update_config(script_filename, app_name, app_description, app_version) 
+      if mod.respond_to? :provides_config
+        module_config = mod.provides_config(script_filename, app_name, app_description, app_version) 
         @app_config = override_config app_config, module_config
       end
     end
@@ -75,10 +111,18 @@ module EasyAppHelper::Base
     process_helper_modules do |mod|
       if mod.respond_to? :module_entry_point
         if self.respond_to? mod.module_entry_point
-          self.send(mod.module_entry_point)
+          begin
+            self.send(mod.module_entry_point)
+            logger.debug "Module #{mod.name} post actions executed."
+          rescue => e
+            logger.fatal "Problem executing #{mod.name} module post actions."
+            raise e
+          end
         else
           raise "Wrong module entry point specified !"
         end
+      else
+        logger.debug "Module #{mod.name} has no post config action."
       end
     end
   end
@@ -120,6 +164,39 @@ module EasyAppHelper::Base
     end
   end
 
+  # Check if the help command line option has been passed and if the case,
+  # display the inline help and exits the program.
+  def check_help_option_invoked
+    return unless app_config[:help]
+    puts self.help
+    exit 0
+  end
 
+  # Displays useful debug info after all EasyAppHelper modules initialization.
+  def log_debug_info
+    return unless app_config[:debug] || app_config[:'debug-on-err']
+    size = ENV.keys.map {|k| k.length }.max + 1
+    logger.debug '-' * 80
+    logger.debug " Script environment variables"
+    logger.debug '-' * 80
+    # print formatted environment
+    ENV.sort.each {|k,v| logger.debug "- %-#{size}s %s" % ["#{k}:", v] }
+    logger.debug '-' * 80
+    logger.debug " Script Ruby load path"
+    logger.debug '-' * 80
+    $:.each {|p| logger.debug p}
+    logger.debug '-' * 80
+    logger.debug " Script command line parameters"
+    logger.debug '-' * 80
+    size = app_cmd_line_options.to_hash.keys.map {|k| k.length }.max + 1
+    app_cmd_line_options.to_hash.sort.each {|k,v| logger.debug "- %-#{size}s %s" % ["#{k}:", v] }
+    logger.debug '-' * 80
+    logger.debug " Script global configuration"
+    logger.debug '-' * 80
+    logger.debug "\n" + app_config.to_yaml
+    logger.debug '-' * 80
+  end
 
 end
+
+

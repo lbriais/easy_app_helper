@@ -5,8 +5,6 @@
 # http://opensource.org/licenses/MIT
 ################################################################################
 
-# This is the only file to have an independant logger as before application configuration
-require 'logger'
 # Config file format
 require 'yaml'
 
@@ -50,7 +48,7 @@ module EasyAppHelper::Config
   #
   # Config files can be at different places and have different extensions (see
   # arrays at the begining). They have the same base name as the script_filename.
-  def self.update_config(script_filename, app_name, app_description, app_version) 
+  def self.provides_config(script_filename, app_name, app_description, app_version) 
     load_system_wide_config script_filename
     load_user_config script_filename
   end
@@ -60,14 +58,10 @@ module EasyAppHelper::Config
   def load_custom_config
     return unless app_config[:'config-file']
     begin
-      @app_config = override_config app_config,  EasyAppHelper::Config.load_config_file(app_config[:'config-file'])
+      @app_config =  app_config,  EasyAppHelper::Config.load_config_file(app_config[:'config-file'])
     rescue => e
       err_msg = "Problem with \"#{app_config[:'config-file']}\" config file!\n#{e.message}\nIgnoring..."
-      if defined?(logger).nil?
-        puts err_msg
-      else
-        logger.error err_msg
-      end
+      logger.error err_msg
     end
   end
 
