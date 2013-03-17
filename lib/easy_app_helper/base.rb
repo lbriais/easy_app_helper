@@ -114,10 +114,11 @@ module EasyAppHelper::Base
       if mod.respond_to? :module_entry_point
         if self.respond_to? mod.module_entry_point
           begin
+            logger.debug "Executing #{mod.name} module post actions."
             self.send(mod.module_entry_point)
             logger.debug "Module #{mod.name} post actions executed."
           rescue => e
-            logger.fatal "Problem executing #{mod.name} module post actions."
+            logger.fatal "Problem encountered while executing #{mod.name} module post actions."
             raise e
           end
         else
