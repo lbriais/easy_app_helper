@@ -17,13 +17,15 @@ module EasyAppHelper::Common
   # Default module priority
   MODULE_PRIORITY = 10000
   
-  def override_config(h1, h2)
+  def self.override_config(h1, h2)
     EasyAppHelper::Common::HashesMergePolicies.merge_hashes_second_level h1, h2
   end
 
 end
 
 # This guy will never log something anywhere... :)
+# It mays be used as the logger until someone replaces by a real one
+# EasyAppHelper::Logger would do that efficiently
 class EasyAppHelper::Common::DummyLogger
   include Singleton
   def method_missing(method_name, *args, &block)
@@ -31,6 +33,7 @@ class EasyAppHelper::Common::DummyLogger
   end  
 end
 
+# Implements different merge policies for the configs.
 module EasyAppHelper::Common::HashesMergePolicies
   # Performs a merge at the second level of hashes.
   # simple entries and arrays are overriden.

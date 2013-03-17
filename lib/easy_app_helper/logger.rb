@@ -8,10 +8,18 @@
 require 'logger'
 
 
-# This module provides access to logger fully configured according to command line options
+# This module provides access to logger(Logger) fully configured according to command line options
 # or config files.
-# It will replace the stupid EasyAppHelper::Common::DummyLogger 
+#
+# It will replace the stupid EasyAppHelper::Common::DummyLogger if the
+# module is included.
+#
+# It brings as well some command line options to manipulate debug.
+# See --help
 module EasyAppHelper::Logger
+
+  # This module has the highest priority in order to be processed the first by
+  # the framework and therefore give a chance to other modules to use it to log.
   MODULE_PRIORITY = 1
 
   include EasyAppHelper::Common
@@ -57,11 +65,17 @@ module EasyAppHelper::Logger
     logger.level = level
   end
 
-
+  # called by the initialisation framework
   def self.module_entry_point
     :build_logger
   end
 
+  # Adds some command line options for this module.
+  # - +--debug+
+  # - +--debug-on-err+ to have the debugging going to STDERR. Should be used on top of 
+  #   --debug.
+  # - +--log-file+ +filename+ To log to a specific file. 
+  # - +--log-level+ +0-5+ Log level according to Logger::Severity
   def self.add_cmd_line_options(slop_definition)
     slop_definition.separator "\n-- Debug and logging options ---------------------------------"
     slop_definition.on :debug, 'Run in debug mode.', :argument => false

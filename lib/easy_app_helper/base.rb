@@ -28,6 +28,8 @@ require 'slop'
 # Passing the --help option to the program will cause this module to display the 
 # inline help and to exit.
 module EasyAppHelper::Base
+
+  # This module should be processed among the firsts by the framework.
   MODULE_PRIORITY = 10
 
   include EasyAppHelper::Common
@@ -101,7 +103,7 @@ module EasyAppHelper::Base
       # Does the module changing the application config
       if mod.respond_to? :provides_config
         module_config = mod.provides_config(script_filename, app_name, app_description, app_version) 
-        @app_config = override_config app_config, module_config
+        @app_config = EasyAppHelper::Common.override_config app_config, module_config
       end
     end
   end
@@ -138,7 +140,7 @@ module EasyAppHelper::Base
 
   def merge_cmd_line_options_into_config
     @slop_definition.parse!
-    @app_config = override_config app_config, @slop_definition.to_hash
+    @app_config = EasyAppHelper::Common.override_config app_config, @slop_definition.to_hash
   end
 
   # Builds common used command line options

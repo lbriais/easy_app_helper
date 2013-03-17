@@ -9,16 +9,26 @@
 require 'yaml'
 
 # This module defines:
-# - some basic command line options (see --help) with their underlying
+# - Some basic command line options(see --help), with their underlying
 #   mechanism.
 # - A mechanism (based on Slop) to add your own command line options.
 # - A generated inline help.
-# - A complete configuration framework with system wide and user level
-#   configuration files with consistent override mechanism including command
-#   line options. Config files are in YAML but can have different extensions.
+# This module provides the following 5 levels of configuration:
+# - Admin wide YAML config file, for options common to all your EasyAppHelper applications
+# - System wide YAML config file.
+# - User YAML config file.
+# - Command line options.
+# - Command line supplied YAML config file(any option defined here will override the previous).
+# All these 5 levels of configuration override with consistent override mechanism. 
+# Config files are in YAML but can have different extensions.
 module EasyAppHelper::Config
 
   include EasyAppHelper::Common
+
+  # Where could be stored admin configuration that rules all EasyAppHelper
+  # based applications.
+  self::ADMIN_CONFIG_POSSIBLE_PLACES = ["/etc"]
+  self::ADMIN_CONFIG_FILENAME = EasyAppHelper.name
 
   # Where could be stored system wide configuration
   self::SYSTEM_CONFIG_POSSIBLE_PLACES = ["/etc",
@@ -29,17 +39,7 @@ module EasyAppHelper::Config
   # Potential extensions a config file can have
   self::CONFIG_FILE_POSSIBLE_EXTENSIONS = ['conf', 'yml', 'cfg', 'yaml', 'CFG', 'YML', 'YAML', 'Yaml']
 
-  # File that contained the system wide config
-  attr_reader :system_wide_config_file
-
-  # File that contained the user defined config
-  attr_reader :user_config_file
-
-  # Loads the configuration files (system, user) and creates basic command line options.
-  # This handles the 3 levels of configuration:
-  # - System wide YAML config file
-  # - User YAML config file
-  # - Command line options
+  # Loads the configuration files (admin, system, user).
   #
   # Config files may define any type of structure supported by YAML.
   # The override policy is that, if an entry in the config is a hash and the next
@@ -47,10 +47,11 @@ module EasyAppHelper::Config
   # For any other type (scalar, array), the overrider... overrides ;)
   #
   # Config files can be at different places and have different extensions (see
-  # arrays at the begining). They have the same base name as the script_filename.
-  def self.provides_config(script_filename, app_name, app_description, app_version) 
-    load_system_wide_config script_filename
-    load_user_config script_filename
+  # CONFIG_FILE_POSSIBLE_EXTENSIONS). They have the same base name as the script_filename.
+  def self.provides_config(script_filename, app_name, app_description, app_version)
+    config = load_admin_wide_config 
+    config = EasyAppHelper::Common.override_config config, load_system_wide_config(script_filename)
+    EasyAppHelper::Common.override_config config, load_user_config(script_filename)
   end
 
   # If the option --config-file has been specified, it will be loaded and override
@@ -58,31 +59,21 @@ module EasyAppHelper::Config
   def load_custom_config
     return unless app_config[:'config-file']
     begin
-      @app_config =  app_config,  EasyAppHelper::Config.load_config_file(app_config[:'config-file'])
+      @app_config = EasyAppHelper::Common.override_config app_config, EasyAppHelper::Config.load_config_file(app_config[:'config-file'])
     rescue => e
       err_msg = "Problem with \"#{app_config[:'config-file']}\" config file!\n#{e.message}\nIgnoring..."
       logger.error err_msg
     end
   end
 
-  private
-
-  # Reads config from system config file and merges with config provided in input.
-  def self.load_system_wide_config(script_filename)
-    load_config_file find_file SYSTEM_CONFIG_POSSIBLE_PLACES, script_filename
-  end
-
-  # Reads config from user config file and merges with config provided in input.
-  def self.load_user_config(script_filename)
-    load_config_file find_file USER_CONFIG_POSSIBLE_PLACES, script_filename
-  end
-
+  # Adds a command line options for this module.
+  # - +--config-file+ +filename+ To specify a config file from the command line.
   def self.add_cmd_line_options(slop_definition)
     slop_definition.separator "\n-- Configuration options -------------------------------------"
     slop_definition.on 'config-file', 'Specify a config file.', :argument => true
-    slop_definition.on 'override-other-config', 'Does the specified config file override other config files.', :argument => false
   end
 
+  # Used by the framework
   def self.module_entry_point
     :load_custom_config
   end
@@ -91,6 +82,22 @@ module EasyAppHelper::Config
   ################################################################################
   private 
 
+  # Reads config from admin config file.
+  def self.load_admin_wide_config
+    load_config_file find_file ADMIN_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME
+  end
+
+  # Reads config from system config file.
+  def self.load_system_wide_config(script_filename)
+    load_config_file find_file SYSTEM_CONFIG_POSSIBLE_PLACES, script_filename
+  end
+
+  # Reads config from user config file.
+  def self.load_user_config(script_filename)
+    load_config_file find_file USER_CONFIG_POSSIBLE_PLACES, script_filename
+  end
+
+  # Loads a config file.
   def self.load_config_file(conf_filename)
     return {} if conf_filename.nil? 
     # A file exists
