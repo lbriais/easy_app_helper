@@ -29,9 +29,6 @@ require 'slop'
 # inline help and to exit.
 module EasyAppHelper::Base
 
-  # This module should be processed among the firsts by the framework.
-  MODULE_PRIORITY = 10
-
   include EasyAppHelper::Common
 
 
@@ -39,7 +36,7 @@ module EasyAppHelper::Base
 
   # Gives access to the application config. This should be the only attribute you will
   # use once this module is fully configured.
-  attr_reader :app_config
+  attr_accessor :app_config
 
   # Gives access to the initial command line options. Just for information as already 
   # merged into the app_config.
@@ -60,13 +57,13 @@ module EasyAppHelper::Base
     build_default_command_line_options script_filename, app_name, app_description, app_version
     # Process all actions on EasyAppHelper modules that change app_config or add command
     # line options.
-    process_helper_modules_init_config_actions script_filename, app_name, app_description, app_version
+    process_helpers_instanciators script_filename, app_name, app_description, app_version
     # Provides possibility to the script writer to add its own command line options
     add_script_specific_cmd_line_options
     # Parses command line options, and merges with the app_config
     merge_cmd_line_options_into_config
     # Performs modules entry points
-    process_helper_modules_entry_points
+    process_helpers_post_config_actions
     # check if help is requested.
     check_help_option_invoked
     # Log useful debug info
@@ -94,49 +91,51 @@ module EasyAppHelper::Base
   # Checks EasyAppHelper modules and perform some actions on them.
   # - Does it add some command line options? Then add them by calling add_cmd_line_options
   # - Does it modify app_config? Then call provides_config. 
-  def process_helper_modules_init_config_actions(script_filename, app_name, app_description, app_version)
-    process_helper_modules do |mod|
-      # Checks if th emodule adds some command line options
-      if mod.respond_to? :add_cmd_line_options
-        mod.add_cmd_line_options @slop_definition
+  def process_helpers_instanciators(script_filename, app_name, app_description, app_version)
+    begin
+      if (ENV['DEBUG_EASY_MODULES'])
+        @logger = Logger.new(STDOUT)
+        @logger.level = Logger::Severity::DEBUG
       end
-      # Does the module changing the application config
-      if mod.respond_to? :provides_config
-        module_config = mod.provides_config(script_filename, app_name, app_description, app_version) 
-        @app_config = EasyAppHelper::Common.override_config app_config, module_config
+      process_helper_modules_instanciators do |mod|
+        # Command line: Does the module add some command line options ?
+        if mod.respond_to? :add_cmd_line_options
+          mod.add_cmd_line_options self, @slop_definition
+        end
+        # Does the module modify the global configuration
+        if mod.respond_to? :provides_config
+          module_config = mod.provides_config self, script_filename, app_name, app_description, app_version
+          @app_config = EasyAppHelper::Common.override_config app_config, module_config
+        end
+      end
+    ensure
+      unless @logger.nil?
+        @logger = nil
       end
     end
   end
 
-  # Call each initialization entry point for modules if any.
-  def process_helper_modules_entry_points
-    process_helper_modules do |mod|
-      if mod.respond_to? :module_entry_point
-        if self.respond_to? mod.module_entry_point
-          begin
-            logger.debug "Executing #{mod.name} module post actions."
-            self.send(mod.module_entry_point)
-            logger.debug "Module #{mod.name} post actions executed."
-          rescue => e
-            logger.fatal "Problem encountered while executing #{mod.name} module post actions."
-            raise e
-          end
-        else
-          raise "Wrong module entry point specified !"
-        end
-      else
-        logger.debug "Module #{mod.name} has no post config action."
+  # Call each post config action for modules if any.
+  def process_helpers_post_config_actions
+    process_helper_modules_instanciators do |mod|
+      if mod.respond_to? :post_config_action
+        mod.post_config_action self
       end
     end
   end
+
+
+
+
 
   # Utility method to process EasyAppHelper modules in order of priority.
-  def process_helper_modules
+  def process_helper_modules_instanciators
     self.class.included_modules
       .map {|mod| mod if mod.name =~ /^EasyAppHelper::/}
       .compact
+      .map {|mod| mod::Instanciator}
       .sort {|a,b| a::MODULE_PRIORITY <=> b::MODULE_PRIORITY }
-      .each {|mod| yield mod}
+      .each {|mod| logger.debug "Processing helper module: #{mod.name}"; yield mod}
   end
 
   def merge_cmd_line_options_into_config
@@ -203,3 +202,10 @@ module EasyAppHelper::Base
 end
 
 
+module EasyAppHelper::Base::Instanciator
+  extend EasyAppHelper::Common::Instanciator
+
+  # Default module priority
+  MODULE_PRIORITY = 10
+
+end

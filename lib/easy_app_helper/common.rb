@@ -14,14 +14,36 @@ require 'logger'
 module EasyAppHelper::Common
   # Default log-level
   DEFAULT_LOG_LEVEL = Logger::Severity::WARN
-  # Default module priority
-  MODULE_PRIORITY = 10000
   
   def self.override_config(h1, h2)
     EasyAppHelper::Common::HashesMergePolicies.merge_hashes_second_level h1, h2
   end
 
 end
+
+
+# Ancestor of all module instanciators.
+module EasyAppHelper::Common::Instanciator
+  # Default module priority
+  MODULE_PRIORITY = 10000
+
+  def self.add_cmd_line_options(app, opt)
+    # Does nothing
+  end
+
+  def self.provides_config(app, script_filename, app_name, app_description, app_version)
+    # Does nothing
+    {}
+  end
+
+  def self.post_config_action(app)
+    # Does nothing
+  end
+end
+
+
+
+
 
 # This guy will never log something anywhere... :)
 # It mays be used as the logger until someone replaces by a real one

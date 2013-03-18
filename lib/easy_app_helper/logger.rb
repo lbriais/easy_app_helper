@@ -24,6 +24,19 @@ module EasyAppHelper::Logger
 
   include EasyAppHelper::Common
 
+
+  # Returns the current log_level.
+  def log_level
+    app_config[:"log-level"]
+  end
+
+  # Enables to hot-change the log level.
+  def log_level=(level)
+    app_config[:"log-level"] = level
+    logger.level = level
+  end
+
+
   # Build logger for the application. Depending on config may end-up up to nowhere 
   # (by default), STDOUT, STDERR or a file. See --help or EasyAppHelper::Config#help
   # for all options.
@@ -54,21 +67,15 @@ module EasyAppHelper::Logger
     logger.debug "Logger is created."
   end
 
-  # Returns the current log_level.
-  def log_level
-    app_config[:"log-level"]
-  end
 
-  # Enables to hot-change the log level.
-  def log_level=(level)
-    app_config[:"log-level"] = level
-    logger.level = level
-  end
+end
 
-  # called by the initialisation framework
-  def self.module_entry_point
-    :build_logger
-  end
+
+module EasyAppHelper::Logger::Instanciator
+  extend EasyAppHelper::Common::Instanciator
+
+  # Default module priority
+  MODULE_PRIORITY = 1
 
   # Adds some command line options for this module.
   # - +--debug+
@@ -76,7 +83,7 @@ module EasyAppHelper::Logger
   #   --debug.
   # - +--log-file+ +filename+ To log to a specific file. 
   # - +--log-level+ +0-5+ Log level according to Logger::Severity
-  def self.add_cmd_line_options(slop_definition)
+  def self.add_cmd_line_options(app, slop_definition)
     slop_definition.separator "\n-- Debug and logging options ---------------------------------"
     slop_definition.on :debug, 'Run in debug mode.', :argument => false
     slop_definition.on 'debug-on-err', 'Run in debug mode with output to stderr.', :argument => false
@@ -84,10 +91,9 @@ module EasyAppHelper::Logger
     slop_definition.on 'log-file', 'File to log to.', :argument => true
   end
 
-
-
-  ################################################################################
-  private
-
+  # Creates the application logger
+  def self.post_config_action(app)
+    app.build_logger
+  end
 
 end
