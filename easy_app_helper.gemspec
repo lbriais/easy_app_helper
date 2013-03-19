@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = EasyAppHelper::VERSION
   spec.authors       = ["L.Briais"]
   spec.email         = ["lbnetid+rb@gmail.com"]
-  spec.description   = %q{Desktop application framework}
-  spec.summary       = %q{Provides cool helpers to your desktop application, including configuration and logging features}
-  spec.homepage      = ""
+  spec.description   = %q{Easy Application Helpers framework}
+  spec.summary       = %q{Provides cool helpers to your application, including configuration and logging features}
+  spec.homepage      = "https://github.com/lbriais/easy_app_helper"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.3"
+  spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
   spec.add_development_dependency "pry"
 

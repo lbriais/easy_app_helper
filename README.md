@@ -28,7 +28,7 @@ To benefit from the different helpers. Once you installed the gem, the only thin
 
 ```ruby
 require 'easy_app_helper'
-````
+```
 
 and then in the "main class" of your application, include the modules you want to use and call init_app_helper in the initialize method. Then what you can do with each 
 module is defined by each module.
@@ -36,8 +36,10 @@ module is defined by each module.
 The basic behaviour (when you include EasyAppHelper), actually adds basic command line handling (actually handled by slop), and provides the mechanism to enable you to add any other EasyAppHelper module.
 
 ex:
+
 ```ruby
 require 'easy_app_helper'
+
 class MyApp
  	include EasyAppHelper
 	def initialize
@@ -46,11 +48,13 @@ class MyApp
 end
 ```
 
-This basically does... nothing. I mean the only behaviour it adds to your application is the ability to pass --help to the application to see the inline help (that it builds). On top of this you then have access to some other command line options like --auto, --simulate, --verbose, but for those it is up to your application to check their value using the app_config attribute which is now
+This basically does... nothing. I mean the only behaviour it adds to your application is the ability to pass --help to the application to see the inline help (that it builds). On top of this you then have access to some other command line options like --auto, --simulate, --verbose, but for those it is up to your application to check their value using the app_config attribute which is available in your MyApp instance.
 
 You could then do something like:
+
 ```ruby
 require 'easy_app_helper'
+
 class MyApp
  	include EasyAppHelper
 	def initialize
@@ -61,6 +65,7 @@ class MyApp
 	end
 end
 ```
+
 You can actually access any field from your application configuration through the app_config attribute.
 
 ### Other modules
@@ -69,7 +74,7 @@ Some other modules are provided:
 * EasyAppHelper::Logger	provides logging facilities and config line options including log-level, log-file etc...
 * EasyAppHelper::Config provides easy YAML based configuration to your script with multiple level of override (admin wide -> system wide -> user -> command line options -> --config-file). All the configuration being accessible through the app_config hash attribute
 
-See classes documentation for more information.
+See [classes documentation] [3] for more information.
 
 ### Debugging
 
@@ -86,3 +91,4 @@ If you want to debug what happens during the framework instanciation, you can us
 
 [1]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
 [2]: https://rubygems.org/gems/slop        "Slop gem"
+[3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "EasyAppHelper documentation"
