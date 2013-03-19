@@ -47,17 +47,18 @@ This basically does... nothing. I mean the only behaviour it adds to your applic
 
 You could then do something like:
 
-	require 'easy_app_helper'
-	class MyApp
-  	include EasyAppHelper
-		def initialize
-			"my_app" init_app_helper "my_app", "My Super Application", "This is the application everybody was waiting for.", "v 1.0"
-			if app_config[:verbose]
-				 puts "Waouh, hello World !!"
-			end
+```ruby
+require 'easy_app_helper'
+class MyApp
+ 	include EasyAppHelper
+	def initialize
+		"my_app" init_app_helper "my_app", "My Super Application", "This is the application everybody was waiting for.", "v 1.0"
+		if app_config[:verbose]
+			 puts "Waouh, hello World !!"
 		end
 	end
-
+end
+```
 You can actually access any field from your application configuration through the app_config attribute.
 
 ### Other modules
