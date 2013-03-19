@@ -26,7 +26,9 @@ Or install it yourself as:
 
 To benefit from the different helpers. Once you installed the gem, the only thing you need to do is:
 
+```ruby
 require 'easy_app_helper'
+````
 
 and then in the "main class" of your application, include the modules you want to use and call init_app_helper in the initialize method. Then what you can do with each 
 module is defined by each module.
@@ -34,19 +36,19 @@ module is defined by each module.
 The basic behaviour (when you include EasyAppHelper), actually adds basic command line handling (actually handled by slop), and provides the mechanism to enable you to add any other EasyAppHelper module.
 
 ex:
-
-	require 'easy_app_helper'
-	class MyApp
-  	include EasyAppHelper
-		def initialize
-			init_app_helper "my_app"
-		end
+```ruby
+require 'easy_app_helper'
+class MyApp
+ 	include EasyAppHelper
+	def initialize
+		init_app_helper "my_app"
 	end
+end
+```
 
 This basically does... nothing. I mean the only behaviour it adds to your application is the ability to pass --help to the application to see the inline help (that it builds). On top of this you then have access to some other command line options like --auto, --simulate, --verbose, but for those it is up to your application to check their value using the app_config attribute which is now
 
 You could then do something like:
-
 ```ruby
 require 'easy_app_helper'
 class MyApp
