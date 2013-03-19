@@ -1,6 +1,6 @@
 # EasyAppHelper
 
-This gem provides a suite of helpers for command line applications.
+This gem (https://rubygems.org/gems/easy_app_helper) provides a suite of helpers for command line applications.
 The goal is to be as transparent as possible for application whilst providing consistent helpers that add dedidacted behaviours to your application.
 
 Currently the only dependency is on "slop" (https://rubygems.org/gems/slop).
