@@ -87,7 +87,7 @@ module EasyAppHelper::Logger::Instanciator
     slop_definition.separator "\n-- Debug and logging options ---------------------------------"
     slop_definition.on :debug, 'Run in debug mode.', :argument => false
     slop_definition.on 'debug-on-err', 'Run in debug mode with output to stderr.', :argument => false
-    slop_definition.on 'log-level', "Log level from 0 to 5, default #{Logger::Severity::ERROR}.", :argument => true, :as => Integer
+    slop_definition.on 'log-level', "Log level from 0 to 5, default #{EasyAppHelper::Common::DEFAULT_LOG_LEVEL}.", :argument => true, :as => Integer
     slop_definition.on 'log-file', 'File to log to.', :argument => true
   end
 
