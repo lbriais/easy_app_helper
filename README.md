@@ -157,7 +157,7 @@ Nothing is displayed. Why ? We used the logger.info stuff !! Just because the de
 Thus we can do a:
 
 		 $ ruby ./test_app.rb --debug --log-level 1
-I, [2013-03-20T10:58:40.819096 #13172]  INFO -- : Application is now started.
+		 I, [2013-03-20T10:58:40.819096 #13172]  INFO -- : Application is now started.
 
 Which correctly displays the log.
 Of course, as mentioned by the inline doc, this could go to a log file using the --log-file option...
