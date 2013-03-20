@@ -94,17 +94,17 @@ module EasyAppHelper::Config::Instanciator
 
   # Reads config from admin config file.
   def self.load_admin_wide_config(app)
-    load_config_file app, find_file(ADMIN_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME)
+    load_config_file app, find_file(app, ADMIN_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME)
   end
 
   # Reads config from system config file.
   def self.load_system_wide_config(app, script_filename)
-    load_config_file app, find_file(SYSTEM_CONFIG_POSSIBLE_PLACES, script_filename)
+    load_config_file app, find_file(app, SYSTEM_CONFIG_POSSIBLE_PLACES, script_filename)
   end
 
   # Reads config from user config file.
   def self.load_user_config(app, script_filename)
-    load_config_file app, find_file(USER_CONFIG_POSSIBLE_PLACES, script_filename)
+    load_config_file app, find_file(app, USER_CONFIG_POSSIBLE_PLACES, script_filename)
   end
 
   # Loads a config file.
@@ -122,12 +122,14 @@ module EasyAppHelper::Config::Instanciator
   end
 
   # Tries to find config files according to places (array) given and possible extensions
-  def self.find_file(places, filename)
+  def self.find_file(app, places, filename)
     places.each do |dir|
       CONFIG_FILE_POSSIBLE_EXTENSIONS.each do |ext|
         filename_with_path = dir + '/' + filename + '.' + ext
         if File.exists? filename_with_path
           return filename_with_path
+        else
+          app.logger.debug "Trying \"#{filename_with_path}\" as config file."
         end
       end
     end

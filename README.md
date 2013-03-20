@@ -110,7 +110,9 @@ With this example you can already test some of the behaviours brought to the app
 
 		 $ ruby ./test_app.rb
 		 
-Nothing displayed
+Nothing displayed... hum in fact normal.
+
+*The EasyAppHelper::Base module*
 
 		 $ ruby ./test_app.rb --verbose
 		 Application config is
@@ -151,6 +153,10 @@ Here we see that:
 * The information passed to init_app_helper has been used in order to build a consistent help.
 * The method implemented add_specifc_command_line_options did add the --stupid command line option and that it fits within the global help. the syntax is the [Slop] [2] syntax, and many other options are available. See the [Slop] [2] for further info.
 
+*The EasyAppHelper::Debug module*
+
+Now let's try some options related to the EasyAppHelper::Logger module
+
 		 $ ruby ./test_app.rb --debug
 
 Nothing is displayed. Why ? We used the logger.info stuff !! Just because the default log-level is 2 (Logger::Severity::WARN), whereas we did a info (Logger::Severity::INFO equals to 1).
@@ -162,8 +168,42 @@ Thus we can do a:
 Which correctly displays the log.
 Of course, as mentioned by the inline doc, this could go to a log file using the --log-file option...
 
+*The EasyAppHelper::Config module*
 
-### Debugging
+From what we did, nothing really shows what the config module brought to the application, whereas in fact this is the one bringing the more features...
+
+This module will try to find config files (YAML format) in different places. All the config files could have a lot of different extensions (EasyAppHelper::Config::Instanciator::CONFIG_FILE_POSSIBLE_EXTENSIONS). Here under we will just say ".ext", but all of them are tried:
+
+First it will try to find the file:
+
+			/etc/EasyAppHelper.ext
+
+In this file you could define some options common to all the scripts you will build on top of EasyAppHelper helpers.
+
+Then it will try to find (it will stop on the first found):
+
+		 /etc/my_app.ext
+		 /usr/local/etc/my_app.ext
+
+In this file you could define some options common to all users
+
+Then it will try to find:
+
+		 ${HOME}/.config/my_app.conf
+
+Where each user will generally store his own configuration.
+
+Each of these file adds options to the common app_config hash. Enabling a simple and powerful override mechanism.
+
+Then everything defined on the command line will itself override what has been defined in these config files.
+Then if --config-file option is specified in the command line, it tries to load that file.
+
+Thus in the end following mechanism:
+
+		 admin wide -> system wide -> user -> command line options -> --config-file
+
+
+### Debugging the framework itself
 
 If you want to debug what happens during the framework instanciation, you can use the DEBUG_EASY_MODULES environment variable.
 
