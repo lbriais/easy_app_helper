@@ -24,6 +24,8 @@ Or install it yourself as:
 
 ## Usage
 
+### Including the basic module
+
 To benefit from the different helpers. Once you installed the gem, you just need to require it:
 
 ```ruby
@@ -247,7 +249,7 @@ ex:
 		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Base::Instanciator
 		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Common::Instanciator
 
-You can observe that for each included module, the framwork uses its related so-called instanciator in order to know how to start the module, externalizing the methods into a separated module to avoid poluting your own application with methods useless for you when you include the module.
+You can observe that for each of the included module, the framework uses its related so-called instanciator in order to know how to start the module, externalizing the methods into a separated module to avoid poluting your own application with methods useless for you when you include the module.
 
 ## Contributing
 
@@ -256,6 +258,15 @@ You can observe that for each included module, the framwork uses its related so-
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+### Creating your own EasyAppHelper module
+
+You need to write two modules
+
+* One EasyAppHelper::MyModule that will provide the features mixed in your application.
+* One EasyAppHelper::MyModule::Instanciator that will extend (not include) EasyAppHelper::Common::Instanciator and that will be responsible to initialize your module.
+
+That's all folks.
 
 
 [1]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
