@@ -79,9 +79,9 @@ See [classes documentation] [3] for more information.
 
 Here under a more complete (still useless) example using all the modules.
 
+```ruby
 require 'easy_app_helper'
 
-```ruby
 class MyApp
   include EasyAppHelper
   include EasyAppHelper::Config
@@ -206,6 +206,48 @@ Thus in the end following mechanism:
 ### Debugging the framework itself
 
 If you want to debug what happens during the framework instanciation, you can use the DEBUG_EASY_MODULES environment variable.
+
+ex:
+
+		 $ DEBUG_EASY_MODULES=y ruby ./test_app.rb
+		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Logger::Instanciator
+		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Config::Instanciator
+		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.conf" as config file.
+		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.yml" as config file.
+		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.cfg" as config file.
+		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.CFG" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.YML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.YAML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.Yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.conf" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.yml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.cfg" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.CFG" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.YML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.YAML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.Yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.conf" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.yml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.cfg" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.CFG" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.YML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.YAML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.Yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.conf" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.yml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.cfg" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.CFG" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.YML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.YAML" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.Yaml" as config file.
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Base::Instanciator
+		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Common::Instanciator
+
+You can observe that for each included module, the framwork uses its related so-called instanciator in order to know how to start the module, externalizing the methods into a separated module to avoid poluting your own application with methods useless for you when you include the module.
 
 ## Contributing
 
