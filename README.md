@@ -6,7 +6,7 @@ The goal is to be as transparent as possible for the application whilst providin
 
 Currently the only runtime dependency is on the [Slop gem] [2].
 
-
+[Why this gem][4] ?
 
 ## Installation
 
@@ -272,3 +272,4 @@ That's all folks.
 [1]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
 [2]: https://rubygems.org/gems/slop        "Slop gem"
 [3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "EasyAppHelper documentation"
+[4]: https://github.com/lbriais/easy_app_helper/wiki          "EasyAppHelper wiki"
