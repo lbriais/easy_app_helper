@@ -6,5 +6,6 @@
 ################################################################################
 
 module EasyAppHelper
-  VERSION = "0.0.7"
+  # Framework version
+  EASY_APP_HELPER_VERSION = "0.0.7"
 end
