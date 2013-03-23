@@ -5,7 +5,7 @@ require 'easy_app_helper/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "easy_app_helper"
-  spec.version       = EasyAppHelper::VERSION
+  spec.version       = EasyAppHelper::EASY_APP_HELPER_VERSION
   spec.authors       = ["L.Briais"]
   spec.email         = ["lbnetid+rb@gmail.com"]
   spec.description   = %q{Easy Application Helpers framework}

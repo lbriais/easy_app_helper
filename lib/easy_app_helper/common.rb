@@ -12,6 +12,7 @@ require 'logger'
 # This contains very basic default values and methods.
 #
 module EasyAppHelper::Common
+
   # Default log-level
   DEFAULT_LOG_LEVEL = Logger::Severity::WARN
   
