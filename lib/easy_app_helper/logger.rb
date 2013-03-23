@@ -36,35 +36,14 @@ module EasyAppHelper::Logger
     logger.level = level
   end
 
+  def logger=(logger)
+    @logger = logger
+  end
 
-  # Build logger for the application. Depending on config may end-up up to nowhere 
-  # (by default), STDOUT, STDERR or a file. See --help or EasyAppHelper::Config#help
-  # for all options.
-  def build_logger
-    @logger = EasyAppHelper::Common::DummyLogger.instance
-    issue_report = nil
-    if app_config[:debug]
-      unless app_config[:"log-file"].nil?
-        begin
-          if File.exists? app_config[:"log-file"]
-            logger_type = File.open(app_config[:"log-file"], File::WRONLY | File::APPEND)
-          else
-            logger_type = File.open(app_config[:"log-file"], File::WRONLY | File::CREAT)
-          end
-        rescue Exception => e
-          logger_type = STDOUT
-          issue_report = e.message
-        end
-      else
-        logger_type =  STDOUT
-      end
-      logger_type = STDERR if app_config[:"debug-on-err"]
-      @logger = Logger.new(logger_type)
-    end
-    app_config[:'log-level'] = DEFAULT_LOG_LEVEL if app_config[:'log-level'].nil?
-    logger.level = app_config[:"log-level"]
-    logger.error issue_report if issue_report
-    logger.debug "Logger is created."
+  # Displays the message according to application verbosity and logs it as info.
+  def puts_and_logs(msg)
+    puts msg if app_config[:verbose]
+    logger.info(msg)
   end
 
 
@@ -93,7 +72,33 @@ module EasyAppHelper::Logger::Instanciator
 
   # Creates the application logger
   def self.post_config_action(app)
-    app.build_logger
+  # Build logger for the application. Depending on config may end-up up to nowhere 
+  # (by default), STDOUT, STDERR or a file. See --help or EasyAppHelper::Config#help
+  # for all options.
+    @logger = EasyAppHelper::Common::DummyLogger.instance
+    issue_report = nil
+    if app.app_config[:debug]
+      unless app.app_config[:"log-file"].nil?
+        begin
+          if File.exists? app.app_config[:"log-file"]
+            logger_type = File.open(app.app_config[:"log-file"], File::WRONLY | File::APPEND)
+          else
+            logger_type = File.open(app.app_config[:"log-file"], File::WRONLY | File::CREAT)
+          end
+        rescue Exception => e
+          logger_type = STDOUT
+          issue_report = e.message
+        end
+      else
+        logger_type =  STDOUT
+      end
+      logger_type = STDERR if app.app_config[:"debug-on-err"]
+      app.logger = Logger.new(logger_type)
+    end
+    app.app_config[:'log-level'] = EasyAppHelper::Common::DEFAULT_LOG_LEVEL if app.app_config[:'log-level'].nil?
+    app.logger.level = app.app_config[:"log-level"]
+    app.logger.error issue_report if issue_report
+    app.logger.debug "Logger is created."
   end
 
 end
