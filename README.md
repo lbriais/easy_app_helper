@@ -100,7 +100,7 @@ class MyApp
     puts app_config.to_yaml
   end
 
-  def add_specifc_command_line_options(opt) 
+  def add_specifc_command_line_options(opt)
     opt.on :s, :stupid, 'This is a very stupid option', :argument => false
   end
 end
@@ -111,7 +111,7 @@ app = MyApp.new
 With this example you can already test some of the behaviours brought to the application by the different modules.
 
 		 $ ruby ./test_app.rb
-		 
+
 Nothing displayed... hum in fact normal.
 
 *The EasyAppHelper::Base module*

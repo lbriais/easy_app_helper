@@ -14,9 +14,10 @@ require 'yaml'
 # - A mechanism (based on Slop) to add your own command line options.
 # - A generated inline help.
 # This module provides the following 5 levels of configuration:
-# - Admin wide YAML config file, for options common to all your EasyAppHelper applications
+# - Admin wide YAML config file, for options common to all your EasyAppHelper applications.
 # - System wide YAML config file.
 # - User YAML config file.
+# These 3 levels depends on you OS (see EasyAppHelper::Config::Places).
 # - Command line options.
 # - Command line supplied YAML config file(any option defined here will override the previous).
 # All these 5 levels of configuration override with consistent override mechanism. 
