@@ -25,8 +25,6 @@ module EasyAppHelper::Config
 
   include EasyAppHelper::Common
 
-
-
   # If the option --config-file has been specified, it will be loaded and override
   # current configuration according to rules
   def load_custom_config
@@ -35,24 +33,15 @@ module EasyAppHelper::Config
 end
 
 
-
 module EasyAppHelper::Config::Instanciator
   extend EasyAppHelper::Common::Instanciator
 
   # Default module priority
   MODULE_PRIORITY = 10
-
-  # Where could be stored admin configuration that rules all EasyAppHelper
-  # based applications.
-  ADMIN_CONFIG_POSSIBLE_PLACES = ["/etc"]
   ADMIN_CONFIG_FILENAME = EasyAppHelper.name
 
-  # Where could be stored system wide configuration
-  SYSTEM_CONFIG_POSSIBLE_PLACES = ["/etc",
-                                   "/usr/local/etc"]
-
-  # Where could be stored user configuration
-  USER_CONFIG_POSSIBLE_PLACES = ["#{ENV['HOME']}/.config"]
+  # include paths specific to the OS
+  include EasyAppHelper::Config::Places.get_OS_module
 
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = ['conf', 'yml', 'cfg', 'yaml', 'CFG', 'YML', 'YAML', 'Yaml']

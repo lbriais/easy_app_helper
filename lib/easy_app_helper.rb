@@ -8,6 +8,7 @@
 require "easy_app_helper/version"
 require "easy_app_helper/common"
 require "easy_app_helper/base"
+require 'easy_app_helper/places'
 require "easy_app_helper/config"
 require "easy_app_helper/logger"
 
