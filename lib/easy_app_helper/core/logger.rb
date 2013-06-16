@@ -32,11 +32,10 @@ class EasyAppHelper::Core::Logger < Logger
     self.level = level
   end
 
-
   # Displays the message according to application verbosity and logs it as info.
   def puts_and_logs(msg)
-    puts msg if app_config[:verbose]
-    logger.info(msg)
+    puts msg if @config[:verbose]
+    info(msg)
   end
 
   def set_app_config(config)
