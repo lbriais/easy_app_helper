@@ -11,6 +11,7 @@ end
 
 require 'easy_app_helper/core/logger'
 require 'easy_app_helper/core/base'
+require 'easy_app_helper/core/config'
 
 
 module EasyAppHelper::Base
@@ -30,15 +31,18 @@ module EasyAppHelper::Base
     module Initialisation
 
       def self.modules
-        self.core_modules
+        logger = EasyAppHelper::Core::Logger.instance
+        self.core_modules(logger)
+
+      ensure
+        logger.set_app_config({})
       end
 
 
-      def self.core_modules
-        logger = EasyAppHelper::Core::Logger.instance
-        base  = EasyAppHelper::Core::Base.new
-        # config = EasyAppHelper::Core::Base.new
-        logger.set_app_config({})
+      def self.core_modules(logger)
+        config = EasyAppHelper::Core::Config.new logger
+        config.add_cmd_line_options
+        puts config.help
       end
     end
 
