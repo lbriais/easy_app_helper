@@ -49,6 +49,7 @@ class EasyAppHelper::Core::Logger < Logger
       logdev = STDOUT
     end
     logdev.write history unless history.empty?
+    self
   end
 
   class TempLogger

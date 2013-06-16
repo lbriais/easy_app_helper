@@ -10,6 +10,7 @@ module EasyAppHelper::Core
 end
 
 require 'easy_app_helper/core/logger'
+require 'easy_app_helper/core/base'
 
 
 module EasyAppHelper::Base
@@ -34,9 +35,10 @@ module EasyAppHelper::Base
 
 
       def self.core_modules
-        temp_logger = EasyAppHelper::Core::Logger.instance
-      ensure
-        temp_logger.set_app_config({})
+        logger = EasyAppHelper::Core::Logger.instance
+        base  = EasyAppHelper::Core::Base.new
+        # config = EasyAppHelper::Core::Base.new
+        logger.set_app_config({})
       end
     end
 

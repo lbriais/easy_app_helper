@@ -6,5 +6,11 @@
 #-------------------------------------------------------------------------------
 
 
-module EasyAppHelper::Core::Config
+class EasyAppHelper::Core::ConfigFile
+
+  def initialize
+  end
+
+
+
 end
