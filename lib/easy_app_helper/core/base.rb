@@ -9,10 +9,11 @@ require 'slop'
 
 class EasyAppHelper::Core::Base
 
-  attr_reader :script_filename, :app_name, :app_version, :app_description
+  attr_reader :script_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
 
   def initialize(logger)
     @script_filename = @app_name = @app_version = @app_description = ""
+    @internal_configs = []
     @logger = logger
     @slop_definition = Slop.new
     build_command_line_options
@@ -26,15 +27,15 @@ class EasyAppHelper::Core::Base
     @script_filename = name
     @slop_definition.banner = build_banner
   end
-  def app_name(name)
+  def app_name=(name)
     @app_name = name
     @slop_definition.banner = build_banner
   end
-  def app_version(version)
+  def app_version=(version)
     @app_version = version
     @slop_definition.banner = build_banner
   end
-  def app_description(description)
+  def app_description=(description)
     @app_description = description
     @slop_definition.banner = build_banner
   end
@@ -49,6 +50,10 @@ class EasyAppHelper::Core::Base
     yield @slop_definition
   end
 
+  def load_config
+    @slop_definition.parse
+    internal_configs << {content: @slop_definition.to_hash, source: 'Command line'}
+  end
 
   private
 

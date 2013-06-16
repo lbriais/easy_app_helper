@@ -13,10 +13,10 @@ class EasyAppHelper::Core::Config
     module UnixPlaces
       # Where could be stored admin configuration that rules all EasyAppHelper
       # based applications.
-      ADMIN_CONFIG_POSSIBLE_PLACES = ["/etc"]
+      SYSTEM_CONFIG_POSSIBLE_PLACES = ["/etc"]
 
-      # Where could be stored system wide configuration
-      SYSTEM_CONFIG_POSSIBLE_PLACES = ["/etc",
+      # Where could be stored global wide configuration
+      GLOBAL_CONFIG_POSSIBLE_PLACES = ["/etc",
                                        "/usr/local/etc"]
 
       # Where could be stored user configuration
@@ -26,10 +26,10 @@ class EasyAppHelper::Core::Config
     module WindowsPlaces
       # Where could be stored admin configuration that rules all EasyAppHelper
       # based applications.
-      ADMIN_CONFIG_POSSIBLE_PLACES = ["#{ENV['systemRoot']}/Config"]
+      SYSTEM_CONFIG_POSSIBLE_PLACES = ["#{ENV['systemRoot']}/Config"]
 
-      # Where could be stored system wide configuration
-      SYSTEM_CONFIG_POSSIBLE_PLACES = ['C:/Windows/Config', "#{ENV['ALLUSERSPROFILE']}/Application Data"]
+      # Where could be stored global configuration
+      GLOBAL_CONFIG_POSSIBLE_PLACES = ['C:/Windows/Config', "#{ENV['ALLUSERSPROFILE']}/Application Data"]
 
       # Where could be stored user configuration
       USER_CONFIG_POSSIBLE_PLACES = [ENV['APPDATA']]
