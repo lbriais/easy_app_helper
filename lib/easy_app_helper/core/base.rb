@@ -13,7 +13,7 @@ class EasyAppHelper::Core::Base
 
   def initialize(logger)
     @script_filename = @app_name = @app_version = @app_description = ""
-    @internal_configs = []
+    @internal_configs = {}
     @logger = logger
     @slop_definition = Slop.new
     build_command_line_options
@@ -41,7 +41,8 @@ class EasyAppHelper::Core::Base
   end
 
   def command_line_config
-    @slop_definition.nil? ? {} : @slop_definition.to_hash
+    @slop_definition.parse
+    @slop_definition.to_hash
   end
 
   def add_command_line_section(title)
@@ -51,8 +52,7 @@ class EasyAppHelper::Core::Base
   end
 
   def load_config
-    @slop_definition.parse
-    internal_configs << {content: @slop_definition.to_hash, source: 'Command line'}
+    internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
   end
 
   private

@@ -19,11 +19,9 @@ class EasyAppHelper::Core::Logger < Logger
 
   def initialize
     @config = {}
-    if ENV['DEBUG_EASY_MODULES']
-      super(TempLogger.new)
-      self.level = Severity::DEBUG
-      debug "Temporary initialisation logger created..."
-    end
+    super(TempLogger.new)
+    self.level = Severity::DEBUG
+    debug "Temporary initialisation logger created..."
   end
 
   # Enables to hot-change the log level.
@@ -40,7 +38,8 @@ class EasyAppHelper::Core::Logger < Logger
 
   def set_app_config(config)
     @config = config
-    history = logdev.dev.is_a?(TempLogger) ? logdev.dev.history : ""
+    history = logdev.dev.history
+
     if config[:'log-file']
       logdev = config[:'log-file']
     elsif config[:"debug-on-err"]
@@ -48,7 +47,8 @@ class EasyAppHelper::Core::Logger < Logger
     else
       logdev = STDOUT
     end
-    logdev.write history unless history.empty?
+    logdev.write history if ENV['DEBUG_EASY_MODULES']
+
     self
   end
 

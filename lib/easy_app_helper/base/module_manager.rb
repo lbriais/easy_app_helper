@@ -32,10 +32,9 @@ module EasyAppHelper::Base
 
       def self.modules
         logger = EasyAppHelper::Core::Logger.instance
-        self.core_modules(logger)
+        config = self.core_modules(logger)
 
-      ensure
-        logger.set_app_config({})
+        logger.set_app_config(config.to_hash)
       end
 
 
@@ -47,6 +46,7 @@ module EasyAppHelper::Base
         logger.debug config.internal_configs
         logger.debug config.to_hash
         puts config.help
+        config
       end
     end
 

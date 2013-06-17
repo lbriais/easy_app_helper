@@ -7,6 +7,37 @@
 
 require 'yaml'
 
+
+# Implements different merge policies for the configs.
+module EasyAppHelper::Core::HashesMergePolicies
+  # Performs a merge at the second level of hashes.
+  # simple entries and arrays are overridden.
+  def hashes_second_level_merge(h1, h2)
+    h2.each do |key, v|
+      if h1[key] and h1[key].is_a?(Hash)
+        # Merges hashes
+        h1[key].merge! h2[key]
+      else
+        # Overrides the rest
+        h1[key] = h2[key] unless h2[key].nil?
+      end
+    end
+    h1
+  end
+
+  # Uses the standard "merge!" method
+  def simple_merge(h1, h2)
+    h1.merge! h2
+  end
+
+  # Brutal override
+  def override_merge(h1, h2)
+    h1 = nil
+    h1 = h2
+
+  end
+end
+
 class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 end
 
@@ -15,11 +46,14 @@ require 'easy_app_helper/core/places'
 class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   ADMIN_CONFIG_FILENAME = EasyAppHelper.name
 
+  include EasyAppHelper::Core::HashesMergePolicies
+
   # include paths specific to the OS
   include EasyAppHelper::Core::Config::Places.get_OS_module
 
   # Potential extensions a config file can have
-  CONFIG_FILE_POSSIBLE_EXTENSIONS = ['conf', 'yml', 'cfg', 'yaml', 'CFG', 'YML', 'YAML', 'Yaml']
+  CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
+
 
   attr_reader :system_config, :global_config, :user_config, :ad_hoc_config
 
@@ -41,9 +75,11 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   end
 
   def to_hash
-    internal_configs.inject({}) do |merged_conf, conf|
-      merged_conf.merge! conf[1][:content]
+    merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
+      hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
+
+    hashes_second_level_merge merged_config, command_line_config
 
   end
 
@@ -63,7 +99,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     internal_configs[:user] = {content: load_config_file(filename), source: filename}
   end
   def load_ad_hoc_config
-    filename = internal_configs[:command_line][:content][:'config-file']
+#    filename = internal_configs[:command_line][:content][:'config-file']
   end
 
   # Loads a config file.
