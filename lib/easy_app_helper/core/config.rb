@@ -64,13 +64,14 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
       load_system_wide_config
       load_global_wide_config
       load_user_wide_config
-      load_ad_hoc_config
+      load_command_line_specified_config
     end
   end
 
   def add_cmd_line_options
     add_command_line_section('Configuration options') do |slop|
       slop.on 'config-file', 'Specify a config file.', :argument => true
+      slop.on 'config-override', 'If specified override all other config.', :argument => false
     end
   end
 
@@ -78,9 +79,20 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
+    if command_line_config[:'config-file']
+      if command_line_config[:'config-override']
+        override_merge merged_config, internal_configs[:command_line_specified][:content]
+      else
+        hashes_second_level_merge merged_config, internal_configs[:command_line_specified][:content]
+      end
 
+    end
     hashes_second_level_merge merged_config, command_line_config
 
+  end
+
+  def [](key)
+    self.to_hash[key]
   end
 
   private
@@ -98,15 +110,15 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     filename = find_file USER_CONFIG_POSSIBLE_PLACES, script_filename
     internal_configs[:user] = {content: load_config_file(filename), source: filename}
   end
-  def load_ad_hoc_config
-#    filename = internal_configs[:command_line][:content][:'config-file']
+  def load_command_line_specified_config
+    filename = internal_configs[:command_line][:content][:'config-file']
+    internal_configs[:command_line_specified] = {content: load_config_file(filename), source: filename}
   end
 
-  # Loads a config file.
   def load_config_file(conf_filename)
     conf = {}
     return conf if conf_filename.nil?
-    # A file exists
+
     begin
       logger.debug "Loading config file \"#{conf_filename}\""
       conf = Hash[YAML::load(open(conf_filename)).map { |k, v| [k.to_sym, v] }]
