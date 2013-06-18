@@ -13,6 +13,13 @@ class Logger
   protected
   attr_accessor :logdev
 
+  def handing_over_to(log)
+    history = ""
+    history = @logdev.dev.history if @logdev.dev.respond_to? :history
+    @logdev.close
+    @logdev = LogDevice.new log
+    @logdev.write history if ENV['DEBUG_EASY_MODULES']
+  end
 end
 
 class EasyAppHelper::Core::Logger < Logger
@@ -40,17 +47,18 @@ class EasyAppHelper::Core::Logger < Logger
 
   def set_app_config(config)
     @config = config
-    history = logdev.dev.history
     add_cmd_line_options
-
+    @config.load_config
+    debug "Config layers:\n#{@config.internal_configs.to_yaml}"
+    debug "Merged config:\n#{@config.to_yaml}"
     if config[:'log-file']
-      logdev = Logger::LogDevice.new config[:'log-file']
+      handing_over_to config[:'log-file']
     elsif config[:"debug-on-err"]
-      logdev = STDERR
+      handing_over_to STDERR
     else
-      logdev = STDOUT
+      handing_over_to STDOUT
     end
-    logdev.write history if ENV['DEBUG_EASY_MODULES']
+    self.level = config[:'log-level'] ? config[:'log-level'] : Severity::WARN
 
     self
   end

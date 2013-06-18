@@ -44,12 +44,13 @@ end
 require 'easy_app_helper/core/places'
 
 class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
-  ADMIN_CONFIG_FILENAME = EasyAppHelper.name
 
   include EasyAppHelper::Core::HashesMergePolicies
 
   # include paths specific to the OS
   include EasyAppHelper::Core::Config::Places.get_OS_module
+  ADMIN_CONFIG_FILENAME = EasyAppHelper.name
+
 
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
@@ -65,6 +66,9 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   def script_filename=(name)
     super
+    [:system, :global, :user, :specific_file].each do |scope|
+      internal_configs[scope] = {content: nil, source: nil}
+    end
     load_config
   end
 
@@ -73,7 +77,8 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     load_system_wide_config
     load_global_wide_config
     load_user_wide_config
-    load_command_line_specified_config
+    load_specific_file_config
+
   end
 
   def to_hash
@@ -83,9 +88,9 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     end
     if command_line_config[:'config-file']
       if command_line_config[:'config-override']
-        override_merge merged_config, internal_configs[:command_line_specified][:content]
+        override_merge merged_config, internal_configs[:specific_file][:content]
       else
-        hashes_second_level_merge merged_config, internal_configs[:command_line_specified][:content]
+        hashes_second_level_merge merged_config, internal_configs[:specific_file][:content]
       end
 
     end
@@ -112,21 +117,36 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   end
 
   def load_system_wide_config
-    filename = find_file SYSTEM_CONFIG_POSSIBLE_PLACES, script_filename
-    internal_configs[:system] = {content: load_config_file(filename), source: filename}
+      #filename = find_file SYSTEM_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME
+      #internal_configs[:system] = {content: load_config_file(filename), source: filename}
+    unless_cached(:system, SYSTEM_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME) do |scope, places, filename|
+      filename = find_file places, filename
+      internal_configs[scope] = {content: load_config_file(filename), source: filename}
+    end
   end
 
   def  load_global_wide_config
-    filename = find_file GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename
-    internal_configs[:global] = {content: load_config_file(filename), source: filename}
+    unless_cached(:global, GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename) do |scope, places, filename|
+      filename = find_file places, filename
+      internal_configs[scope] = {content: load_config_file(filename), source: filename}
+    end
+    #filename = find_file GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename
+    #internal_configs[:global] = {content: load_config_file(filename), source: filename}
   end
   def load_user_wide_config
-    filename = find_file USER_CONFIG_POSSIBLE_PLACES, script_filename
-    internal_configs[:user] = {content: load_config_file(filename), source: filename}
+    unless_cached(:user, USER_CONFIG_POSSIBLE_PLACES, script_filename) do |scope, places, filename|
+      filename = find_file places, filename
+      internal_configs[scope] = {content: load_config_file(filename), source: filename}
+    end
+    #filename = find_file USER_CONFIG_POSSIBLE_PLACES, script_filename
+    #internal_configs[:user] = {content: load_config_file(filename), source: filename}
   end
-  def load_command_line_specified_config
-    filename = internal_configs[:command_line][:content][:'config-file']
-    internal_configs[:command_line_specified] = {content: load_config_file(filename), source: filename}
+  def load_specific_file_config
+    unless_cached(:specific_file, nil, internal_configs[:command_line][:content][:'config-file']) do |scope, places, filename|
+      internal_configs[scope] = {content: load_config_file(filename), source: filename}
+    end
+    #filename = internal_configs[:command_line][:content][:'config-file']
+    #internal_configs[:specific_file] = {content: load_config_file(filename), source: filename}
   end
 
   def load_config_file(conf_filename)
@@ -140,6 +160,18 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
       logger.error "Invalid config file \"#{conf_filename}\". Not respecting YAML syntax!\n#{e.message}"
     end
     conf
+  end
+
+  def unless_cached(scope, places, filename)
+    loaded = false
+    if internal_configs[scope]
+      loaded = true unless internal_configs[scope][:content].nil?
+    end
+    unless loaded
+      yield scope, places, filename
+      internal_configs[scope][:source] = filename
+    end
+
   end
 
   # Tries to find config files according to places (array) given and possible extensions

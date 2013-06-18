@@ -21,9 +21,10 @@ module EasyAppHelper::Base
       # Initialisation.modules
       @logger = EasyAppHelper::Core::Logger.instance
       @config = EasyAppHelper::Core::Config.new @logger
-      @logger.debug @config.internal_configs.to_yaml
-      @logger.debug @config.to_yaml
       @logger.set_app_config(@config)
+      @config.script_filename = 'batch_audio_convert'
+      @logger.debug @config.to_hash
+      @logger.debug "Hello WORLD" #  @config.internal_configs
     end
 
     def xxxxxxxxxxxxxinstance
