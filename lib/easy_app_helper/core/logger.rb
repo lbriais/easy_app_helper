@@ -22,12 +22,13 @@ class EasyAppHelper::Core::Logger < Logger
     super(TempLogger.new)
     self.level = Severity::DEBUG
     debug "Temporary initialisation logger created..."
+
   end
 
   # Enables to hot-change the log level.
-  def log_level=(level)
+  def level=(level)
+    super
     @config[:'log-level'] = level
-    self.level = level
   end
 
   # Displays the message according to application verbosity and logs it as info.
@@ -39,6 +40,7 @@ class EasyAppHelper::Core::Logger < Logger
   def set_app_config(config)
     @config = config
     history = logdev.dev.history
+    add_cmd_line_options
 
     if config[:'log-file']
       logdev = config[:'log-file']
@@ -50,6 +52,17 @@ class EasyAppHelper::Core::Logger < Logger
     logdev.write history if ENV['DEBUG_EASY_MODULES']
 
     self
+  end
+
+  private
+
+  def add_cmd_line_options
+    @config.add_command_line_section('Debug and logging options') do |slop|
+      slop.on :debug, 'Run in debug mode.', :argument => false
+      slop.on 'debug-on-err', 'Run in debug mode with output to stderr.', :argument => false
+      slop.on 'log-level', "Log level from 0 to 5, default #{Severity::WARN}.", :argument => true, :as => Integer
+      slop.on 'log-file', 'File to log to.', :argument => true
+    end
   end
 
   class TempLogger

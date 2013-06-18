@@ -57,6 +57,16 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   attr_reader :system_config, :global_config, :user_config, :ad_hoc_config
 
+  def initialize(logger)
+    super
+    add_cmd_line_options
+
+  end
+
+  def script_filename=(name)
+    super
+    load_config
+  end
 
   def load_config
     super
@@ -65,13 +75,6 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
       load_global_wide_config
       load_user_wide_config
       load_command_line_specified_config
-    end
-  end
-
-  def add_cmd_line_options
-    add_command_line_section('Configuration options') do |slop|
-      slop.on 'config-file', 'Specify a config file.', :argument => true
-      slop.on 'config-override', 'If specified override all other config.', :argument => false
     end
   end
 
@@ -88,14 +91,26 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
     end
     hashes_second_level_merge merged_config, command_line_config
-
+    hashes_second_level_merge merged_config, internal_configs[:modified][:content]
   end
 
   def [](key)
     self.to_hash[key]
   end
 
+  def to_yaml
+    to_hash.to_yaml
+  end
+
+
   private
+
+  def add_cmd_line_options
+    add_command_line_section('Configuration options') do |slop|
+      slop.on 'config-file', 'Specify a config file.', :argument => true
+      slop.on 'config-override', 'If specified override all other config.', :argument => false
+    end
+  end
 
   def load_system_wide_config
     filename = find_file SYSTEM_CONFIG_POSSIBLE_PLACES, script_filename

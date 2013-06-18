@@ -13,7 +13,7 @@ class EasyAppHelper::Core::Base
 
   def initialize(logger)
     @script_filename = @app_name = @app_version = @app_description = ""
-    @internal_configs = {}
+    @internal_configs = {modified:{content:{}, source: 'Changed by code'}}
     @logger = logger
     @slop_definition = Slop.new
     build_command_line_options
@@ -53,6 +53,18 @@ class EasyAppHelper::Core::Base
 
   def load_config
     internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
+  end
+
+  def []=(key,value)
+    internal_configs[:modified][:content][key] = value
+  end
+
+  def reset
+    internal_configs[:modified] = {content:{}, source: 'Changed by code'}
+  end
+
+  def layers
+    internal_configs.keys
   end
 
   private

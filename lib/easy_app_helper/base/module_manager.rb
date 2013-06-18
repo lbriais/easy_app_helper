@@ -34,15 +34,13 @@ module EasyAppHelper::Base
         logger = EasyAppHelper::Core::Logger.instance
         config = self.core_modules(logger)
 
-        logger.set_app_config(config.to_hash)
+        logger.set_app_config(config)
       end
 
 
       def self.core_modules(logger)
         config = EasyAppHelper::Core::Config.new logger
-        config.add_cmd_line_options
         config.script_filename = 'batch_audio_convert'
-        config.load_config
         logger.debug config.internal_configs
         logger.debug config.to_hash
         puts config.help
