@@ -18,7 +18,12 @@ module EasyAppHelper::Base
   module ModuleManager
 
     def self.included(base) # :nodoc:
-      Initialisation.modules
+      # Initialisation.modules
+      @logger = EasyAppHelper::Core::Logger.instance
+      @config = EasyAppHelper::Core::Config.new @logger
+      @logger.debug @config.internal_configs.to_yaml
+      @logger.debug @config.to_yaml
+      @logger.set_app_config(@config)
     end
 
     def xxxxxxxxxxxxxinstance

@@ -60,7 +60,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   def initialize(logger)
     super
     add_cmd_line_options
-
+    load_config
   end
 
   def script_filename=(name)
@@ -70,15 +70,14 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   def load_config
     super
-    unless script_filename.nil? or script_filename.empty?
-      load_system_wide_config
-      load_global_wide_config
-      load_user_wide_config
-      load_command_line_specified_config
-    end
+    load_system_wide_config
+    load_global_wide_config
+    load_user_wide_config
+    load_command_line_specified_config
   end
 
   def to_hash
+    merged_config = {}
     merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
