@@ -12,6 +12,7 @@ require 'singleton'
 class Logger
   protected
   attr_accessor :logdev
+
 end
 
 class EasyAppHelper::Core::Logger < Logger
@@ -43,7 +44,7 @@ class EasyAppHelper::Core::Logger < Logger
     add_cmd_line_options
 
     if config[:'log-file']
-      logdev = config[:'log-file']
+      logdev = Logger::LogDevice.new config[:'log-file']
     elsif config[:"debug-on-err"]
       logdev = STDERR
     else
