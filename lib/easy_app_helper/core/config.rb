@@ -55,6 +55,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
 
+  alias_method :reload, :load_config
 
   attr_reader :system_config, :global_config, :user_config, :ad_hoc_config
 
@@ -72,14 +73,18 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     load_config
   end
 
-  def load_config
-    super
-    load_system_wide_config
-    load_global_wide_config
-    load_user_wide_config
-    load_specific_file_config
-
+  def load_config(force=false)
+    super()
+    load_system_wide_config force
+    load_global_wide_config force
+    load_user_wide_config force
+    load_specific_file_config force
   end
+
+  def force_reload
+    reload true
+  end
+
 
   def to_hash
     merged_config = {}
@@ -106,7 +111,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     to_hash.to_yaml
   end
 
-
+  #############################################################################
   private
 
   def add_cmd_line_options
@@ -116,37 +121,29 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     end
   end
 
-  def load_system_wide_config
-      #filename = find_file SYSTEM_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME
-      #internal_configs[:system] = {content: load_config_file(filename), source: filename}
+  def load_system_wide_config(force=false)
     unless_cached(:system, SYSTEM_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME) do |scope, places, filename|
       filename = find_file places, filename
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
   end
 
-  def  load_global_wide_config
+  def  load_global_wide_config(force=false)
     unless_cached(:global, GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename) do |scope, places, filename|
       filename = find_file places, filename
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
-    #filename = find_file GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename
-    #internal_configs[:global] = {content: load_config_file(filename), source: filename}
   end
-  def load_user_wide_config
+  def load_user_wide_config(force=false)
     unless_cached(:user, USER_CONFIG_POSSIBLE_PLACES, script_filename) do |scope, places, filename|
       filename = find_file places, filename
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
-    #filename = find_file USER_CONFIG_POSSIBLE_PLACES, script_filename
-    #internal_configs[:user] = {content: load_config_file(filename), source: filename}
   end
-  def load_specific_file_config
+  def load_specific_file_config(force=false)
     unless_cached(:specific_file, nil, internal_configs[:command_line][:content][:'config-file']) do |scope, places, filename|
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
-    #filename = internal_configs[:command_line][:content][:'config-file']
-    #internal_configs[:specific_file] = {content: load_config_file(filename), source: filename}
   end
 
   def load_config_file(conf_filename)

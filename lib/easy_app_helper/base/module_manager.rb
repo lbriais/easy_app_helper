@@ -22,9 +22,6 @@ module EasyAppHelper::Base
       @logger = EasyAppHelper::Core::Logger.instance
       @config = EasyAppHelper::Core::Config.new @logger
       @logger.set_app_config(@config)
-      @config.script_filename = 'batch_audio_convert'
-      @logger.debug @config.to_hash
-      @logger.debug "Hello WORLD" #  @config.internal_configs
     end
 
     def xxxxxxxxxxxxxinstance
@@ -33,26 +30,7 @@ module EasyAppHelper::Base
 
 
     private
-    ############################################################################
-    module Initialisation
 
-      def self.modules
-        logger = EasyAppHelper::Core::Logger.instance
-        config = self.core_modules(logger)
-
-        logger.set_app_config(config)
-      end
-
-
-      def self.core_modules(logger)
-        config = EasyAppHelper::Core::Config.new logger
-        config.script_filename = 'batch_audio_convert'
-        logger.debug config.internal_configs
-        logger.debug config.to_hash
-        puts config.help
-        config
-      end
-    end
 
   end
 end
