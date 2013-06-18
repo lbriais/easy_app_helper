@@ -57,8 +57,6 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   alias_method :reload, :load_config
 
-  attr_reader :system_config, :global_config, :user_config, :ad_hoc_config
-
   def initialize(logger)
     super
     add_cmd_line_options
@@ -70,7 +68,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     [:system, :global, :user, :specific_file].each do |scope|
       internal_configs[scope] = {content: nil, source: nil}
     end
-    load_config
+    force_reload
   end
 
   def load_config(force=false)
@@ -122,26 +120,26 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   end
 
   def load_system_wide_config(force=false)
-    unless_cached(:system, SYSTEM_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME) do |scope, places, filename|
+    unless_cached(:system, SYSTEM_CONFIG_POSSIBLE_PLACES, ADMIN_CONFIG_FILENAME, force) do |scope, places, filename|
       filename = find_file places, filename
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
   end
 
   def  load_global_wide_config(force=false)
-    unless_cached(:global, GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename) do |scope, places, filename|
+    unless_cached(:global, GLOBAL_CONFIG_POSSIBLE_PLACES, script_filename, force) do |scope, places, filename|
       filename = find_file places, filename
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
   end
   def load_user_wide_config(force=false)
-    unless_cached(:user, USER_CONFIG_POSSIBLE_PLACES, script_filename) do |scope, places, filename|
+    unless_cached(:user, USER_CONFIG_POSSIBLE_PLACES, script_filename, force) do |scope, places, filename|
       filename = find_file places, filename
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
   end
   def load_specific_file_config(force=false)
-    unless_cached(:specific_file, nil, internal_configs[:command_line][:content][:'config-file']) do |scope, places, filename|
+    unless_cached(:specific_file, nil, internal_configs[:command_line][:content][:'config-file'], force) do |scope, places, filename|
       internal_configs[scope] = {content: load_config_file(filename), source: filename}
     end
   end
@@ -159,12 +157,12 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     conf
   end
 
-  def unless_cached(scope, places, filename)
-    loaded = false
+  def unless_cached(scope, places, filename, forced)
+    cached = false
     if internal_configs[scope]
-      loaded = true unless internal_configs[scope][:content].nil?
+      cached = true unless internal_configs[scope][:content].nil?
     end
-    unless loaded
+    unless cached or forced
       yield scope, places, filename
       internal_configs[scope][:source] = filename
     end
