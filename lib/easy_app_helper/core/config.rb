@@ -151,7 +151,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
       logger.debug "Loading config file \"#{conf_filename}\""
       conf = Hash[YAML::load(open(conf_filename)).map { |k, v| [k.to_sym, v] }]
     rescue => e
-      logger.error "Invalid config file \"#{conf_filename}\". Not respecting YAML syntax!\n#{e.message}"
+      logger.error "Invalid config file \"#{conf_filename}\". Skipping as not respecting YAML syntax!\n#{e.message}"
     end
     conf
   end
