@@ -14,11 +14,13 @@ class Logger
   attr_accessor :logdev
 
   def handing_over_to(log)
-    history = ""
+    history = []
     history = @logdev.dev.history if @logdev.dev.respond_to? :history
     @logdev.close
     @logdev = LogDevice.new log
-    @logdev.write history if ENV['DEBUG_EASY_MODULES']
+    history.each do |msg|
+      @logdev.write msg if ENV['DEBUG_EASY_MODULES'] or (msg =~ /^[WE]/)
+    end
   end
 end
 
@@ -77,7 +79,7 @@ class EasyAppHelper::Core::Logger < Logger
     attr_reader :history
 
     def initialize
-      @history = ""
+      @history = []
     end
 
     def write(data)
