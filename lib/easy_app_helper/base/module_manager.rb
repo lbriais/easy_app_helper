@@ -28,9 +28,7 @@ module EasyAppHelper::Base
 
     end
 
-
     private
-
 
   end
 end

@@ -59,7 +59,6 @@ class EasyAppHelper::Core::Logger < Logger
       handing_over_to STDOUT
     end
     self.level = config[:'log-level'] ? config[:'log-level'] : Severity::WARN
-
     self
   end
 

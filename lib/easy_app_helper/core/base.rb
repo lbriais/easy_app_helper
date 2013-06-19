@@ -53,6 +53,7 @@ class EasyAppHelper::Core::Base
 
   def load_config
     internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
+
   end
 
   def []=(key,value)

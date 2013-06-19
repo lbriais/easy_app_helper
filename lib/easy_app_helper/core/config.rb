@@ -85,7 +85,6 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
 
   def to_hash
-    merged_config = {}
     merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
@@ -157,14 +156,14 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     conf
   end
 
-  def unless_cached(scope, places, filename, forced)
+  def unless_cached(layer, places, filename, forced)
     cached = false
-    if internal_configs[scope]
-      cached = true unless internal_configs[scope][:content].nil?
+    if internal_configs[layer]
+      cached = true unless internal_configs[layer][:content].nil?
     end
     unless cached or forced
-      yield scope, places, filename
-      internal_configs[scope][:source] = filename
+      yield layer, places, filename
+      internal_configs[layer][:source] = filename
     end
 
   end
