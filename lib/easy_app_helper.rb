@@ -21,7 +21,7 @@ require 'easy_app_helper/version'
 module EasyAppHelper
   require 'easy_app_helper/base/module_manager'
   include Base::ModuleManager
-
+  extend Base::ModuleManager
 end
 
 

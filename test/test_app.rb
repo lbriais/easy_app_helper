@@ -44,3 +44,8 @@ class TestApp
 end
 
 t = TestApp.new
+include EasyAppHelper
+logger.warn "Yeah"
+EasyAppHelper.logger.error "Groovy baby !"
+#puts config.inspect
+puts "bye"
