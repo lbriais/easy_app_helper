@@ -9,7 +9,7 @@ class Pipo
 
 
   def toto
-    puts_and_logs "Et bim"
+    puts_and_logs "Now from a second class"
     puts_and_logs config.to_hash
   end
 end
