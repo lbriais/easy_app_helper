@@ -18,4 +18,7 @@ A.new.echo
 EasyAppHelper.puts_and_logs EasyAppHelper.config[:zboubi]
 
 include EasyAppHelper
-puts_and_logs config[:zboubi]
+puts_and_logs "ZBOUBI: #{config[:zboubi]}"
+config.reset
+puts_and_logs "ZBOUBI2: #{config[:zboubi]}"
+

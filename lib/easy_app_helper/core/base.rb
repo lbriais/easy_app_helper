@@ -8,12 +8,13 @@
 require 'slop'
 
 class EasyAppHelper::Core::Base
+  CHANGED_BY_CODE = 'Changed by code'
 
   attr_reader :script_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
 
   def initialize(logger)
     @script_filename = @app_name = @app_version = @app_description = ""
-    @internal_configs = {modified:{content:{}, source: 'Changed by code'}}
+    @internal_configs = {modified: {content: {}, source: CHANGED_BY_CODE}}
     @logger = logger
     @slop_definition = Slop.new
     build_command_line_options
@@ -60,7 +61,7 @@ class EasyAppHelper::Core::Base
   end
 
   def reset
-    internal_configs[:modified] = {content:{}, source: 'Changed by code'}
+    internal_configs[:modified] = {content: {}, source: CHANGED_BY_CODE}
   end
 
   def layers
