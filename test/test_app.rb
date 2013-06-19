@@ -31,14 +31,17 @@ class TestApp
     config.internal_configs.each do |layer|
       puts layer
     end
-    puts config[:destination]
+    add_cmd_line_options
+    logger.error "INTARG: #{config[:intarg]}"
 
     # puts config.help
   end
 
-  def add_specifc_command_line_options(opt)
-    opt.on :s, :stupid, 'Stupid option', :argument => false
-    opt.on :i, :int, 'Stupid option with integer argument', :argument => true, :as => Integer
+  def add_cmd_line_options
+    config.add_command_line_section do |slop|
+      slop.on :s, :stupid, 'Stupid option', :argument => false
+      slop.on :i, :intarg, 'Stupid option with integer argument', :argument => true, :as => Integer
+    end
   end
 
 end
@@ -47,5 +50,6 @@ t = TestApp.new
 include EasyAppHelper
 logger.warn "Yeah"
 EasyAppHelper.logger.error "Groovy baby !"
+puts_and_logs "Hey man"
 #puts config.inspect
 puts "bye"
