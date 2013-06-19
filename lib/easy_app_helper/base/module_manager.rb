@@ -17,18 +17,35 @@ require 'easy_app_helper/core/config'
 module EasyAppHelper::Base
   module ModuleManager
 
-    def self.included(base) # :nodoc:
-      # Initialisation.modules
-      @logger = EasyAppHelper::Core::Logger.instance
-      @config = EasyAppHelper::Core::Config.new @logger
-      @logger.set_app_config(@config)
+    def self.included(base)
+      @@logger ||= EasyAppHelper::Core::Logger.instance
+      @@config ||= EasyAppHelper::Core::Config.new @@logger
+      @@logger.set_app_config(@@config)
+      base.extend CoreClassMethods
     end
 
-    def xxxxxxxxxxxxxinstance
-
+    def logger
+      @@logger
     end
 
-    private
+    def config
+      @@config
+    end
+
+    def puts_and_logs(msg)
+      @@logger.puts_and_logs msg
+    end
+
+    module CoreClassMethods
+
+      def logger
+        @@logger
+      end
+
+      def config
+        @@config
+      end
+    end
 
   end
 end

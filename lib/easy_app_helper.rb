@@ -22,15 +22,6 @@ module EasyAppHelper
   require 'easy_app_helper/base/module_manager'
   include Base::ModuleManager
 
-  def self.included(base)
-    base.extend CoreClassMethods
-  end
-
-  module CoreClassMethods
-    def xxxxxxxxxxxxxxxclass
-
-    end
-  end
 end
 
 
