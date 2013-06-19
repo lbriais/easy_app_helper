@@ -10,35 +10,41 @@
 # TODO: Add equivalent for Mac
 class EasyAppHelper::Core::Config
   module Places
-    module UnixPlaces
+    module Unix
       # Where could be stored admin configuration that rules all EasyAppHelper
       # based applications.
-      SYSTEM_CONFIG_POSSIBLE_PLACES = ["/etc"]
+      POSSIBLE_PLACES = {
 
-      # Where could be stored global wide configuration
-      GLOBAL_CONFIG_POSSIBLE_PLACES = ["/etc",
-                                       "/usr/local/etc"]
+          system: ["/etc"],
 
-      # Where could be stored user configuration
-      USER_CONFIG_POSSIBLE_PLACES = ["#{ENV['HOME']}/.config"]
+          # Where could be stored global wide configuration
+          global: ["/etc",
+                   "/usr/local/etc"],
+
+          # Where could be stored user configuration
+          user:  ["#{ENV['HOME']}/.config"]
+      }
     end
 
-    module WindowsPlaces
+    module Windows
       # Where could be stored admin configuration that rules all EasyAppHelper
       # based applications.
-      SYSTEM_CONFIG_POSSIBLE_PLACES = ["#{ENV['systemRoot']}/Config"]
+      POSSIBLE_PLACES = {
 
-      # Where could be stored global configuration
-      GLOBAL_CONFIG_POSSIBLE_PLACES = ['C:/Windows/Config', "#{ENV['ALLUSERSPROFILE']}/Application Data"]
+          system: ["#{ENV['systemRoot']}/Config"],
 
-      # Where could be stored user configuration
-      USER_CONFIG_POSSIBLE_PLACES = [ENV['APPDATA']]
+          # Where could be stored global configuration
+          global: ['C:/Windows/Config', "#{ENV['ALLUSERSPROFILE']}/Application Data"],
+
+          # Where could be stored user configuration
+          user: [ENV['APPDATA']]
+      }
     end
 
     CONF ={
-        mingw32: WindowsPlaces
+        mingw32: Windows
     }
-    DEFAULT = UnixPlaces
+    DEFAULT = Unix
 
     def self.get_OS_module
       conf = CONF[RbConfig::CONFIG['target_os'].to_sym]
