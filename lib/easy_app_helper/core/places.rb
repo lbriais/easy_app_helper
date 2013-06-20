@@ -7,7 +7,7 @@
 
 # Possible places regarding the OS
 # TODO: Add equivalent for Mac
-class EasyAppHelper::Core::Config
+class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   module Places
     module Unix
       # Where could be stored admin configuration that rules all EasyAppHelper

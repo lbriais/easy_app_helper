@@ -7,6 +7,7 @@
 
 require 'yaml'
 require 'easy_app_helper/core/merge_policies'
+require 'easy_app_helper/core/places'
 
 # This is the class that will handle the configuration.
 # Configuration is read from different sources:
@@ -14,32 +15,27 @@ require 'easy_app_helper/core/merge_policies'
 # - command line options
 # - any extra config you provide programmatically
 #
-# Config files:
-#   system, global, and user config files are searched in the file system according to
-#   complex rules. First the place where to search them depends on the OS
-#   (see EasyAppHelper::Core::Config::Places), and then multiple file extensions are
-#   tested (EasyAppHelper::Core::Config::CONFIG_FILE_POSSIBLE_EXTENSIONS). This is basically
-#   performed by the method #find_file. The config specified on command (if any) is loaded the
-#   same way.
+# == Config files:
+# system, global, and user config files are searched in the file system according to
+# complex rules. First the place where to search them depends on the OS
+# (Provided by {EasyAppHelper::Core::Config::Places}), and then multiple file extensions are
+# tested ({EasyAppHelper::Core::Config::CONFIG_FILE_POSSIBLE_EXTENSIONS}). This is basically
+# performed by the private method {#find_file}. The config specified on command (if any) is loaded the
+# same way.
 #
-# Command line:
-#   Any option can be declared as being callable from the command line. Modules add already some
-#   command line options, but the application can obviously add its own (see
-#   EasyAppHelper::Core::Base#add_command_line_section).
+# == Command line:
+# Any option can be declared as being callable from the command line. Modules add already some
+# command line options, but the application can obviously add its own (see
+# {EasyAppHelper::Core::Base#add_command_line_section}).
 #
 # Each of the config sources are kept in a separated "layer" and addressed this way using the
 # #internal_config attribute reader. But of course the config object provides a "merged" config
 # result of the computation of all the sources. See the #to_hash method to see the order for the
 # merge.
-# Any option can be accessed or modified directly using the #[] and #[]= methods.
-# Any change to the global config should be done using the #[]= method and is kept in the last separated
-# layer called "modified". Therefore the config can be easily reset using the EasyAppHelper::Core::Base#reset
+# Any option can be accessed or modified directly using the {#[]} and {#[]=} methods.
+# Any change to the global config should be done using the {#[]=} method and is kept in the last separated
+# layer called "modified". Therefore the config can be easily reset using the {#reset}
 # method.
-class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
-end
-
-require 'easy_app_helper/core/places'
-
 class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   include EasyAppHelper::Core::HashesMergePolicies
@@ -52,20 +48,27 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
   ADMIN_CONFIG_FILENAME
+
+  # @param [EasyAppHelper::Core::Logger] logger
+  # The logger passed to this constructor should be a temporary logger until the full config is loaded.
   def initialize(logger)
     super
     add_cmd_line_options
     load_config
   end
 
+  # After calling the super method, triggers a forced reload of the file based config.
+  # @param [String] name of the script (used to determine config file name)
+  # @see Base#script_filename=
   def script_filename=(name)
     super
-    [:system, :global, :user, :specific_file].each do |scope|
+    [ :global, :user].each do |scope|
       internal_configs[scope] = {content: {}, source: nil, origin: nil}
     end
     force_reload
   end
 
+  # @see Base#
   def app_name=(name)
     super
     logger.progname = name
@@ -174,7 +177,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
       logger.debug "Loading config file \"#{conf_filename}\""
       conf = Hash[YAML::load(open(conf_filename)).map { |k, v| [k.to_sym, v] }]
     rescue => e
-      logger.error "Invalid config file \"#{conf_filename}\". Skipping as not respecting YAML syntax!\n#{e.message}"
+      logger.error "Invalid config file \"#{conf_filename}\". Skipped as not respecting YAML syntax!\n#{e.message}"
     end
     conf
   end
