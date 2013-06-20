@@ -8,7 +8,9 @@
 require 'logger'
 require 'singleton'
 
-
+# Official Ruby Logger re-opened to introduce a method to hand-over from a temporary logger
+# to the definitive one the temporary history.
+# TODO: Ensure only the messages that are above the current level are displayed.
 class Logger
   def handing_over_to(log)
     history = []
@@ -21,6 +23,8 @@ class Logger
   end
 end
 
+# This is the logger that will be used by the application and any class that include
+# the EasyAppHelper module.
 class EasyAppHelper::Core::Logger < Logger
   include Singleton
 
@@ -29,10 +33,9 @@ class EasyAppHelper::Core::Logger < Logger
     super(TempLogger.new)
     self.level = Severity::DEBUG
     debug "Temporary initialisation logger created..."
-
   end
 
-  # Enables to hot-change the log level.
+  # Change the log level while keeping the config in sync.
   def level=(level)
     super
     @config[:'log-level'] = level
@@ -44,6 +47,7 @@ class EasyAppHelper::Core::Logger < Logger
     info(msg)
   end
 
+  # Reset the logger regarding the config provided
   def set_app_config(config)
     @config = config
     add_cmd_line_options
@@ -63,6 +67,7 @@ class EasyAppHelper::Core::Logger < Logger
 
   private
 
+
   def add_cmd_line_options
     @config.add_command_line_section('Debug and logging options') do |slop|
       slop.on :debug, 'Run in debug mode.', :argument => false
@@ -72,6 +77,9 @@ class EasyAppHelper::Core::Logger < Logger
     end
   end
 
+  # This class will act as a temporary logger, actually just keeping the history until the real
+  # configuration for the logger is known. Then the history is displayed or not regarding the
+  # definitive logger configuration.
   class TempLogger
     attr_reader :history
 
