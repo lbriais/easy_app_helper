@@ -7,15 +7,15 @@
 
 require 'easy_app_helper/version'
 
-# This module will provide helpers for your applications. Currently supported
-# modules are:
-# - EasyAppHelper::Base included by default.
-# - EasyAppHelper::Logger adds logging capabilities to your scripts.
-# - EasyAppHelper::Config provides a consistent configuration framework.
+# When this module is included in any class, it mixes in automatically
+# EasyAppHelper::ModuleManager::CoreClassMethods methods both into the
+# instance and the class of the instance that includes it.
+# Thus to have access to the helper methods, the only requirement is to include
+# this module...
 module EasyAppHelper
-  require 'easy_app_helper/base/module_manager'
-  include Base::ModuleManager
-  extend Base::ModuleManager
+  require 'easy_app_helper/module_manager'
+  include ModuleManager
+  extend ModuleManager
 end
 
 
