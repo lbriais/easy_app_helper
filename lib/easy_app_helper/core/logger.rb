@@ -8,9 +8,9 @@
 require 'logger'
 require 'singleton'
 
-# Official Ruby Logger re-opened to introduce a method to hand-over from a temporary logger
-# to the definitive one the temporary history.
-# TODO: Ensure only the messages that are above the current level are displayed.
+# Official Ruby Logger re-opened to introduce a method to hand-over the temporary history from a temporary logger
+# to the definitive one.
+# TODO: Ensure only the messages that are above the current level are displayed when handing over to the definitive logger.
 class Logger
   def handing_over_to(log)
     history = []
@@ -23,10 +23,10 @@ class Logger
   end
 end
 
-# This is the logger that will be used by the application and any class that include
-# the EasyAppHelper module.
+# This is the logger that will be used by the application and any class that include {#EasyAppHelper} module.
 class EasyAppHelper::Core::Logger < Logger
   include Singleton
+
 
   def initialize
     @config = {}
