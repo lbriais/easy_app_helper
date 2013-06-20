@@ -86,7 +86,7 @@ class EasyAppHelper::Core::Base
   end
 
   def build_banner
-    "\nUsage: #{config_filename} [options]\n#{app_name} Version: #{app_version}\n\n#{app_description}"
+    "\nUsage: #{File.basename $0} [options]\n#{app_name} Version: #{app_version}\n\n#{app_description}"
   end
 
 end

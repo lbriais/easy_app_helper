@@ -29,7 +29,7 @@ module EasyAppHelper::ModuleManager
 
   # Convenient method that logs at info level, but also outputs the message to STDOUT if
   # verbose is set in the config.
-  # @param [String] Message to be displayed
+  # @param [String] msg to be displayed
   def puts_and_logs(msg)
     @@logger.puts_and_logs msg
   end

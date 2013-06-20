@@ -6,9 +6,6 @@
 ################################################################################
 
 require 'yaml'
-require 'easy_app_helper/core/merge_policies'
-require 'easy_app_helper/core/places'
-
 # This is the class that will handle the configuration.
 # Configuration is read from different sources:
 # - config files (system, global, user, specified on the command line)
@@ -37,11 +34,16 @@ require 'easy_app_helper/core/places'
 # layer called "modified". Therefore the config can be easily reset using the {#reset}
 # method.
 class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
+end
 
+require 'easy_app_helper/core/places'
+require 'easy_app_helper/core/merge_policies'
+
+
+class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   include EasyAppHelper::Core::HashesMergePolicies
-
-  # include paths specific to the OS
   include EasyAppHelper::Core::Config::Places.get_OS_module
+
   ADMIN_CONFIG_FILENAME = EasyAppHelper.name
 
 
@@ -62,18 +64,21 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   # @see Base#config_filename=
   def config_filename=(name)
     super
-    #[ :global, :user].each do |scope|
-    #  internal_configs[scope] = {content: {}, source: nil, origin: nil}
-    #end
     force_reload
   end
 
-  # @see Base#
+  # Sets the Application name and passes it to the logger.
+  # @param [String] name
+  # @see Base#app_name=
   def app_name=(name)
     super
     logger.progname = name
   end
 
+  # Loads all config (command line and config files)
+  # Do not reload a file if already loaded unless forced too.
+  # It *does not flush the "modified" layer*. Use {#reset} instead
+  # @param [Boolean] force to force the reload
   def load_config(force=false)
     super()
     load_layer_config :system, ADMIN_CONFIG_FILENAME, force
@@ -82,11 +87,17 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     load_layer_config :specific_file, internal_configs[:command_line][:content][:'config-file'], force
   end
 
+  # @see #load_config
   def force_reload
     load_config true
   end
 
 
+  # This is the main method that provides the config as a hash.
+  #
+  # Every layer is kept untouched (and could accessed independently
+  # using {#internal_configs}), while this methods provides a merged config.
+  # @return [Hash] The hash of the merged config.
   def to_hash
     merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
@@ -103,10 +114,14 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     hashes_second_level_merge merged_config, internal_configs[:modified][:content]
   end
 
+  # @param [Object] key: The key to access the data in the merged_config hash (see {#to_hash})
+  # @return [String] Value for this key in the merged config.
   def [](key)
     self.to_hash[key]
   end
 
+
+  # @return [String] The merged config (see {#to_hash}) rendered as Yaml
   def to_yaml
     to_hash.to_yaml
   end
@@ -114,6 +129,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   #############################################################################
   private
 
+  # Command line options specific to config manipulation
   def add_cmd_line_options
     add_command_line_section('Configuration options') do |slop|
       slop.on 'config-file', 'Specify a config file.', :argument => true
@@ -121,12 +137,14 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     end
   end
 
+  # Tries to find a config file to be loaded into the config layer cake unless cached.
   def load_layer_config(layer, filename_or_pattern, force=false)
     unless_cached(layer,  filename_or_pattern, force) do |layer, filename_or_pattern|
       fetch_config_layer layer, filename_or_pattern
     end
   end
 
+  # Actual loads
   def fetch_config_layer(layer, filename_or_pattern)
     if filename_or_pattern.nil?
       internal_configs[layer] = {content: {}}
