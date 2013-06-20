@@ -10,10 +10,10 @@ require 'slop'
 class EasyAppHelper::Core::Base
   CHANGED_BY_CODE = 'Changed by code'
 
-  attr_reader :script_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
+  attr_reader :config_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
 
   def initialize(logger)
-    @script_filename = @app_name = @app_version = @app_description = ""
+    @config_filename = @app_name = @app_version = @app_description = ""
     @internal_configs = {modified: {content: {}, source: CHANGED_BY_CODE}}
     @logger = logger
     @slop_definition = Slop.new
@@ -24,8 +24,8 @@ class EasyAppHelper::Core::Base
     @slop_definition.to_s
   end
 
-  def script_filename=(name)
-    @script_filename = name
+  def config_filename=(name)
+    @config_filename = name
     @slop_definition.banner = build_banner
   end
   def app_name=(name)
@@ -75,7 +75,7 @@ class EasyAppHelper::Core::Base
   end
 
   # Builds common used command line options
-  def build_command_line_options # (script_filename, app_name, app_description, app_version)
+  def build_command_line_options # (config_filename, app_name, app_description, app_version)
                                  # Default options
     add_command_line_section('Generic options') do |slop|
       slop.on :auto, 'Auto mode. Bypasses questions to user.', :argument => false
@@ -86,7 +86,7 @@ class EasyAppHelper::Core::Base
   end
 
   def build_banner
-    "\nUsage: #{script_filename} [options]\n#{app_name} Version: #{app_version}\n\n#{app_description}"
+    "\nUsage: #{config_filename} [options]\n#{app_name} Version: #{app_version}\n\n#{app_description}"
   end
 
 end
