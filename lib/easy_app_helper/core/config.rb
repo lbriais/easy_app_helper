@@ -8,6 +8,33 @@
 require 'yaml'
 require 'easy_app_helper/core/merge_policies'
 
+# This is the class that will handle the configuration.
+# Configuration is read from different sources:
+# - config files (system, global, user, specified on the command line)
+# - command line options
+# - any extra config you provide programmatically
+#
+# Config files:
+#   system, global, and user config files are searched in the file system according to
+#   complex rules. First the place where to search them depends on the OS
+#   (see EasyAppHelper::Core::Config::Places), and then multiple file extensions are
+#   tested (EasyAppHelper::Core::Config::CONFIG_FILE_POSSIBLE_EXTENSIONS). This is basically
+#   performed by the method #find_file. The config specified on command (if any) is loaded the
+#   same way.
+#
+# Command line:
+#   Any option can be declared as being callable from the command line. Modules add already some
+#   command line options, but the application can obviously add its own (see
+#   EasyAppHelper::Core::Base#add_command_line_section).
+#
+# Each of the config sources are kept in a separated "layer" and addressed this way using the
+# #internal_config attribute reader. But of course the config object provides a "merged" config
+# result of the computation of all the sources. See the #to_hash method to see the order for the
+# merge.
+# Any option can be accessed or modified directly using the #[] and #[]= methods.
+# Any change to the global config should be done using the #[]= method and is kept in the last separated
+# layer called "modified". Therefore the config can be easily reset using the EasyAppHelper::Core::Base#reset
+# method.
 class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 end
 
