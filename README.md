@@ -1,10 +1,17 @@
 # EasyAppHelper
 
 
-This [gem] [1] provides a suite of helpers for command line applications.
-The goal is to be as transparent as possible for the application whilst providing consistent helpers that add dedidacted behaviours to your application.
+This [gem] [1] aims at providing useful helpers for command line applications.
+This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
+apps designed for easy_app_helper < 1.0.0**.
 
-Currently the only runtime dependency is on the [Slop gem] [2].
+* A fully featured Config class that:
+ * manages multiple sources of configuration(command line, multiple config files...).
+ * provides an easy to customize override mechanism for the different config layers
+ * A way to roll back modifications done to config anytime
+* A Logger coupled with the Config class
+
+Currently the only runtime dependency is the [Slop gem] [2].
 
 [Why this gem][4] ?
 
@@ -24,48 +31,20 @@ Or install it yourself as:
 
 ## Usage
 
-### Including the basic module
-
-To benefit from the different helpers. Once you installed the gem, you just need to require it:
+To use it, once you installed them, you just need to require it:
 
 ```ruby
 require 'easy_app_helper'
 ```
 
-And then in the "main class" of your application, include the modules you want to use and call init_app_helper in the initialize method. Then what you can do with each module is defined by each module itself.
-
-The basic behaviour (when you include EasyAppHelper), actually adds basic command line handling (actually handled by [Slop] [2]), and provides the mechanism to enable you to add any other EasyAppHelper module.
-
-ex:
+Then can can immediately acces the logger or the config ojbects
 
 ```ruby
 require 'easy_app_helper'
-
-class MyApp
-  include EasyAppHelper
-  def initialize
-    init_app_helper "my_app"
-  end
-end
 ```
 
-This basically does... nothing. I mean the only behaviour it adds to your application is the ability to pass --help to the application to see the inline help (that it builds). On top of this you then have access to some other command line options like --auto, --simulate, --verbose, but for those it is up to your application to check their value using the app_config attribute which is available in your MyApp instance.
 
-You could then do something like:
 
-```ruby
-require 'easy_app_helper'
-
-class MyApp
-  include EasyAppHelper
-  def initialize
-    init_app_helper "my_app", "My Super Application", "This is the application everybody was waiting for.", "1.0"
-    if app_config[:verbose]
-      puts "Waouh, hello World !!"
-    end
-  end
-end
-```
 
 You can actually access any field from your application configuration through the app_config attribute.
 
