@@ -1,9 +1,9 @@
-#-------------------------------------------------------------------------------
-#  
+################################################################################
+# EasyAppHelper
 #
 # Copyright (c) 2013 L.Briais under MIT license
 # http://opensource.org/licenses/MIT
-#-------------------------------------------------------------------------------
+################################################################################
 
 require 'yaml'
 require 'easy_app_helper/core/merge_policies'
@@ -24,7 +24,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
-                                      ADMIN_CONFIG_FILENAME
+  ADMIN_CONFIG_FILENAME
   def initialize(logger)
     super
     add_cmd_line_options
@@ -95,14 +95,17 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   def fetch_config_layer(layer, filename_or_pattern)
     if filename_or_pattern.nil?
       internal_configs[layer] = {content: {}}
-      return
-    end
-    if File.exists? filename_or_pattern
-      filename = filename_or_pattern
+      filename = nil
     else
-      filename = find_file POSSIBLE_PLACES[layer], filename_or_pattern
+      if File.exists? filename_or_pattern
+        filename = filename_or_pattern
+      else
+        filename = find_file POSSIBLE_PLACES[layer], filename_or_pattern
+      end
+      internal_configs[layer] = {content: load_config_file(filename), source: filename, origin: filename_or_pattern}
     end
-    internal_configs[layer] = {content: load_config_file(filename), source: filename, origin: filename_or_pattern}
+  ensure
+    logger.info "No config file found for layer #{layer}." if filename.nil?
   end
 
   def unless_cached(layer, filename_or_pattern, forced)
@@ -113,11 +116,11 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     if forced or not cached
       yield layer, filename_or_pattern
     end
-
   end
 
   # Tries to find config files according to places (array) given and possible extensions
   def find_file(places, filename)
+    return nil if places.nil?
     places.each do |dir|
       CONFIG_FILE_POSSIBLE_EXTENSIONS.each do |ext|
         filename_with_path = dir + '/' + filename + '.' + ext
