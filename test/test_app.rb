@@ -32,6 +32,7 @@ class TestApp
       puts layer
     end
     add_cmd_line_options
+    puts config.help
     logger.error "INTARG: #{config[:intarg]}"
 
     # puts config.help

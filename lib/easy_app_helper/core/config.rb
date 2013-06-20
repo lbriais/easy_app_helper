@@ -92,7 +92,11 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     end
   end
 
-  def fetch_config_layer layer, filename_or_pattern
+  def fetch_config_layer(layer, filename_or_pattern)
+    if filename_or_pattern.nil?
+      internal_configs[layer] = {content: {}}
+      return
+    end
     if File.exists? filename_or_pattern
       filename = filename_or_pattern
     else

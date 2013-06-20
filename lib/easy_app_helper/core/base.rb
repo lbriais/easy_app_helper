@@ -46,7 +46,7 @@ class EasyAppHelper::Core::Base
     @slop_definition.to_hash
   end
 
-  def add_command_line_section(title='script specific')
+  def add_command_line_section(title='Script specific')
     raise "Incorrect usage" unless block_given?
     @slop_definition.separator build_separator(title)
     yield @slop_definition
