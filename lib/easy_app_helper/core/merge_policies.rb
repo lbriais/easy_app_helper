@@ -5,8 +5,9 @@
 # http://opensource.org/licenses/MIT
 ################################################################################
 
-# Implements different merge policies for the configs.
+# This module proposes different merge policies for two hashes.
 module EasyAppHelper::Core::HashesMergePolicies
+
   # Performs a merge at the second level of hashes.
   # simple entries and arrays are overridden.
   def hashes_second_level_merge(h1, h2)

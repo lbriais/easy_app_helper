@@ -21,7 +21,7 @@ class TestApp
 
   def initialize
     #config.script_filename = File.basename $0
-    #config.app_name = 'Test application'
+    config.app_name = 'Test application'
     #config.app_description = 'Best app to test the framework'
     #config.app_version = '1.0.0'
     puts_and_logs "Hello World"

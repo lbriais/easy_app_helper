@@ -13,7 +13,8 @@ require 'easy_app_helper/core/logger'
 require 'easy_app_helper/core/base'
 require 'easy_app_helper/core/config'
 
-# This module is in charge to mix in the helper methods into the target class/instance
+# This module contains the exposed methods of the framework
+# It is included and extended into EasyAppHelper
 module EasyAppHelper::ModuleManager
 
   # @return [EasyAppHelper::Core::Logger] The application logger

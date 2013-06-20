@@ -8,7 +8,7 @@
 require 'easy_app_helper/version'
 
 # When this module is included in any class, it mixes in automatically
-# EasyAppHelper::ModuleManager::CoreClassMethods methods both into the
+# EasyAppHelper::ModuleManager methods both into the
 # instance and the class of the instance that includes it.
 # Thus to have access to the helper methods, the only requirement is to include
 # this module...

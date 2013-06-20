@@ -33,7 +33,8 @@ class EasyAppHelper::Core::Config
           system: ["#{ENV['systemRoot']}/Config"],
 
           # Where could be stored global configuration
-          global: ['C:/Windows/Config', "#{ENV['ALLUSERSPROFILE']}/Application Data"],
+          global: ['C:/Windows/Config',
+                   "#{ENV['ALLUSERSPROFILE']}/Application Data"],
 
           # Where could be stored user configuration
           user: [ENV['APPDATA']]

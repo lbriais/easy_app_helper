@@ -10,9 +10,6 @@ require 'singleton'
 
 
 class Logger
-  protected
-  attr_accessor :logdev
-
   def handing_over_to(log)
     history = []
     history = @logdev.dev.history if @logdev.dev.respond_to? :history

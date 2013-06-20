@@ -39,6 +39,11 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     force_reload
   end
 
+  def app_name=(name)
+    super
+    logger.progname = name
+  end
+
   def load_config(force=false)
     super()
     load_layer_config :system, ADMIN_CONFIG_FILENAME, force
@@ -120,7 +125,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   # Tries to find config files according to places (array) given and possible extensions
   def find_file(places, filename)
-    return nil if places.nil?
+    return nil if places.nil? or filename.nil? or filename.empty?
     places.each do |dir|
       CONFIG_FILE_POSSIBLE_EXTENSIONS.each do |ext|
         filename_with_path = dir + '/' + filename + '.' + ext
