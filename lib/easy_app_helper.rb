@@ -15,7 +15,6 @@ require 'easy_app_helper/version'
 module EasyAppHelper
   require 'easy_app_helper/module_manager'
   include ModuleManager
-  extend ModuleManager
 end
 
 

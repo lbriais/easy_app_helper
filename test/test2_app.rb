@@ -2,7 +2,9 @@
 
 
 require 'easy_app_helper'
-EasyAppHelper.logger.level = 0
+
+
+# EasyAppHelper.logger.level = 0
 EasyAppHelper.puts_and_logs "Groovy baby !"
 EasyAppHelper.config[:zboubi] = "Hi shared"
 
