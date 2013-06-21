@@ -61,8 +61,8 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
 
   # After calling the super method, triggers a forced reload of the file based config.
   # @param [String] name of the config file
-  # @see Base#config_filename=
-  def config_filename=(name)
+  # @see Base#script_filename=
+  def script_filename=(name)
     super
     force_reload
   end
@@ -82,8 +82,8 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   def load_config(force=false)
     super()
     load_layer_config :system, ADMIN_CONFIG_FILENAME, force
-    load_layer_config :global, config_filename, force
-    load_layer_config :user, config_filename, force
+    load_layer_config :global, script_filename, force
+    load_layer_config :user, script_filename, force
     load_layer_config :specific_file, internal_configs[:command_line][:content][:'config-file'], force
   end
 

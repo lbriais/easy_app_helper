@@ -1,15 +1,15 @@
 # EasyAppHelper
 
+**This [gem] [1] aims at providing useful helpers for command line applications.**
 
-This [gem] [1] aims at providing useful helpers for command line applications.
 This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
-apps designed for easy_app_helper < 1.0.0**.
+apps designed for easy_app_helper prior to version 1.0.0**.
 
 * A fully featured Config class that:
  * manages multiple sources of configuration(command line, multiple config files...).
  * provides an easy to customize override mechanism for the different config layers
  * A way to roll back modifications done to config anytime
-* A Logger coupled with the Config class
+* A Logger tightly coupled with the Config class, that will behave correctly regarding options specified.
 
 Currently the only runtime dependency is the [Slop gem] [2].
 
@@ -37,11 +37,129 @@ To use it, once you installed them, you just need to require it:
 require 'easy_app_helper'
 ```
 
-Then can can immediately acces the logger or the config ojbects
+Then can can immediately acces the logger or the config ojbects. Here under a first example:
 
 ```ruby
 require 'easy_app_helper'
+
+# You can directly access the config or the logger through the EasyAppHelper module
+puts "The application verbose flag is #{EasyAppHelper.config[:verbose]}"
+
+# You can directly use the logger according to the command line flags
+# This will do nothing unless --debug is set and --log-level is set to the correct level
+EasyAppHelper.logger.info "Hi guys!"
+
+# Fed up with the EasyAppHelper prefix ? Just include the module where you want
+include EasyAppHelper
+
+# You can override programmatically any part of the config
+config[:debug] = true
+logger.level = 1
+config[:test] = 'Groovy'
+EasyAppHelper.logger.info "Hi guys!... again"
+
+# You can see the internals of the config
+puts config.internal_configs.to_yaml
+# Which will output
+#:modified:
+#  :content:
+#    :log-level: 1
+#    :debug: true
+#    :test: cool
+#  :source: Changed by code
+#:command_line:
+#  :content:
+#    :auto:
+#    :simulate:
+#    :verbose: true
+#    :help:
+#    :config-file:
+#    :config-override:
+#    :debug:
+#    :debug-on-err:
+#    :log-level:
+#    :log-file:
+#  :source: Command line
+#:system:
+#  :content: {}
+#  :source:
+#  :origin: EasyAppHelper
+#:global:
+#  :content: {}
+#  :source:
+#  :origin: ''
+#:user:
+#  :content: {}
+#  :source:
+#  :origin: ''
+#:specific_file:
+#  :content: {}
+
+# You see of course that the two modifications we did are in the modified sub-hash
+# And now the merged config
+puts config.to_hash
+
+# But you can see the modified part as it is:
+puts config.internal_configs[:modified]
+
+# Of course you can access it from any class
+class Dummy
+  include EasyAppHelper
+
+  def initialize
+    puts "#{config[:test]} baby !"
+    # Back to the original
+    config.reset
+    puts config.internal_configs[:modified]
+  end
+end
+
+Dummy.new
+
+# Some methods are provided to ease common tasks. For example this one will log at info level
+# (so only displayed if debug mode and log level low enough), but will also puts on the console
+# if verbose if set...
+puts_and_logs "Hi world"
+
 ```
+
+
+## Config files
+
+EasyAppHelper will look for files in numerous places. Both Unix and Windows places are handled.
+All the files are Yaml files but could have names with different extensions.
+
+You can look in the classes documentation to know exactly which extensions and places the config
+files are looked for.
+
+### System config file
+
+This config file is common to all applications that use EasyAppHelper. For example on a Unix system
+regarding the rules described above, the framework will for the following files in that order:
+
+
+    /etc/EasyAppHelper.conf
+    /etc/EasyAppHelper.yml
+    /etc/EasyAppHelper.cfg
+    /etc/EasyAppHelper.yaml
+    /etc/EasyAppHelper.CFG
+    /etc/EasyAppHelper.YML
+    /etc/EasyAppHelper.YAML
+    /etc/EasyAppHelper.Yaml
+
+### Application config files
+
+An application config file names are determined from the config.script_filename property. This initially contains
+the bare name of the script, but you can replace with whatever you want. Changing this property causes actually
+the impacted files to be reloaded.
+
+It is in fact a two level configuration. One is global (the :global layer) and the other is at user level (the
+:user layer).
+
+ For example on a Unix setting
+
+
+
 
 
 

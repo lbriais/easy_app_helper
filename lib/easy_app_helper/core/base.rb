@@ -14,10 +14,10 @@ require 'slop'
 class EasyAppHelper::Core::Base
   CHANGED_BY_CODE = 'Changed by code'
 
-  attr_reader :config_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
+  attr_reader :script_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
 
   def initialize(logger)
-    @config_filename = @app_name = @app_version = @app_description = ""
+    @script_filename = @app_name = @app_version = @app_description = ""
     @internal_configs = {modified: {content: {}, source: CHANGED_BY_CODE}}
     @logger = logger
     @slop_definition = Slop.new
@@ -32,8 +32,8 @@ class EasyAppHelper::Core::Base
 
   # sets the filename while maintaining the slop definition upto date
   # @param [String] filename
-  def config_filename=(filename)
-    @config_filename = filename
+  def script_filename=(filename)
+    @script_filename = filename
     @slop_definition.banner = build_banner
   end
   # sets the application name used for logging while maintaining the slop definition upto date

@@ -25,7 +25,7 @@ config.reset
 puts_and_logs "ZBOUBI2: #{config[:zboubi]}"
 
 puts config.to_yaml
-config.config_filename = 'batch_audio_convert'
+config.script_filename = 'batch_audio_convert'
 puts config.to_yaml
 
 
