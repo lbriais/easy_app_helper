@@ -17,7 +17,8 @@ class EasyAppHelper::Core::Base
   attr_reader :script_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
 
   def initialize(logger)
-    @script_filename = @app_name = @app_version = @app_description = ""
+    @app_name = @app_version = @app_description = ""
+    @script_filename = File.basename $0, '.*'
     @internal_configs = {modified: {content: {}, source: CHANGED_BY_CODE}}
     @logger = logger
     @slop_definition = Slop.new
@@ -55,6 +56,12 @@ class EasyAppHelper::Core::Base
     @slop_definition.banner = build_banner
   end
 
+  def describes_application(app_name: nil, script_filename: nil, app_version: nil, app_description: nil)
+    self.app_name = app_name unless app_name.nil?
+    self.app_version = app_version unless app_version.nil?
+    self.app_description = app_description unless app_description.nil?
+    self.script_filename = script_filename unless script_filename.nil?
+  end
 
   # @return [Hash] This hash built from slop definition correspond to the :command_line layer of internal_configs
   def command_line_config
@@ -110,7 +117,7 @@ class EasyAppHelper::Core::Base
   end
 
   def build_banner
-    "\nUsage: #{File.basename $0} [options]\n#{app_name} Version: #{app_version}\n\n#{app_description}"
+    "\nUsage: #{script_filename} [options]\n#{app_name} Version: #{app_version}\n\n#{app_description}"
   end
 
 end

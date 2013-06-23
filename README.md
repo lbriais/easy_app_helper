@@ -32,6 +32,8 @@ Currently the only runtime dependency is the cool [Slop gem][slop] which is used
 
 [Why this gem][4] ?
 
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -46,6 +48,9 @@ Or install it yourself as:
 
     $ gem install easy_app_helper
 
+
+
+
 ## Usage
 
 To use it, once you installed them, you just need to require it:
@@ -54,19 +59,19 @@ To use it, once you installed them, you just need to require it:
 require 'easy_app_helper'
 ```
 
-Then can can immediately acces the logger or the config ojbects. Here under a first example:
+Then can can immediately access the logger or the config objects. Here under a first example:
 
 ```ruby
 require 'easy_app_helper'
 
-# You can directly access the config or the logger through the EasyAppHelper module
+# You can directly access the config or the logger through the **EasyAppHelper** module
 puts "The application verbose flag is #{EasyAppHelper.config[:verbose]}"
 
 # You can directly use the logger according to the command line flags
 # This will do nothing unless --debug is set and --log-level is set to the correct level
 EasyAppHelper.logger.info "Hi guys!"
 
-# Fed up with the EasyAppHelper prefix ? Just include the module where you want
+# Fed up with the **EasyAppHelper** prefix ? Just include the module where you want
 include EasyAppHelper
 
 # You can override programmatically any part of the config
@@ -147,9 +152,9 @@ EasyAppHelper.logger.puts_and_logs "Hi world... 3 is enough."
 ```
 
 
-## Config files
+## Configuration layers
 
-EasyAppHelper will look for files in numerous places. **Both Unix and Windows places are handled**.
+**EasyAppHelper** will look for files in numerous places. **Both Unix and Windows places are handled**.
 All the files are [Yaml][yaml] files but could have names with different extensions.
 
 You can look in the classes documentation to know exactly which extensions and places the config
@@ -161,6 +166,7 @@ This config file is common to all applications that use EasyAppHelper. For examp
 regarding the rules described above, the framework will for the following files in that order:
 
 ```text
+# It will be loaded in the :system layer
 /etc/EasyAppHelper.conf
 /etc/EasyAppHelper.yml
 /etc/EasyAppHelper.cfg
@@ -192,14 +198,14 @@ It is in fact a two level configuration. One is global (the :global layer) and t
 /etc/myscript.YML 
 /etc/myscript.YAML
 /etc/myscript.Yaml
-/usr/local/etcmyscript.conf
-/usr/local/etcmyscript.yml 
-/usr/local/etcmyscript.cfg 
-/usr/local/etcmyscript.yaml
-/usr/local/etcmyscript.CFG 
-/usr/local/etcmyscript.YML 
-/usr/local/etcmyscript.YAML
-/usr/local/etcmyscript.Yaml
+/usr/local/etc/myscript.conf
+/usr/local/etc/myscript.yml
+/usr/local/etc/myscript.cfg
+/usr/local/etc/myscript.yaml
+/usr/local/etc/myscript.CFG
+/usr/local/etc/myscript.YML
+/usr/local/etc/myscript.YAML
+/usr/local/etc/myscript.Yaml
 # For the :user level
 ${HOME}/.config/myscript.conf
 ${HOME}/.config/myscript.yml
@@ -214,195 +220,245 @@ ${HOME}/.config/myscript.Yaml
 ### Command line specified config file
 
 The command line option ```--config-file``` provides a way to specify explicitly a config file. On top of this the
-option ```--config-override``` tells EasyAppHelper to ignore :system, :global and :user levels.
+option ```--config-override``` tells **EasyAppHelper** to ignore :system, :global and :user levels.
+
+The file will be loaded in a separated layer called :specific_file
 
 
+### The command line options
 
-
-
-You can actually access any field from your application configuration through the app_config attribute.
-
-### Other modules
-Some other modules are provided:
-
-* EasyAppHelper::Logger	provides logging facilities and config line options including log-level, log-file etc...
-* EasyAppHelper::Config provides easy YAML based configuration to your script with multiple level of override (admin wide -> system wide -> user -> command line options -> --config-file). All the configuration being accessible through the app_config hash attribute
-
-See [classes documentation] [3] for more information.
-
-### Complete example
-
-Here under a more complete (still useless) example using all the modules.
+**EasyAppHelper** already provides by default some command line options. Imagine you have the following program.
 
 ```ruby
+#!/usr/bin/env ruby
+
 require 'easy_app_helper'
 
 class MyApp
   include EasyAppHelper
-  include EasyAppHelper::Config
-  include EasyAppHelper::Logger
+
+  APP_NAME = "My super application"
+  VERSION = '0.0.1'
+  DESCRIPTION = 'This application is a proof of concept for EasyAppHelper.'
+
 
   def initialize
-    init_app_helper "my_app", "My Super Application", "This is the application everybody was waiting for.", "1.0"
-    logger.info "Application is now started."
-    show_config if app_config[:verbose]
+    # Providing this data is optional but brings better logging and online help
+    config.describes_application(app_name: APP_NAME, app_version: VERSION, app_description: DESCRIPTION)
   end
 
-  def show_config
-    puts "Application config is"
-    puts app_config.to_yaml
+
+  def run
+    if config[:help]
+      puts config.help
+      exit 0
+    end
+    puts_and_logs "Application is starting"
+    do_some_processing
   end
 
-  def add_specifc_command_line_options(opt)
-    opt.on :s, :stupid, 'This is a very stupid option', :argument => false
+  def do_some_processing
+    puts_and_logs "Starting some heavy processing"
   end
+
 end
 
-app = MyApp.new
+
+MyApp.new.run
 ```
 
-With this example you can already test some of the behaviours brought to the application by the different modules.
+And you run it without any command line option
 
-		 $ ruby ./test_app.rb
+```text
+./test4_app.rb
+```
 
-Nothing displayed... hum in fact normal.
+No output...
 
-*The EasyAppHelper::Base module*
+Let' try
 
-		 $ ruby ./test_app.rb --verbose
-		 Application config is
-		 ---
-		 :verbose: true
-		 :log-level: 2
+```text
+./test4_app.rb --help
 
-Here again we see the impact of the --verbose
+Usage: test4_app [options]
+My super application Version: 0.0.1
 
-		 $ ruby ./test_app.rb --help
+This application is a proof of concept for EasyAppHelper.
+-- Generic options -------------------------------------------------------------
+        --auto                 Auto mode. Bypasses questions to user.
+        --simulate             Do not perform the actual underlying actions.
+    -v, --verbose              Enable verbose mode.
+    -h, --help                 Displays this help.
+-- Configuration options -------------------------------------------------------
+        --config-file          Specify a config file.
+        --config-override      If specified override all other config.
+-- Debug and logging options ---------------------------------------------------
+        --debug                Run in debug mode.
+        --debug-on-err         Run in debug mode with output to stderr.
+        --log-level            Log level from 0 to 5, default 2.
+        --log-file             File to log to.
 
-		 Usage: my_app [options]
-		 My Super Application Version: 1.0
+```
+You see there the online help. And then the program exists.
 
-		 This is the application everybody was waiting for.
-		 -- Generic options -------------------------------------------
-        			--auto              Auto mode. Bypasses questions to user.
-        			--simulate          Do not perform the actual underlying actions.
-    			-v, --verbose           Enable verbose mode.
-				  -h, --help              Displays this help.
+Let's try the ```--verbose``` flag
 
-		 -- Debug and logging options ---------------------------------
-        			--debug             Run in debug mode.
-        			--debug-on-err      Run in debug mode with output to stderr.
-        			--log-level         Log level from 0 to 5, default 2.
-        			--log-file          File to log to.
+```text
+./test4_app.rb --verbose
+Application is starting
+Starting some heavy processing
+```
 
-		 -- Configuration options -------------------------------------
-        			--config-file       Specify a config file.
+You see that the puts_and_logs is sensitive to the ```--verbose``` switch...
 
-		 -- Script specific options------------------------------------
-     			-s, --stupid            This is a very stupid option
+But what if I debug
+```text
+./test4_app.rb --debug
+```
 
+Humm... nothing...  Let's provide the log level
 
-Here we see that:
+```text
+./test4_app.rb --debug --log-level 0
+I, [2013-06-23T19:37:24.975392 #10276]  INFO -- My super application: Application is starting
+I, [2013-06-23T19:37:24.975592 #10276]  INFO -- My super application: Starting some heavy processing
+```
 
-* each included module added its own part in the global help
-* The information passed to init_app_helper has been used in order to build a consistent help.
-* The method implemented add_specifc_command_line_options did add the --stupid command line option and that it fits within the global help. the syntax is the [Slop] [slop] syntax, and many other options are available. See the [Slop] [slop] for further info.
+You see there that the puts_and_logs logs as well with the log level 1 (Info)... Nice looks like it was claiming
+this in its name... ;-)
 
-*The EasyAppHelper::Debug module*
+If I mix ?
 
-Now let's try some options related to the EasyAppHelper::Logger module
+```text
+./test4_app.rb  --debug --log-level 0 --verbose
+Application is starting
+I, [2013-06-23T19:39:05.712558 #11768]  INFO -- My super application: Application is starting
+Starting some heavy processing
+I, [2013-06-23T19:39:05.712834 #11768]  INFO -- My super application: Starting some heavy processing
+```
 
-		 $ ruby ./test_app.rb --debug
-
-Nothing is displayed. Why ? We used the logger.info stuff !! Just because the default log-level is 2 (Logger::Severity::WARN), whereas we did a info (Logger::Severity::INFO equals to 1).
-Thus we can do a:
-
-		 $ ruby ./test_app.rb --debug --log-level 1
-		 I, [2013-03-20T10:58:40.819096 #13172]  INFO -- : Application is now started.
-
-Which correctly displays the log.
-Of course, as mentioned by the inline doc, this could go to a log file using the --log-file option...
-
-*The EasyAppHelper::Config module*
-
-From what we did, nothing really shows what the config module brought to the application, whereas in fact this is the one bringing the more features...
-
-This module will try to find config files (YAML format) in different places. All the config files could have a lot of different extensions (EasyAppHelper::Config::Instanciator::CONFIG_FILE_POSSIBLE_EXTENSIONS). Here under we will just say ".ext", but all of them are tried:
-
-First it will try to find the file:
-
-			/etc/EasyAppHelper.ext
-
-In this file you could define some options common to all the scripts you will build on top of EasyAppHelper helpers.
-
-Then it will try to find (it will stop on the first found):
-
-		 /etc/my_app.ext
-		 /usr/local/etc/my_app.ext
-
-In this file you could define some options common to all users
-
-Then it will try to find:
-
-		 ${HOME}/.config/my_app.conf
-
-Where each user will generally store his own configuration.
-
-Each of these file adds options to the common app_config hash. Enabling a simple and powerful override mechanism.
-
-Then everything defined on the command line will itself override what has been defined in these config files.
-Then if --config-file option is specified in the command line, it tries to load that file.
-
-Thus in the end following mechanism:
-
-		 admin wide -> system wide -> user -> command line options -> --config-file
-
+So far so good...
 
 ### Debugging the framework itself
 
-If you want to debug what happens during the framework instanciation, you can use the DEBUG_EASY_MODULES environment variable.
+If you want, you can even debug what happens during **EasyAppHelper** initialisation, for this you can use the
+```DEBUG_EASY_MODULES``` environment variable. As how and where everything has to be logged is only specified when
+you actually provide command line options, **EasyAppHelper** provides a temporary logger to itself and will
+after all dump the logger content to the logger you specified and if you specify... So that you don't miss a log.
 
-ex:
+```text
+$ DEBUG_EASY_MODULES=y ruby ./test4_app.rb
 
-		 $ DEBUG_EASY_MODULES=y ruby ./test_app.rb
-		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Logger::Instanciator
-		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Config::Instanciator
-		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.conf" as config file.
-		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.yml" as config file.
-		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.cfg" as config file.
-		 D, [2013-03-20T13:14:32.149109 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.CFG" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.YML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.YAML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/EasyAppHelper.Yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.conf" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.yml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.cfg" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.CFG" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.YML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.YAML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/etc/my_app.Yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.conf" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.yml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.cfg" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.CFG" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.YML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.YAML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/usr/local/etc/my_app.Yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.conf" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.yml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.cfg" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.CFG" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.YML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.YAML" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Trying "/home/user_home_dir/.config/my_app.Yaml" as config file.
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Base::Instanciator
-		 D, [2013-03-20T13:14:32.164733 #10564] DEBUG -- : Processing helper module: EasyAppHelper::Common::Instanciator
+D, [2013-06-23T19:43:47.977031 #16294] DEBUG -- : Temporary initialisation logger created...
+D, [2013-06-23T19:43:47.977861 #16294] DEBUG -- : Trying "/etc/EasyAppHelper.conf" as config file.
+D, [2013-06-23T19:43:47.977908 #16294] DEBUG -- : Trying "/etc/EasyAppHelper.yml" as config file.
+D, [2013-06-23T19:43:47.977938 #16294] DEBUG -- : Loading config file "/etc/EasyAppHelper.cfg"
+D, [2013-06-23T19:43:47.978300 #16294] DEBUG -- : Trying "/etc/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.978332 #16294] DEBUG -- : Trying "/etc/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.978355 #16294] DEBUG -- : Trying "/etc/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.978381 #16294] DEBUG -- : Trying "/etc/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.978403 #16294] DEBUG -- : Trying "/etc/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.978424 #16294] DEBUG -- : Trying "/etc/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.978445 #16294] DEBUG -- : Trying "/etc/test4_app.YAML" as config file.
+D, [2013-06-23T19:43:47.978466 #16294] DEBUG -- : Trying "/etc/test4_app.Yaml" as config file.
+D, [2013-06-23T19:43:47.978491 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.978529 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.978553 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.978575 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.978597 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.978619 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.978670 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.Yaml" as config file.
+I, [2013-06-23T19:43:47.978695 #16294]  INFO -- : No config file found for layer global.
+D, [2013-06-23T19:43:47.978725 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.978748 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.978770 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.978792 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.978817 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.978840 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.978861 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.YAML" as config file.
+D, [2013-06-23T19:43:47.978974 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.Yaml" as config file.
+I, [2013-06-23T19:43:47.979000 #16294]  INFO -- : No config file found for layer user.
+I, [2013-06-23T19:43:47.979025 #16294]  INFO -- : No config file found for layer specific_file.
+D, [2013-06-23T19:43:47.979514 #16294] DEBUG -- : Trying "/etc/EasyAppHelper.conf" as config file.
+D, [2013-06-23T19:43:47.979561 #16294] DEBUG -- : Trying "/etc/EasyAppHelper.yml" as config file.
+D, [2013-06-23T19:43:47.979591 #16294] DEBUG -- : Loading config file "/etc/EasyAppHelper.cfg"
+D, [2013-06-23T19:43:47.979717 #16294] DEBUG -- : Trying "/etc/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.979747 #16294] DEBUG -- : Trying "/etc/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.979800 #16294] DEBUG -- : Trying "/etc/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.979823 #16294] DEBUG -- : Trying "/etc/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.979845 #16294] DEBUG -- : Trying "/etc/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.979867 #16294] DEBUG -- : Trying "/etc/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.979908 #16294] DEBUG -- : Trying "/etc/test4_app.YAML" as config file.
+D, [2013-06-23T19:43:47.979935 #16294] DEBUG -- : Trying "/etc/test4_app.Yaml" as config file.
+D, [2013-06-23T19:43:47.979959 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.979981 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.980004 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.980026 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.980047 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.980069 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.980091 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.YAML" as config file.
+D, [2013-06-23T19:43:47.980112 #16294] DEBUG -- : Trying "/usr/local/etc/test4_app.Yaml" as config file.
+I, [2013-06-23T19:43:47.980135 #16294]  INFO -- : No config file found for layer global.
+D, [2013-06-23T19:43:47.980181 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.980207 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.980230 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.980252 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.980274 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.980296 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.980319 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.YAML" as config file.
+D, [2013-06-23T19:43:47.980361 #16294] DEBUG -- : Trying "/home/laurent/.config/test4_app.Yaml" as config file.
+I, [2013-06-23T19:43:47.980395 #16294]  INFO -- : No config file found for layer user.
+I, [2013-06-23T19:43:47.980418 #16294]  INFO -- : No config file found for layer specific_file.
+D, [2013-06-23T19:43:47.981934 #16294] DEBUG -- : Config layers:
+---
+:modified:
+  :content: {}
+  :source: Changed by code
+:command_line:
+  :content:
+    :auto:
+    :simulate:
+    :verbose: true
+    :help:
+    :config-file:
+    :config-override:
+    :debug: true
+    :debug-on-err:
+    :log-level: 0
+    :log-file:
+  :source: Command line
+:system:
+  :content:
+    :copyright: (c) 2012-2013 Nanonet
+  :source: /etc/EasyAppHelper.cfg
+  :origin: EasyAppHelper
+:global:
+  :content: {}
+  :source:
+  :origin: test4_app
+:user:
+  :content: {}
+  :source:
+  :origin: test4_app
+:specific_file:
+  :content: {}
 
-You can observe that for each of the included module, the framework uses its related so-called instanciator in order to know how to start the module, externalizing the methods into a separated module to avoid poluting your own application with methods useless for you when you include the module.
+D, [2013-06-23T19:43:47.985357 #16294] DEBUG -- : Merged config:
+---
+:copyright: (c) 2012-2013 Nanonet
+:verbose: true
+:debug: true
+:log-level: 0
+
+Application is starting
+I, [2013-06-23T19:43:47.986298 #16294]  INFO -- My super application: Application is starting
+Starting some heavy processing
+I, [2013-06-23T19:43:47.986460 #16294]  INFO -- My super application: Starting some heavy processing
+```
+
+You can notice that what **EasyAppHelper** initialisation logged and what you application logged
+did eventually end-up in the same log...
+
 
 ## Contributing
 
@@ -412,18 +468,12 @@ You can observe that for each of the included module, the framework uses its rel
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-### Creating your own EasyAppHelper module
-
-You need to write two modules
-
-* One EasyAppHelper::MyModule that will provide the features mixed in your application.
-* One EasyAppHelper::MyModule::Instanciator that will extend (not include) EasyAppHelper::Common::Instanciator and that will be responsible to initialize your module.
 
 That's all folks.
 
 
-[EAP]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
+[EAP]: https://rubygems.org/gems/easy_app_helper        "**EasyAppHelper** gem"
 [slop]: https://rubygems.org/gems/slop        "Slop gem"
 [yaml]: http://www.yaml.org/    "The Yaml official site"
-[3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "EasyAppHelper documentation"
-[4]: https://github.com/lbriais/easy_app_helper/wiki          "EasyAppHelper wiki"
+[3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "**EasyAppHelper** documentation"
+[4]: https://github.com/lbriais/easy_app_helper/wiki          "**EasyAppHelper** wiki"
