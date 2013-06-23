@@ -6,5 +6,5 @@
 ################################################################################
 
 module EasyAppHelper
-  EASY_APP_HELPER_VERSION = "0.1.0"
+  EASY_APP_HELPER_VERSION = "1.0.0"
 end

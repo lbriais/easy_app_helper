@@ -1,17 +1,34 @@
 # EasyAppHelper
 
-**This [gem] [1] aims at providing useful helpers for command line applications.**
+**This [gem][EAP] aims at providing useful helpers for command line applications.**
 
 This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
-apps designed for easy_app_helper prior to version 1.0.0**.
+apps designed for easy_app_helper prior to version 1.0.0**, although they could be very easily adapted.
+But anyway you always specify your gem dependencies using the [pessimistic version operator]
+(http://docs.rubygems.org/read/chapter/16#page74), don't you ? Older applications should do it to tell your application
+to use the latest version of the 0.x.x series instead.
 
-* A fully featured Config class that:
- * manages multiple sources of configuration(command line, multiple config files...).
- * provides an easy to customize override mechanism for the different config layers
- * A way to roll back modifications done to config anytime
-* A Logger tightly coupled with the Config class, that will behave correctly regarding options specified.
+The new **EasyAppHelper** module prodides:
 
-Currently the only runtime dependency is the [Slop gem] [2].
+* A **super charged  Config class** that:
+ * Manages **multiple sources of configuration**(command line, multiple config files...) in a **layered config**.
+ * Provides an **easy to customize merge mechanism** for the different **config layers** that exposes a "live view"
+   of the merged configuration, while keeping a way to access or modify independently any of them.
+ * Allows **flexibility** when dealing with modification and provides a way to roll back modifications done to config
+   anytime, fully reload it, blast it... Export feature could be very easily added and will probably.
+* A **Logger tightly coupled with the Config** class, that will behave correctly regarding options specified be it from
+  command line or from any source of the config object...
+* Embeds [Slop][slop] to handle **command line parameters** and keeps any parameter defined in a **separated layer of
+  the global config object**.
+* A mechanism that ensures that as soon as you access any of the objects or methods exposed by EasyAppHelper,
+  all of them are **fully configured and ready to be used**.
+  
+If you are writing command line applications, I hope you will like because it's very easy to use, and as unobtrusive as
+possible (you choose when you want to include or use as a module) while providing a ready-for-prod config, logger
+and command line management.
+
+
+Currently the only runtime dependency is the cool [Slop gem][slop] which is used to process the command line options.
 
 [Why this gem][4] ?
 
@@ -121,6 +138,12 @@ Dummy.new
 # if verbose if set...
 puts_and_logs "Hi world"
 
+# It is actually one of the few methods added to regular Logger class (The added value of this logger
+# is much more to be tightly coupled with the config object). Thus could access it like that:
+logger.puts_and_logs "Hi world"
+
+# or even
+EasyAppHelper.logger.puts_and_logs "Hi world... 3 is enough."
 ```
 
 
@@ -250,7 +273,7 @@ Here we see that:
 
 * each included module added its own part in the global help
 * The information passed to init_app_helper has been used in order to build a consistent help.
-* The method implemented add_specifc_command_line_options did add the --stupid command line option and that it fits within the global help. the syntax is the [Slop] [2] syntax, and many other options are available. See the [Slop] [2] for further info.
+* The method implemented add_specifc_command_line_options did add the --stupid command line option and that it fits within the global help. the syntax is the [Slop] [slop] syntax, and many other options are available. See the [Slop] [slop] for further info.
 
 *The EasyAppHelper::Debug module*
 
@@ -366,7 +389,7 @@ You need to write two modules
 That's all folks.
 
 
-[1]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
-[2]: https://rubygems.org/gems/slop        "Slop gem"
+[EAP]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
+[slop]: https://rubygems.org/gems/slop        "Slop gem"
 [3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "EasyAppHelper documentation"
 [4]: https://github.com/lbriais/easy_app_helper/wiki          "EasyAppHelper wiki"

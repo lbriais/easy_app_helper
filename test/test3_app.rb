@@ -80,3 +80,11 @@ Dummy.new
 # (so only displayed if debug mode and log level low enough), but will also puts on the console
 # if verbose if set...
 puts_and_logs "Hi world"
+
+# It is actually one of the few methods added to regular Logger class (The added value of this logger
+# is much more to be tightly coupled with the config object). Thus could access it like that:
+logger.puts_and_logs "Hi world"
+
+# or even
+EasyAppHelper.logger.puts_and_logs "Hi world... 3 is enough."
+
