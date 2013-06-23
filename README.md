@@ -149,8 +149,8 @@ EasyAppHelper.logger.puts_and_logs "Hi world... 3 is enough."
 
 ## Config files
 
-EasyAppHelper will look for files in numerous places. Both Unix and Windows places are handled.
-All the files are Yaml files but could have names with different extensions.
+EasyAppHelper will look for files in numerous places. **Both Unix and Windows places are handled**.
+All the files are [Yaml][yaml] files but could have names with different extensions.
 
 You can look in the classes documentation to know exactly which extensions and places the config
 files are looked for.
@@ -160,15 +160,16 @@ files are looked for.
 This config file is common to all applications that use EasyAppHelper. For example on a Unix system
 regarding the rules described above, the framework will for the following files in that order:
 
-
-    /etc/EasyAppHelper.conf
-    /etc/EasyAppHelper.yml
-    /etc/EasyAppHelper.cfg
-    /etc/EasyAppHelper.yaml
-    /etc/EasyAppHelper.CFG
-    /etc/EasyAppHelper.YML
-    /etc/EasyAppHelper.YAML
-    /etc/EasyAppHelper.Yaml
+```text
+/etc/EasyAppHelper.conf
+/etc/EasyAppHelper.yml
+/etc/EasyAppHelper.cfg
+/etc/EasyAppHelper.yaml
+/etc/EasyAppHelper.CFG
+/etc/EasyAppHelper.YML
+/etc/EasyAppHelper.YAML
+/etc/EasyAppHelper.Yaml
+```
 
 ### Application config files
 
@@ -179,9 +180,41 @@ the impacted files to be reloaded.
 It is in fact a two level configuration. One is global (the :global layer) and the other is at user level (the
 :user layer).
 
- For example on a Unix setting
+ For example on a Unix system or cygwin
 
+```text
+# For the :global layer
+/etc/myscript.conf
+/etc/myscript.yml 
+/etc/myscript.cfg 
+/etc/myscript.yaml
+/etc/myscript.CFG 
+/etc/myscript.YML 
+/etc/myscript.YAML
+/etc/myscript.Yaml
+/usr/local/etcmyscript.conf
+/usr/local/etcmyscript.yml 
+/usr/local/etcmyscript.cfg 
+/usr/local/etcmyscript.yaml
+/usr/local/etcmyscript.CFG 
+/usr/local/etcmyscript.YML 
+/usr/local/etcmyscript.YAML
+/usr/local/etcmyscript.Yaml
+# For the :user level
+${HOME}/.config/myscript.conf
+${HOME}/.config/myscript.yml
+${HOME}/.config/myscript.cfg
+${HOME}/.config/myscript.yaml
+${HOME}/.config/myscript.CFG
+${HOME}/.config/myscript.YML
+${HOME}/.config/myscript.YAML
+${HOME}/.config/myscript.Yaml
+```
 
+### Command line specified config file
+
+The command line option ```--config-file``` provides a way to specify explicitly a config file. On top of this the
+option ```--config-override``` tells EasyAppHelper to ignore :system, :global and :user levels.
 
 
 
@@ -391,5 +424,6 @@ That's all folks.
 
 [EAP]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
 [slop]: https://rubygems.org/gems/slop        "Slop gem"
+[yaml]: http://www.yaml.org/    "The Yaml official site"
 [3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "EasyAppHelper documentation"
 [4]: https://github.com/lbriais/easy_app_helper/wiki          "EasyAppHelper wiki"
