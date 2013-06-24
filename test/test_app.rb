@@ -40,8 +40,8 @@ class TestApp
 
   def add_cmd_line_options
     config.add_command_line_section do |slop|
-      slop.on :s, :stupid, 'Stupid option', :argument => false
-      slop.on :i, :intarg, 'Stupid option with integer argument', :argument => true, :as => Integer
+      slop.on :u, :useless, 'Stupid option', :argument => false
+      slop.on :anint, 'Stupid option with integer argument', :argument => true, :as => Integer
     end
   end
 

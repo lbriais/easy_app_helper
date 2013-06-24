@@ -56,6 +56,12 @@ class EasyAppHelper::Core::Base
     @slop_definition.banner = build_banner
   end
 
+  # helper to add in one command any of the four base properties used
+  # by the logger and the config objects.
+  # @param [String] app_name
+  # @param [String] script_filename
+  # @param [String] app_version
+  # @param [String] app_description
   def describes_application(app_name: nil, script_filename: nil, app_version: nil, app_description: nil)
     self.app_name = app_name unless app_name.nil?
     self.app_version = app_version unless app_version.nil?

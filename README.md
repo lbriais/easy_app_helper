@@ -3,29 +3,30 @@
 **This [gem][EAP] aims at providing useful helpers for command line applications.**
 
 This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
-apps designed for easy_app_helper prior to version 1.0.0**, although they could be very easily adapted.
-But anyway you always specify your gem dependencies using the [pessimistic version operator]
-(http://docs.rubygems.org/read/chapter/16#page74), don't you ? Older applications should do it to tell your application
-to use the latest version of the 0.x.x series instead.
+apps designed for easy_app_helper prior to version 1.0.0**, although they could be very easily adapted
+(anyway you always specify your gem dependencies using the [pessimistic version operator]
+(http://docs.rubygems.org/read/chapter/16#page74), don't you ?). Older applications should explicitly
+require to use the latest version of the 0.x.x series instead. The config files themselves remain
+compatible with all versions of **EasyAppHelper**, as they are actually just plain Yaml files...
 
-The new **EasyAppHelper** module prodides:
+The new **EasyAppHelper** module provides:
 
-* A **super charged  Config class** that:
+* A **super charged Config class** that:
  * Manages **multiple sources of configuration**(command line, multiple config files...) in a **layered config**.
- * Provides an **easy to customize merge mechanism** for the different **config layers** that exposes a "live view"
+ * Provides an **easy to customize merge mechanism** for the different **config layers** that renders a "live view"
    of the merged configuration, while keeping a way to access or modify independently any of them.
  * Allows **flexibility** when dealing with modification and provides a way to roll back modifications done to config
    anytime, fully reload it, blast it... Export feature could be very easily added and will probably.
-* A **Logger tightly coupled with the Config** class, that will behave correctly regarding options specified be it from
-  command line or from any source of the config object...
-* Embeds [Slop][slop] to handle **command line parameters** and keeps any parameter defined in a **separated layer of
-  the global config object**.
+* A **Logger tightly coupled with the Config** class, that will behave regarding options specified be it from
+  command line or from any source(layer) of the config object...
+* Embeds [Slop][slop] to handle **command line parameters** and keeps all parameters specified from the command
+  line in a **dedicated layer of the config object**.
 * A mechanism that ensures that as soon as you access any of the objects or methods exposed by EasyAppHelper,
   all of them are **fully configured and ready to be used**.
   
-If you are writing command line applications, I hope you will like because it's very easy to use, and as unobtrusive as
-possible (you choose when you want to include or use as a module) while providing a ready-for-prod config, logger
-and command line management.
+If you are writing command line applications, I hope you will like it because it's very easy to use,
+and as unobtrusive as possible (you choose when you want to include or use as a module) while providing
+a ready-for-prod config, logger and command line management.
 
 
 Currently the only runtime dependency is the cool [Slop gem][slop] which is used to process the command line options.
@@ -179,9 +180,9 @@ regarding the rules described above, the framework will for the following files 
 
 ### Application config files
 
-An application config file names are determined from the config.script_filename property. This initially contains
-the bare name of the script, but you can replace with whatever you want. Changing this property causes actually
-the impacted files to be reloaded.
+Application config file names are determined from the config.script_filename property. It initially contains
+the bare name of the script(path and extension removed), but you can replace with whatever you want. Changing
+this property causes actually the impacted files to be reloaded.
 
 It is in fact a two level configuration. One is global (the :global layer) and the other is at user level (the
 :user layer).
@@ -338,6 +339,25 @@ I, [2013-06-23T19:39:05.712834 #11768]  INFO -- My super application: Starting s
 ```
 
 So far so good...
+
+### Specifying command line parameters
+
+As said, internally **EasyAppHelper** uses the [Slop gem][slop] to handle the command line parameters.
+You can configure the internal Slop object by calling the add_command_line_section method of the config
+object. You could create a method that setup your application command line parameters like this:
+
+```ruby
+  def add_cmd_line_options
+    config.add_command_line_section do |slop|
+      slop.on :u, :useless, 'Stupid option', :argument => false
+      slop.on :anint, 'Stupid option with integer argument', :argument => true, :as => Integer
+    end
+  end
+
+```
+
+See [Slop gem][slop] API documentation for more options.
+
 
 ### Debugging the framework itself
 
