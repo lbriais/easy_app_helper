@@ -158,7 +158,7 @@ EasyAppHelper.logger.puts_and_logs "Hi world... 3 is enough."
 **EasyAppHelper** will look for files in numerous places. **Both Unix and Windows places are handled**.
 All the files are [Yaml][yaml] files but could have names with different extensions.
 
-You can look in the classes documentation to know exactly which extensions and places the config
+You can look in the [classes documentation][doc] to know exactly which extensions and places the config
 files are looked for.
 
 ### System config file
@@ -495,5 +495,5 @@ That's all folks.
 [EAP]: https://rubygems.org/gems/easy_app_helper        "**EasyAppHelper** gem"
 [slop]: https://rubygems.org/gems/slop        "Slop gem"
 [yaml]: http://www.yaml.org/    "The Yaml official site"
-[3]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "**EasyAppHelper** documentation"
+[doc]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "**EasyAppHelper** documentation"
 [4]: https://github.com/lbriais/easy_app_helper/wiki          "**EasyAppHelper** wiki"
