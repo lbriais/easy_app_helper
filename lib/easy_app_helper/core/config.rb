@@ -17,8 +17,8 @@ require 'yaml'
 # complex rules. First the place where to search them depends on the OS
 # (Provided by {EasyAppHelper::Core::Config::Places}), and then multiple file extensions are
 # tested ({EasyAppHelper::Core::Config::CONFIG_FILE_POSSIBLE_EXTENSIONS}). This is basically
-# performed by the private method {#find_file}. The config specified on command (if any) is loaded the
-# same way.
+# performed by the private method {#find_file}. The config specified on command line (if any)
+# is loaded the same way.
 #
 # == Command line:
 # Any option can be declared as being callable from the command line. Modules add already some
@@ -26,8 +26,8 @@ require 'yaml'
 # {EasyAppHelper::Core::Base#add_command_line_section}).
 #
 # Each of the config sources are kept in a separated "layer" and addressed this way using the
-# #internal_config attribute reader. But of course the config object provides a "merged" config
-# result of the computation of all the sources. See the #to_hash method to see the order for the
+# #internal_configs attribute reader. But of course the config object provides a "merged" config
+# result of the computation of all the sources. See the {#to_hash} method to see the order for the
 # merge.
 # Any option can be accessed or modified directly using the {#[]} and {#[]=} methods.
 # Any change to the global config should be done using the {#[]=} method and is kept in the last separated

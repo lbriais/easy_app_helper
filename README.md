@@ -495,5 +495,5 @@ That's all folks.
 [EAP]: https://rubygems.org/gems/easy_app_helper        "**EasyAppHelper** gem"
 [slop]: https://rubygems.org/gems/slop        "Slop gem"
 [yaml]: http://www.yaml.org/    "The Yaml official site"
-[doc]: http://rubydoc.info/github/lbriais/easy_app_helper/master/frames        "**EasyAppHelper** documentation"
+[doc]: http://rubydoc.info/github/lbriais/easy_app_helper/master        "**EasyAppHelper** documentation"
 [4]: https://github.com/lbriais/easy_app_helper/wiki          "**EasyAppHelper** wiki"

@@ -23,7 +23,9 @@ class Logger
   end
 end
 
-# This is the logger that will be used by the application and any class that include {#EasyAppHelper} module.
+# This is the logger that will be used by the application and any class that include {EasyAppHelper} module. It is
+# configured by the {EasyAppHelper::Core::Config Config} object, and provides a temporary logger until the config
+# is fully loaded.
 class EasyAppHelper::Core::Logger < Logger
   include Singleton
 
