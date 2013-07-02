@@ -150,7 +150,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
       internal_configs[layer] = {content: {}}
       filename = nil
     else
-      if File.exists? filename_or_pattern
+      if File.exists? filename_or_pattern and !File.directory? filename_or_pattern
         filename = filename_or_pattern
       else
         filename = find_file POSSIBLE_PLACES[layer], filename_or_pattern
@@ -177,8 +177,8 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     places.each do |dir|
       CONFIG_FILE_POSSIBLE_EXTENSIONS.each do |ext|
         filename_with_path = dir + '/' + filename + '.' + ext
-        if File.exists? filename_with_path
-          return filename_with_path
+        if File.exists? filename_with_path and !File.directory? filename_with_path
+          return filename_with_path 
         else
           logger.debug "Trying \"#{filename_with_path}\" as config file."
         end
@@ -190,7 +190,7 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   def load_config_file(conf_filename)
     conf = {}
     return conf if conf_filename.nil?
-
+    
     begin
       logger.debug "Loading config file \"#{conf_filename}\""
       conf = Hash[YAML::load(open(conf_filename)).map { |k, v| [k.to_sym, v] }]
