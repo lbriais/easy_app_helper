@@ -106,6 +106,17 @@ class EasyAppHelper::Core::Base
     internal_configs.keys
   end
 
+  def safely_exec(message, *args)
+    raise "No block given" unless block_given?
+    if self[:simulate]
+      logger.puts_and_logs "SIMULATING: #{message}" unless message.nil?
+    else
+      logger.puts_and_logs message
+      yield(*args)
+    end
+  end
+
+
   private
 
   def build_separator(title)
