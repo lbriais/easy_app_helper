@@ -56,12 +56,16 @@ class EasyAppHelper::Core::Logger < Logger
     @config.load_config
     debug "Config layers:\n#{@config.internal_configs.to_yaml}"
     debug "Merged config:\n#{@config.to_yaml}"
-    if config[:'log-file']
-      handing_over_to config[:'log-file']
-    elsif config[:"debug-on-err"]
-      handing_over_to STDERR
+    if config[:debug]
+      if config[:'log-file']
+        handing_over_to config[:'log-file']
+      elsif config[:"debug-on-err"]
+        handing_over_to STDERR
+      else
+        handing_over_to STDOUT
+      end
     else
-      handing_over_to STDOUT
+      close
     end
     self.level = config[:'log-level'] ? config[:'log-level'] : Severity::WARN
     self
@@ -90,12 +94,16 @@ class EasyAppHelper::Core::Logger < Logger
     end
 
     def write(data)
+      return if closed?
       @history << data if @history
     end
 
     def close
-
+      @closed = true
     end
+
+    def opened?() not @closed ; end
+    def closed?() @closed ; end
   end
 
 end
