@@ -106,6 +106,8 @@ class EasyAppHelper::Core::Base
     internal_configs.keys
   end
 
+  # Executes code (block given) unless :simulate is in the config.
+  # If :simulate specified then display message instead of executing the code (block).
   def safely_exec(message, *args)
     raise "No block given" unless block_given?
     if self[:simulate]

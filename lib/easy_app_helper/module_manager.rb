@@ -34,6 +34,13 @@ module EasyAppHelper::ModuleManager
     @@logger.puts_and_logs msg
   end
 
+  # Method to do something (expects a block) unless --simulate is specified on the command line.
+  # See {EasyAppHelper::Core::Base#safely_exec original implementation}.
+  def safely_exec(message, *args, &block)
+    @@config.safely_exec message, *args, &block
+  end
+
+
   def self.included(base)
     init_core_modules
     base.extend self
