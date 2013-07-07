@@ -129,15 +129,25 @@ class EasyAppHelper::Core::Base
 
   private
 
+  # Performs actions related the very specific config parameters
+  # @param [String] key The parameter to check
+  # @param [Object] value The value it expects to be set to
+  # @param [Symbol] layer Optional layer, default is :modified
+  # @return [Boolean] Whether or not the internal state has been changed
   def check_hardcoded_properties(key, value, layer = :modified)
     processed = false
     case key
       when :'log-level'
         logger.send :level=, value, false
+      when :'config-file'
+        internal_configs[layer][:content][key] = value
+        force_reload
+        processed = true
     end
     processed
   end
 
+  # Builds a nice separator
   def build_separator(title, width = 80, filler = '-')
     "#{filler * 2} #{title} ".ljust width, filler
   end
