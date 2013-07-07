@@ -66,14 +66,14 @@ describe EasyAppHelper.config do
       original_ordered_layers = [:modified, :command_line, :specific_file, :user, :global, :system]
       layers = original_ordered_layers.dup
       original_ordered_layers.each do |layer|
-        test_descr = "should find the data in #{layer} if present in #{layer}"
+        test_descr = "should find the data in #{layer} layer if present in #{layer} layer"
         unless layers.length == original_ordered_layers.length
           already_removed = original_ordered_layers - layers
           if already_removed.length == 1
-            test_descr += " and #{already_removed[0]} level is not specified."
+            test_descr += " and not present in #{already_removed[0]} layer"
           end
           if already_removed.length > 1
-            test_descr += " and #{already_removed.join ', '} levels are not specified."
+            test_descr += " and not present in #{already_removed.join ', '} layers"
           end
         end
 
