@@ -138,9 +138,8 @@ class EasyAppHelper::Core::Base
     processed
   end
 
-
-  def build_separator(title)
-    "-- #{title} ".ljust 80, '-'
+  def build_separator(title, width = 80, filler = '-')
+    "#{filler * 2} #{title} ".ljust width, filler
   end
 
   # Builds common used command line options
