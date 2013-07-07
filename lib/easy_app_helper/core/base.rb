@@ -106,6 +106,14 @@ class EasyAppHelper::Core::Base
     internal_configs.keys
   end
 
+  def find_layer(key)
+    [:modified, :command_line].each do |layer|
+      return layer if internal_configs[layer][:content][key]
+    end
+    nil
+  end
+
+
   # Executes code (block given) unless :simulate is in the config.
   # If :simulate specified then display message instead of executing the code (block).
   def safely_exec(message, *args)

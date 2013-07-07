@@ -102,22 +102,22 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
     merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
-    if command_line_config[:'config-file']
-      if command_line_config[:'config-override']
+    if internal_configs[:command_line][:content][:'config-file']
+      if internal_configs[:command_line][:content][:'config-override']
         override_merge merged_config, internal_configs[:specific_file][:content]
       else
         hashes_second_level_merge merged_config, internal_configs[:specific_file][:content]
       end
 
     end
-    hashes_second_level_merge merged_config, command_line_config
+    hashes_second_level_merge merged_config, internal_configs[:command_line][:content]
     hashes_second_level_merge merged_config, internal_configs[:modified][:content]
   end
 
   # @param [Object] key: The key to access the data in the merged_config hash (see {#to_hash})
   # @return [String] Value for this key in the merged config.
-  def [](key)
-    self.to_hash[key]
+  def [](key = nil)
+    key.nil? ? self.to_hash : self.to_hash[key]
   end
 
 
@@ -125,6 +125,16 @@ class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
   def to_yaml
     to_hash.to_yaml
   end
+
+  def find_layer(key)
+    layer = super
+    return layer unless layer.nil?
+    [:specific_file, :user, :global, :system].each do |layer|
+      return layer if internal_configs[layer][:content][key]
+    end
+    nil
+  end
+
 
   #############################################################################
   private
