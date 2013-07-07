@@ -41,6 +41,17 @@ describe EasyAppHelper.config do
     expect(subject[:stupid_conf]).to eq SAMPLE_STRING
   end
 
+  it 'should be reloaded when :config-file property changes changes' do
+    subject.should_receive(:force_reload)
+    subject[:'config-file'] = SAMPLE_STRING
+  end
+
+  it 'should be reloaded when script_filename changes' do
+    subject.should_receive(:force_reload)
+    subject.script_filename = SAMPLE_STRING
+  end
+
+
   describe 'should override data when present in multiple layers' do
     before(:all) do
       EasyAppHelper.config.layers.each do |layer|
