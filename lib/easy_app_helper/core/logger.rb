@@ -38,9 +38,9 @@ class EasyAppHelper::Core::Logger < Logger
   end
 
   # Change the log level while keeping the config in sync.
-  def level=(level)
-    super
-    @config[:'log-level'] = level
+  def level=(level, update_config = true)
+    super(level)
+    @config[:'log-level'] = level if update_config
   end
 
   # Displays the message according to application verbosity and logs it as info.

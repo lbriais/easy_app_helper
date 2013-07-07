@@ -92,7 +92,7 @@ class EasyAppHelper::Core::Base
   # @param [String] key
   # @param [String] value
   def []=(key,value)
-    internal_configs[:modified][:content][key] = value
+    internal_configs[:modified][:content][key] = value unless check_hardcoded_properties key, value
   end
 
   # Reset the :modified layer of internal_configs rolling back any change done to the config
@@ -128,6 +128,16 @@ class EasyAppHelper::Core::Base
 
 
   private
+
+  def check_hardcoded_properties(key, value, layer = :modified)
+    processed = false
+    case key
+      when :'log-level'
+        logger.send :level=, value, false
+    end
+    processed
+  end
+
 
   def build_separator(title)
     "-- #{title} ".ljust 80, '-'
