@@ -42,14 +42,12 @@ require 'easy_app_helper/core/merge_policies'
 
 class EasyAppHelper::Core::Config
   include EasyAppHelper::Core::HashesMergePolicies
-  include EasyAppHelper::Core::Config::Places.get_OS_module
+  include EasyAppHelper::Core::Config::Places.get_os_module
 
   ADMIN_CONFIG_FILENAME = EasyAppHelper.name
 
-
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
-  ADMIN_CONFIG_FILENAME
 
   # @param [EasyAppHelper::Core::Logger] logger
   # The logger passed to this constructor should be a temporary logger until the full config is loaded.

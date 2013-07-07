@@ -32,7 +32,7 @@ class EasyAppHelper::Core::Config::Places
         system: ["#{ENV['systemRoot']}/Config"],
 
         # Where could be stored global configuration
-        global: ['C:/Windows/Config',
+        global: ["#{ENV['systemRoot']}/Config",
                  "#{ENV['ALLUSERSPROFILE']}/Application Data"],
 
         # Where could be stored user configuration
@@ -45,7 +45,7 @@ class EasyAppHelper::Core::Config::Places
   }
   DEFAULT = Unix
 
-  def self.get_OS_module
+  def self.get_os_module
     conf = CONF[RbConfig::CONFIG['target_os'].to_sym]
     conf.nil? ? DEFAULT : conf
   end
