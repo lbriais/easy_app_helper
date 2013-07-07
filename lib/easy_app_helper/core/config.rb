@@ -40,7 +40,7 @@ require 'easy_app_helper/core/places'
 require 'easy_app_helper/core/merge_policies'
 
 
-class EasyAppHelper::Core::Config < EasyAppHelper::Core::Base
+class EasyAppHelper::Core::Config
   include EasyAppHelper::Core::HashesMergePolicies
   include EasyAppHelper::Core::Config::Places.get_OS_module
 
