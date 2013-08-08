@@ -1,5 +1,7 @@
 # EasyAppHelper
 
+ ![Build Status](https://travis-ci.org/lbriais/easy_app_helper.png?branch=master)](https://travis-ci.org/lbriais/easy_app_helper)
+
 **This [gem][EAP] aims at providing useful helpers for command line applications.**
 
 This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
