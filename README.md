@@ -25,7 +25,7 @@ The new **EasyAppHelper** module provides:
   line in a **dedicated layer of the config object**.
 * A mechanism that ensures that as soon as you access any of the objects or methods exposed by EasyAppHelper,
   all of them are **fully configured and ready to be used**.
-  
+
 If you are writing command line applications, I hope you will like it because it's very easy to use,
 and as unobtrusive as possible (you choose when you want to include or use as a module) while providing
 a ready-for-prod config, logger and command line management.
@@ -120,7 +120,7 @@ puts config.internal_configs.to_yaml
 #:specific_file:
 #  :content: {}
 
-# You see of course that the two modifications we did are in the modified sub-hash
+# You see of course that the three modifications we did appear actually in the modified sub-hash
 # And now the merged config
 puts config.to_hash
 
