@@ -41,7 +41,7 @@ describe EasyAppHelper.config do
     expect(subject[:stupid_conf]).to eq SAMPLE_STRING
   end
 
-  it 'should be reloaded when :config-file property changes changes' do
+  it 'should be reloaded when :config-file property changes' do
     subject.should_receive(:force_reload)
     subject[:'config-file'] = SAMPLE_STRING
   end
@@ -119,6 +119,24 @@ describe EasyAppHelper.config do
       subject.internal_configs[:system][:content][:stupid_conf] = SAMPLE_STRING
       subject.internal_configs[:command_line][:content][:stupid_conf] = SAMPLE_STRING
       subject.load_config
+      expect(subject.internal_configs[:system][:content][:stupid_conf]).to be_nil
+      expect(subject.internal_configs[:command_line][:content][:stupid_conf]).to be_nil
+    end
+
+  end
+
+  context "when reloaded (forced)" do
+
+    it "should keep all modifications done the standard way" do
+      subject[:test_remove] = SAMPLE_STRING
+      subject.force_reload
+      expect(subject[:test_remove]).to eq SAMPLE_STRING
+    end
+
+    it "should remove all modifications directly done on internal layers" do
+      subject.internal_configs[:system][:content][:stupid_conf] = SAMPLE_STRING
+      subject.internal_configs[:command_line][:content][:stupid_conf] = SAMPLE_STRING
+      subject.force_reload
       expect(subject.internal_configs[:system][:content][:stupid_conf]).to be_nil
       expect(subject.internal_configs[:command_line][:content][:stupid_conf]).to be_nil
     end
