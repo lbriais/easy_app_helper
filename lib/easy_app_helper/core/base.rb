@@ -86,6 +86,7 @@ class EasyAppHelper::Core::Base
   # Sets the :command_line layer of internal_configs to the computed {#command_line_config}
   def load_config
     internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
+    self
   end
 
   # Any modification done to the config is in fact stored in the :modified layer of internal_configs
@@ -98,6 +99,7 @@ class EasyAppHelper::Core::Base
   # Reset the :modified layer of internal_configs rolling back any change done to the config
   def reset
     internal_configs[:modified] = {content: {}, source: CHANGED_BY_CODE}
+    self
   end
 
 

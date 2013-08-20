@@ -83,6 +83,7 @@ class EasyAppHelper::Core::Config
     load_layer_config :global, script_filename, force
     load_layer_config :user, script_filename, force
     load_layer_config :specific_file, internal_configs[:command_line][:content][:'config-file'], force
+    self
   end
 
   # @see #load_config
@@ -115,7 +116,7 @@ class EasyAppHelper::Core::Config
   # @param [Object] key: The key to access the data in the merged_config hash (see {#to_hash})
   # @return [String] Value for this key in the merged config.
   def [](key = nil)
-    key.nil? ? self.to_hash : self.to_hash[key]
+    key.nil? ? to_hash : to_hash[key]
   end
 
 
