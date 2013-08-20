@@ -12,7 +12,7 @@ require 'singleton'
 # to the definitive one.
 # TODO: Ensure only the messages that are above the current level are displayed when handing over to the definitive logger.
 class Logger
-  def handing_over_to(log)
+  def hand_over_to(log)
     history = []
     history = @logdev.dev.history if @logdev.dev.respond_to? :history
     @logdev.close
@@ -58,11 +58,11 @@ class EasyAppHelper::Core::Logger < Logger
     debug "Merged config:\n#{@config.to_yaml}"
     if config[:debug]
       if config[:'log-file']
-        handing_over_to config[:'log-file']
+        hand_over_to config[:'log-file']
       elsif config[:"debug-on-err"]
-        handing_over_to STDERR
+        hand_over_to STDERR
       else
-        handing_over_to STDOUT
+        hand_over_to STDOUT
       end
     else
       close
