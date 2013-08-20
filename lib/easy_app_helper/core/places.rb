@@ -40,8 +40,9 @@ class EasyAppHelper::Core::Config::Places
     }
   end
 
-  CONF ={
-      mingw32: Windows
+  CONF = {
+      mingw32: Windows,
+      linux: Unix
   }
   DEFAULT = Unix
 
