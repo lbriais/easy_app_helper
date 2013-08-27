@@ -81,11 +81,13 @@ class EasyAppHelper::Core::Base
     raise "Incorrect usage" unless block_given?
     @slop_definition.separator build_separator(title)
     yield @slop_definition
+  ensure
+    sync!
   end
 
   # Sets the :command_line layer of internal_configs to the computed {#command_line_config}
   def load_config
-    internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
+    sync!
     self
   end
 
@@ -130,6 +132,11 @@ class EasyAppHelper::Core::Base
 
 
   private
+
+  def sync!
+    internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
+  end
+
 
   # Performs actions related the very specific config parameters
   # @param [String] key The parameter to check
