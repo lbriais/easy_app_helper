@@ -143,4 +143,16 @@ describe EasyAppHelper.config do
 
   end
 
+
+  context "When dealing with command line" do
+
+    it 'should have the same content using #command_line_config and #internal_configs[:command_line][:content]' do
+      subject.add_command_line_section('Scripts analysis') do |slop|
+        slop.on :p, :pipo, 'Directory path where SQL files are located.', argument: false
+      end
+      expect(subject.command_line_config).to eq subject.internal_configs[:command_line][:content]
+    end
+
+  end
+
 end
