@@ -125,6 +125,9 @@ class EasyAppHelper::Core::Config
     to_hash.to_yaml
   end
 
+  alias_method :to_s, :to_yaml
+  alias_method :inspect, :internal_configs
+
   def find_layer(key)
     layer = super
     return layer unless layer.nil?
