@@ -80,6 +80,7 @@ class EasyAppHelper::Core::Config
   def load_config(force=false)
     super()
     load_layer_config :system, ADMIN_CONFIG_FILENAME, force
+    load_layer_config :internal, script_filename, force
     load_layer_config :global, script_filename, force
     load_layer_config :user, script_filename, force
     load_layer_config :specific_file, internal_configs[:command_line][:content][:'config-file'], force
@@ -98,7 +99,7 @@ class EasyAppHelper::Core::Config
   # using {#internal_configs}), while this methods provides a merged config.
   # @return [Hash] The hash of the merged config.
   def to_hash
-    merged_config = [:system, :global, :user].inject({}) do |temp_config, config_level|
+    merged_config = [:system, :internal, :global, :user].inject({}) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
     if internal_configs[:command_line][:content][:'config-file']
@@ -131,7 +132,7 @@ class EasyAppHelper::Core::Config
   def find_layer(key)
     layer = super
     return layer unless layer.nil?
-    [:specific_file, :user, :global, :system].each do |layer|
+    [:specific_file, :user, :global, :internal, :system].each do |layer|
       return layer if internal_configs[layer][:content][key]
     end
     nil

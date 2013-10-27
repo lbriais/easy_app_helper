@@ -8,10 +8,24 @@
 # Possible places regarding the OS
 # TODO: Add equivalent for Mac
 class EasyAppHelper::Core::Config::Places
+
+  module Helper
+
+    def get_internal_config_place
+      File.expand_path('../../../../etc', __FILE__)
+    end
+
+  end
+
+
   module Unix
     # Where could be stored admin configuration that rules all EasyAppHelper
     # based applications.
+    extend Helper
+
     POSSIBLE_PLACES = {
+
+        internal: ["#{self.get_internal_config_place}"],
 
         system: ["/etc"],
 
@@ -27,7 +41,11 @@ class EasyAppHelper::Core::Config::Places
   module Windows
     # Where could be stored admin configuration that rules all EasyAppHelper
     # based applications.
+    extend Helper
+
     POSSIBLE_PLACES = {
+
+        internal: ["#{self.get_internal_config_place}"],
 
         system: ["#{ENV['systemRoot']}/Config"],
 
@@ -45,6 +63,7 @@ class EasyAppHelper::Core::Config::Places
       linux: Unix
   }
   DEFAULT = Unix
+
 
   def self.get_os_module
     conf = CONF[RbConfig::CONFIG['target_os'].to_sym]

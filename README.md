@@ -181,6 +181,23 @@ regarding the rules described above, the framework will for the following files 
 /etc/EasyAppHelper.Yaml
 ```
 
+### Internal config file
+
+This is an internal config file for the Gem itself. It will be located in the etc directory **inside** the Gem.
+
+```text
+# The :internal layer
+etc/myscript.conf
+etc/myscript.yml
+etc/myscript.cfg
+etc/myscript.yaml
+etc/myscript.CFG
+etc/myscript.YML
+etc/myscript.YAML
+etc/myscript.Yaml
+```
+
+
 ### Application config files
 
 Application config file names are determined from the config.script_filename property. It initially contains
@@ -224,7 +241,7 @@ ${HOME}/.config/myscript.Yaml
 ### Command line specified config file
 
 The command line option ```--config-file``` provides a way to specify explicitly a config file. On top of this the
-option ```--config-override``` tells **EasyAppHelper** to ignore :system, :global and :user levels.
+option ```--config-override``` tells **EasyAppHelper** to ignore :system, :internal, :global and :user levels.
 
 The file will be loaded in a separated layer called :specific_file
 
@@ -455,6 +472,10 @@ D, [2013-06-23T19:43:47.981934 #16294] DEBUG -- : Config layers:
     :copyright: (c) 2012-2013 Nanonet
   :source: /etc/EasyAppHelper.cfg
   :origin: EasyAppHelper
+:internal:
+  :content: {}
+  :source:
+  :origin: test4_app
 :global:
   :content: {}
   :source:

@@ -11,7 +11,7 @@ require 'easy_app_helper'
 
 #describe EasyAppHelper::Core::Config do
 describe EasyAppHelper.config do
-  SAMPLE_STRING = 'Sample String'
+  SAMPLE_STRING = 'TestConfig'
 
 
   it 'should be fully initialized when first accessed' do
@@ -33,7 +33,6 @@ describe EasyAppHelper.config do
   it 'should store the data in the :modified layer' do
     expect(subject.find_layer :basic_test).to eq :modified
     expect(subject.internal_configs[:modified][:content][:basic_test]).to eq subject[:basic_test]
-
   end
 
   it 'should provide a direct r/w access to layers' do
@@ -61,9 +60,9 @@ describe EasyAppHelper.config do
     end
 
     context "when requesting some data" do
-      let(:layers) {[:modified, :command_line, :specific_file, :user, :global, :system]}
+      let(:layers) {[:modified, :command_line, :specific_file, :user, :global, :internal, :system]}
 
-      original_ordered_layers = [:modified, :command_line, :specific_file, :user, :global, :system]
+      original_ordered_layers = [:modified, :command_line, :specific_file, :user, :global, :internal, :system]
       layers = original_ordered_layers.dup
       original_ordered_layers.each do |layer|
         test_descr = "should find the data in #{layer} layer if present in #{layer} layer"

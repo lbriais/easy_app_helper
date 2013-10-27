@@ -44,6 +44,10 @@ puts config.internal_configs.to_yaml
 #  :content: {}
 #  :source:
 #  :origin: EasyAppHelper
+#:internal:
+#  :content: {}
+#  :source:
+#  :origin: EasyAppHelper
 #:global:
 #  :content: {}
 #  :source:
