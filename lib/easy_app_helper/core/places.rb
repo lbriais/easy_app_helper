@@ -12,7 +12,7 @@ class EasyAppHelper::Core::Config::Places
   module Helper
 
     def get_internal_config_place
-      File.expand_path('../../../../etc', __FILE__)
+      File.expand_path('../../etc', $PROGRAM_NAME)
     end
 
   end
