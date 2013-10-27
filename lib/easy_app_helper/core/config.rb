@@ -113,8 +113,8 @@ class EasyAppHelper::Core::Config
     merged_config = [:system, :internal, :global, :user].inject(merged_config) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
-    if internal_configs[:command_line][:content][:'config-file']
-      if internal_configs[:command_line][:content][:'config-override']
+    if get_value :'config-file', :command_line
+      if get_value :'config-override', :command_line
         override_merge merged_config, internal_configs[:specific_file][:content]
       else
         hashes_second_level_merge merged_config, internal_configs[:specific_file][:content]
