@@ -45,6 +45,7 @@ class EasyAppHelper::Core::Config
   include EasyAppHelper::Core::Config::Places.get_os_module
 
   ADMIN_CONFIG_FILENAME = EasyAppHelper.name
+  INTRODUCED_SORTED_LAYERS = [:specific_file, :user, :global, :internal, :system]
 
   # Potential extensions a config file can have
   CONFIG_FILE_POSSIBLE_EXTENSIONS = %w(conf yml cfg yaml CFG YML YAML Yaml)
@@ -128,16 +129,6 @@ class EasyAppHelper::Core::Config
 
   alias_method :to_s, :to_yaml
   alias_method :inspect, :internal_configs
-
-  def find_layer(key)
-    layer = super
-    return layer unless layer.nil?
-    [:specific_file, :user, :global, :internal, :system].each do |layer|
-      return layer if internal_configs[layer][:content][key]
-    end
-    nil
-  end
-
 
   #############################################################################
   private

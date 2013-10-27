@@ -10,8 +10,9 @@ require 'easy_app_helper'
 
 
 #describe EasyAppHelper::Core::Config do
-describe EasyAppHelper.config do
+describe "The EasyAppHelper config object" do
   SAMPLE_STRING = 'TestConfig'
+  subject {EasyAppHelper.config}
 
 
   it 'should be fully initialized when first accessed' do
@@ -19,12 +20,11 @@ describe EasyAppHelper.config do
     subject.logger.should_not be nil
   end
 
-  it 'should be consistent regarding the way it is accessed' do
+  it 'should be consistent regardless the way it is accessed' do
     subject[:basic_test] = SAMPLE_STRING
     expect(subject[]).to eq subject.to_hash
     expect(subject[:basic_test]).to eq SAMPLE_STRING
   end
-
 
   it 'should be the same object accross different instances' do
     expect(subject[:basic_test]).to eq SAMPLE_STRING
@@ -51,7 +51,8 @@ describe EasyAppHelper.config do
   end
 
 
-  describe 'should override data when present in multiple layers' do
+  context 'when dealing with the multiple layers of the config' do
+
     before(:all) do
       EasyAppHelper.config.layers.each do |layer|
         EasyAppHelper.config.internal_configs[layer][:content][:basic_test] = "#{SAMPLE_STRING} #{layer.to_s}"
@@ -59,13 +60,14 @@ describe EasyAppHelper.config do
       EasyAppHelper.config.internal_configs[:command_line][:content][:'config-file'] = true
     end
 
-    context "when requesting some data" do
-      let(:layers) {[:modified, :command_line, :specific_file, :user, :global, :internal, :system]}
+    context "when trying to access some data" do
+      let(:layers) {subject.layers}
+      #subject {EasyAppHelper.config}
 
-      original_ordered_layers = [:modified, :command_line, :specific_file, :user, :global, :internal, :system]
+      original_ordered_layers = EasyAppHelper.config.layers
       layers = original_ordered_layers.dup
       original_ordered_layers.each do |layer|
-        test_descr = "should find the data in #{layer} layer if present in #{layer} layer"
+        test_descr = "It should find the data in #{layer} layer if present in #{layer} layer"
         unless layers.length == original_ordered_layers.length
           already_removed = original_ordered_layers - layers
           if already_removed.length == 1

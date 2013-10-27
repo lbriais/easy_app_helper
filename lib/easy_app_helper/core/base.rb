@@ -13,6 +13,7 @@ require 'slop'
 
 class EasyAppHelper::Core::Base
   CHANGED_BY_CODE = 'Changed by code'
+  INTRODUCED_SORTED_LAYERS = [:modified, :command_line]
 
   attr_reader :script_filename, :app_name, :app_version, :app_description, :internal_configs, :logger
 
@@ -107,11 +108,27 @@ class EasyAppHelper::Core::Base
 
   # @return [Array] List of layers
   def layers
-    internal_configs.keys
+    res = self.class.layers
+    internal_configs.keys.each do |layer|
+      next if res.include? layer
+      res << layer
+    end
+    res
   end
 
+  def self.layers
+    res = []
+    self.ancestors.each do |klass|
+      next unless klass.is_a? Class
+      break if EasyAppHelper::Core::Base < klass
+      res << klass::INTRODUCED_SORTED_LAYERS.reverse
+    end
+    res.flatten.reverse
+  end
+
+
   def find_layer(key)
-    [:modified, :command_line].each do |layer|
+    layers.each do |layer|
       return layer if internal_configs[layer][:content][key]
     end
     nil
