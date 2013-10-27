@@ -90,7 +90,27 @@ describe "The EasyAppHelper config object" do
       end
     end
 
-    context "when manually introducing a layer" do
+    context "when accessing a non existing layer" do
+      context "in read mode" do
+
+        it "should log a warning and return nil" do
+          subject.logger.should_receive(:warn)
+          expect(subject.get_value :non_existing_value, :another_non_existing_layer).to be_nil
+        end
+      end
+
+      context "in write mode" do
+
+        it "should log a warning and create it" do
+          subject.logger.should_receive(:warn)
+          subject.set_value :non_existing_value, SAMPLE_STRING, :another_non_existing_layer
+          expect(subject.get_value :non_existing_value, :another_non_existing_layer).to be SAMPLE_STRING
+          expect(subject[:non_existing_value]).to be SAMPLE_STRING
+        end
+      end
+    end
+
+    context "when manually creating a layer" do
 
       it "should be handled with the lowest priority" do
         subject.set_value :unused_option, SAMPLE_STRING, :non_existing_layer
@@ -100,8 +120,6 @@ describe "The EasyAppHelper config object" do
       end
 
     end
-
-
 
   end
 
