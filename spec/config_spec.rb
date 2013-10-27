@@ -36,7 +36,7 @@ describe "The EasyAppHelper config object" do
   end
 
   it 'should provide a direct r/w access to layers' do
-    subject.internal_configs[:system][:content][:stupid_conf] = SAMPLE_STRING
+    subject.set_value :stupid_conf, SAMPLE_STRING, :system
     expect(subject[:stupid_conf]).to eq SAMPLE_STRING
   end
 
@@ -55,9 +55,9 @@ describe "The EasyAppHelper config object" do
 
     before(:all) do
       EasyAppHelper.config.layers.each do |layer|
-        EasyAppHelper.config.internal_configs[layer][:content][:basic_test] = "#{SAMPLE_STRING} #{layer.to_s}"
+        EasyAppHelper.config.set_value :basic_test, "#{SAMPLE_STRING} #{layer.to_s}", layer
       end
-      EasyAppHelper.config.internal_configs[:command_line][:content][:'config-file'] = true
+      EasyAppHelper.config.set_value :'config-file', true, :command_line
     end
 
     context "when trying to access some data" do
@@ -114,9 +114,9 @@ describe "The EasyAppHelper config object" do
     end
 
     it "should keep modifications directly done on internal layers" do
-      subject.internal_configs[:system][:content][:stupid_conf] = SAMPLE_STRING
+      subject.set_value :stupid_conf, SAMPLE_STRING, :system
       subject.reset
-      expect(subject.internal_configs[:system][:content][:stupid_conf]).to eq SAMPLE_STRING
+      expect(subject.get_value :stupid_conf, :system).to eq SAMPLE_STRING
     end
 
   end
@@ -130,11 +130,11 @@ describe "The EasyAppHelper config object" do
     end
 
     it "should remove all modifications directly done on internal layers" do
-      subject.internal_configs[:system][:content][:stupid_conf] = SAMPLE_STRING
-      subject.internal_configs[:command_line][:content][:stupid_conf] = SAMPLE_STRING
+      subject.set_value :stupid_conf, SAMPLE_STRING, :system
+      subject.set_value :stupid_conf, SAMPLE_STRING, :command_line
       subject.load_config
-      expect(subject.internal_configs[:system][:content][:stupid_conf]).to be_nil
-      expect(subject.internal_configs[:command_line][:content][:stupid_conf]).to be_nil
+      expect(subject.get_value :stupid_conf,:system).to be_nil
+      expect(subject.get_value :stupid_conf,:command_line).to be_nil
     end
 
   end
@@ -148,11 +148,11 @@ describe "The EasyAppHelper config object" do
     end
 
     it "should remove all modifications directly done on internal layers" do
-      subject.internal_configs[:system][:content][:stupid_conf] = SAMPLE_STRING
-      subject.internal_configs[:command_line][:content][:stupid_conf] = SAMPLE_STRING
+      subject.set_value :stupid_conf, SAMPLE_STRING, :system
+      subject.set_value :stupid_conf, SAMPLE_STRING, :command_line
       subject.force_reload
-      expect(subject.internal_configs[:system][:content][:stupid_conf]).to be_nil
-      expect(subject.internal_configs[:command_line][:content][:stupid_conf]).to be_nil
+      expect(subject.get_value :stupid_conf,:system).to be_nil
+      expect(subject.get_value :stupid_conf,:command_line).to be_nil
     end
 
   end

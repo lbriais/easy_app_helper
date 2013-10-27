@@ -101,10 +101,25 @@ class EasyAppHelper::Core::Base
     end
     unless layers.include? layer
       internal_configs[layer] = {content: {}, source: 'Unknown source'}
-      logger.warn "An unknown source is used in the config (#{layer.to_s})"
+      logger.warn "Trying to modify a non existing config layer: \"#{layer.to_s}\". Automatically creating it..."
     end
     internal_configs[layer][:content][key] = value
   end
+
+  def get_value key, layer = nil
+    if layer.nil?
+      return self[key]
+    end
+    res = nil
+    begin
+      res = internal_configs[layer][:content][key]
+    rescue => e
+      logger.warn "Trying to reading from a non existing config layer: \"#{layer}\". Returning nil for the key \"#{key}\"..."
+    end
+    res
+  end
+
+
 
   # Any modification done to the config is in fact stored in the :modified layer of internal_configs
   # @param [String] key
@@ -180,7 +195,7 @@ class EasyAppHelper::Core::Base
       when :'log-level'
         logger.send :level=, value, false
       when :'config-file'
-        internal_configs[layer][:content][key] = value
+        set_value key, value, layer
         force_reload
         processed = true
     end

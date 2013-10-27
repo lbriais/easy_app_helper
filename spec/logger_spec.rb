@@ -10,19 +10,20 @@ require 'easy_app_helper'
 
 
 #describe EasyAppHelper::Core::Logger
-describe EasyAppHelper.logger do
+describe "The EasyAppHelper logger object" do
+  subject {EasyAppHelper.logger}
   let (:config) {EasyAppHelper.config}
 
-  context "to modify the log level" do
+  context "to modify the log level, it should be possible " do
 
-    it 'should be ok to use the config object' do
+    it 'to use the config object' do
       Logger::Severity::DEBUG.upto(Logger::Severity::UNKNOWN) do |severity|
         config[:'log-level'] = severity
         expect(subject.level).to eq severity
       end
     end
 
-    it 'should be ok to use the #log_level= method' do
+    it 'or directly the #log_level= method of the logger object' do
       Logger::Severity::DEBUG.upto(Logger::Severity::UNKNOWN) do |severity|
         subject.level= severity
         expect(config[:'log-level']).to eq severity
