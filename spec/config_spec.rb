@@ -187,4 +187,15 @@ describe "The EasyAppHelper config object" do
 
   end
 
+  context "When a gem has its own :internal config file" do
+    before(:all) do
+      EasyAppHelper.config.script_filename = "test_internal"
+    end
+
+    it "should take its data in account" do
+      expect(subject[:internal_credits]).to_not be_nil
+    end
+
+  end
+
 end
