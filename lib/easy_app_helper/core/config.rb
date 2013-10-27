@@ -100,7 +100,17 @@ class EasyAppHelper::Core::Config
   # using {#internal_configs}), while this methods provides a merged config.
   # @return [Hash] The hash of the merged config.
   def to_hash
-    merged_config = [:system, :internal, :global, :user].inject({}) do |temp_config, config_level|
+
+    merged_config = {}
+
+    # Process any other level as a low priority unmanaged layer
+    internal_configs.keys.each do |layer|
+      next if self.class.layers.include? layer
+      hashes_second_level_merge merged_config, internal_configs[layer][:content]
+    end
+
+    # Process Config-level layers
+    merged_config = [:system, :internal, :global, :user].inject(merged_config) do |temp_config, config_level|
       hashes_second_level_merge temp_config, internal_configs[config_level][:content]
     end
     if internal_configs[:command_line][:content][:'config-file']
@@ -111,8 +121,11 @@ class EasyAppHelper::Core::Config
       end
 
     end
-    hashes_second_level_merge merged_config, internal_configs[:command_line][:content]
-    hashes_second_level_merge merged_config, internal_configs[:modified][:content]
+
+    # Process Base-level layers with highest priority (last processed the highest)
+    [:command_line, :modified].each { |base_layer|  hashes_second_level_merge merged_config, internal_configs[base_layer][:content]}
+    merged_config
+
   end
 
   # @param [Object] key: The key to access the data in the merged_config hash (see {#to_hash})

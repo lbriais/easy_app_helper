@@ -92,6 +92,20 @@ class EasyAppHelper::Core::Base
     self
   end
 
+  # Convenient method to set a value in a particular layer
+  # If the layer does not exist it is correctly created and filled in with the key/value couple
+  def set_value key, value, layer = nil
+    if layer.nil?
+      self[key] = value
+      return
+    end
+    unless layers.include? layer
+      internal_configs[layer] = {content: {}, source: 'Unknown source'}
+      logger.warn "An unknown source is used in the config (#{layer.to_s})"
+    end
+    internal_configs[layer][:content][key] = value
+  end
+
   # Any modification done to the config is in fact stored in the :modified layer of internal_configs
   # @param [String] key
   # @param [String] value

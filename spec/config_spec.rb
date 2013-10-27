@@ -90,6 +90,19 @@ describe "The EasyAppHelper config object" do
       end
     end
 
+    context "when manually introducing a layer" do
+
+      it "should be handled with the lowest priority" do
+        subject.set_value :unused_option, SAMPLE_STRING, :non_existing_layer
+        expect(subject[:unused_option]).to eq SAMPLE_STRING
+        subject.set_value :unused_option, 'Not the sample string', :system
+        expect(subject[:unused_option]).to_not eq SAMPLE_STRING
+      end
+
+    end
+
+
+
   end
 
   context "when reset" do
