@@ -5,7 +5,9 @@
 # http://opensource.org/licenses/MIT
 ################################################################################
 
-# Possible places regarding the OS
+# The goal of this class is to return a module containing the POSSIBLE_PLACES hash
+# that provides a list of OS dependant paths.
+# The only method that should be used is the #get_os_module method that returns this module.
 # TODO: Add equivalent for Mac
 class EasyAppHelper::Core::Config::Places
 
@@ -22,9 +24,9 @@ class EasyAppHelper::Core::Config::Places
   end
 
 
+  # Defines some places for Unix machines
   module Unix
-    # Where could be stored admin configuration that rules all EasyAppHelper
-    # based applications.
+
     extend Helper
 
     POSSIBLE_PLACES = {
@@ -42,9 +44,8 @@ class EasyAppHelper::Core::Config::Places
     }
   end
 
+  # Defines some places for Windows machines
   module Windows
-    # Where could be stored admin configuration that rules all EasyAppHelper
-    # based applications.
     extend Helper
 
     POSSIBLE_PLACES = {
