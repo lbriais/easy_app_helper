@@ -34,7 +34,7 @@ a ready-for-prod config, logger and command line management.
 
 Currently the only runtime dependency is the cool [Slop gem][slop] which is used to process the command line options.
 
-[Why this gem][4] ?
+[Why this gem][wiki] ?
 
 
 
@@ -521,8 +521,8 @@ did eventually end-up in the same log...
 That's all folks.
 
 
-[EAP]: https://rubygems.org/gems/easy_app_helper        "**EasyAppHelper** gem"
+[EAP]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
 [slop]: https://rubygems.org/gems/slop        "Slop gem"
 [yaml]: http://www.yaml.org/    "The Yaml official site"
-[doc]: http://rubydoc.info/github/lbriais/easy_app_helper/master        "**EasyAppHelper** documentation"
-[4]: https://github.com/lbriais/easy_app_helper/wiki          "**EasyAppHelper** wiki"
+[doc]: http://rubydoc.info/github/lbriais/easy_app_helper/master        "EasyAppHelper documentation"
+[wiki]: https://github.com/lbriais/easy_app_helper/wiki          "EasyAppHelper wiki"
