@@ -63,7 +63,7 @@ To use it, once you installed them, you just need to require it:
 require 'easy_app_helper'
 ```
 
-Then can can immediately access the logger or the config objects. Here under a first example:
+Then you can immediately access the logger or the config objects. Here under a first example:
 
 ```ruby
 require 'easy_app_helper'
@@ -398,6 +398,15 @@ D, [2013-06-23T19:43:47.977031 #16294] DEBUG -- : Temporary initialisation logge
 D, [2013-06-23T19:43:47.977861 #16294] DEBUG -- : Trying "/etc/EasyAppHelper.conf" as config file.
 D, [2013-06-23T19:43:47.977908 #16294] DEBUG -- : Trying "/etc/EasyAppHelper.yml" as config file.
 D, [2013-06-23T19:43:47.977938 #16294] DEBUG -- : Loading config file "/etc/EasyAppHelper.cfg"
+D, [2013-06-23T19:43:47.977961 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.conf" as config file.
+D, [2013-06-23T19:43:47.977982 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.yml" as config file.
+D, [2013-06-23T19:43:47.977995 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.cfg" as config file.
+D, [2013-06-23T19:43:47.978032 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.yaml" as config file.
+D, [2013-06-23T19:43:47.978082 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.CFG" as config file.
+D, [2013-06-23T19:43:47.978119 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.YML" as config file.
+D, [2013-06-23T19:43:47.978163 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.YAML" as config file.
+D, [2013-06-23T19:43:47.978206 #16294] DEBUG -- : Trying "/home/laurent/devel/ruby/gems/test4_app/etc/test4_app.Yaml" as config file.
+I, [2013-06-23T19:43:47.978255 #16294]  INFO -- : No config file found for layer internal.
 D, [2013-06-23T19:43:47.978300 #16294] DEBUG -- : Trying "/etc/test4_app.conf" as config file.
 D, [2013-06-23T19:43:47.978332 #16294] DEBUG -- : Trying "/etc/test4_app.yml" as config file.
 D, [2013-06-23T19:43:47.978355 #16294] DEBUG -- : Trying "/etc/test4_app.cfg" as config file.
