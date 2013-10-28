@@ -189,7 +189,10 @@ describe "The EasyAppHelper config object" do
 
   context "When a gem has its own :internal config file" do
     before(:all) do
-      EasyAppHelper.config.script_filename = "test_internal"
+      pp = EasyAppHelper.config.class.const_get :POSSIBLE_PLACES
+      pp[:internal] = [File.expand_path('../../etc', __FILE__)]
+      EasyAppHelper.config.class.const_set :POSSIBLE_PLACES, pp
+      EasyAppHelper.config.script_filename = 'test_internal'
     end
 
     it "should take its data in account" do

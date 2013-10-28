@@ -15,6 +15,10 @@ class EasyAppHelper::Core::Config::Places
       File.expand_path('../../etc', $PROGRAM_NAME)
     end
 
+    def possible_config_places key
+      POSSIBLE_PLACES[key]
+    end
+
   end
 
 
@@ -69,4 +73,6 @@ class EasyAppHelper::Core::Config::Places
     conf = CONF[RbConfig::CONFIG['target_os'].to_sym]
     conf.nil? ? DEFAULT : conf
   end
+
+
 end
