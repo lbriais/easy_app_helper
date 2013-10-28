@@ -7,8 +7,8 @@
 
 This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
 apps designed for easy_app_helper prior to version 1.0.0**, although they could be very easily adapted
-(anyway you always specify your gem dependencies using the [pessimistic version operator]
-(http://docs.rubygems.org/read/chapter/16#page74), don't you ?). Older applications should explicitly
+(anyway you always specify your gem dependencies using [semantic versioning](http://semver.org/) and the [pessimistic version operator]
+(http://robots.thoughtbot.com/post/2508037841/rubys-pessimistic-operator), don't you ? More info [here](http://guides.rubygems.org/patterns/#declaring_dependencies)). Older applications should explicitly
 require to use the latest version of the 0.x.x series instead. The config files themselves remain
 compatible with all versions of **EasyAppHelper**, as they are actually just plain Yaml files...
 
