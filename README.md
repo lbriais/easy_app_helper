@@ -110,6 +110,10 @@ puts config.internal_configs.to_yaml
 #  :content: {}
 #  :source:
 #  :origin: EasyAppHelper
+#:internal:
+#  :content: {}
+#  :source:
+#  :origin: ''
 #:global:
 #  :content: {}
 #  :source:
@@ -183,7 +187,8 @@ regarding the rules described above, the framework will for the following files 
 
 ### Internal config file
 
-This is an internal config file for the Gem itself. It will be located in the etc directory **inside** the Gem.
+This is an internal config file for the Gem itself. It will be located in the ```etc/``` directory **inside** the Gem.
+It is a way for a Gem to define a system default configuration.
 
 ```text
 # The :internal layer
