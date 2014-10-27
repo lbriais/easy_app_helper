@@ -14,7 +14,7 @@ class EasyAppHelper::Core::Config::Places
   module Helper
 
     def get_internal_config_place
-      File.expand_path('../../etc', $PROGRAM_NAME)
+      [File.expand_path('../../etc', $PROGRAM_NAME), File.expand_path('../../config', $PROGRAM_NAME)]
     end
 
     def possible_config_places key
@@ -31,13 +31,13 @@ class EasyAppHelper::Core::Config::Places
 
     POSSIBLE_PLACES = {
 
-        internal: ["#{self.get_internal_config_place}"],
+        internal: self.get_internal_config_place,
 
-        system: ["/etc"],
+        system: ['/etc'],
 
         # Where could be stored global wide configuration
-        global: ["/etc",
-                 "/usr/local/etc"],
+        global: ['/etc',
+                 '/usr/local/etc'],
 
         # Where could be stored user configuration
         user:  ["#{ENV['HOME']}/.config"]
@@ -50,7 +50,7 @@ class EasyAppHelper::Core::Config::Places
 
     POSSIBLE_PLACES = {
 
-        internal: ["#{self.get_internal_config_place}"],
+        internal: self.get_internal_config_place,
 
         system: ["#{ENV['systemRoot']}/Config"],
 
