@@ -187,7 +187,7 @@ regarding the rules described above, the framework will for the following files 
 
 ### Internal config file
 
-This is an internal config file for the Gem itself. It will be located in the ```etc/``` directory **inside** the Gem.
+This is an internal config file for the Gem itself. It will be located in the ```etc/``` or ```config/``` directory **inside** the Gem.
 It is a way for a Gem to define a system default configuration.
 
 ```text
@@ -200,6 +200,14 @@ etc/myscript.CFG
 etc/myscript.YML
 etc/myscript.YAML
 etc/myscript.Yaml
+config/myscript.conf
+config/myscript.yml
+config/myscript.cfg
+config/myscript.yaml
+config/myscript.CFG
+config/myscript.YML
+config/myscript.YAML
+config/myscript.Yaml
 ```
 
 
