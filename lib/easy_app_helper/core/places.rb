@@ -13,6 +13,11 @@ class EasyAppHelper::Core::Config::Places
 
   module Helper
 
+    def gem_root_path
+      spec = Gem::Specification.find_by_name("your_gem_name")
+      gem_root = spec.gem_dir
+    end
+
     def get_internal_config_place
       [File.expand_path('../../etc', $PROGRAM_NAME), File.expand_path('../../config', $PROGRAM_NAME)]
     end
