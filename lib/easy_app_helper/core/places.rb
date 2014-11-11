@@ -9,76 +9,79 @@
 # that provides a list of OS dependant paths.
 # The only method that should be used is the #get_os_module method that returns this module.
 # TODO: Add equivalent for Mac
-class EasyAppHelper::Core::Config::Places
 
-  module Helper
+module EasyAppHelper
+  module Core
+    class Config
+      module Places
 
-    def gem_root_path
-      spec = Gem::Specification.find_by_name("your_gem_name")
-      gem_root = spec.gem_dir
+        OS_FLAVOURS = {
+            mingw32: :windows,
+            linux: :unix
+        }
+        DEFAULT_OS_FLAVOUR = :unix
+
+        FLAVOUR_PLACES = {
+            unix: {
+                internal: [],
+
+                system: ['/etc'],
+
+                # Where could be stored global wide configuration
+                global: %w(/etc /usr/local/etc),
+
+                # Where could be stored user configuration
+                user:  ["#{ENV['HOME']}/.config"]
+            },
+            windows: {
+                internal: [],
+
+                system: ["#{ENV['systemRoot']}/Config"],
+
+                # Where could be stored global configuration
+                global: ["#{ENV['systemRoot']}/Config",
+                         "#{ENV['ALLUSERSPROFILE']}/Application Data"],
+
+                # Where could be stored user configuration
+                user: [ENV['APPDATA']]
+            }
+        }
+
+
+        def self.os_flavour
+          flavour = OS_FLAVOURS[RbConfig::CONFIG['target_os'].to_sym]
+          flavour.nil? ? DEFAULT_OS_FLAVOUR : flavour
+        end
+
+        def self.gem_root_path(file=__FILE__)
+          file=__FILE__ if file.nil?
+          searcher = if Gem::Specification.respond_to? :find
+                       # ruby 2.0
+                       Gem::Specification
+                     elsif Gem.respond_to? :searcher
+                       # ruby 1.8/1.9
+                       Gem.searcher.init_gemspecs
+                     end
+          spec = unless searcher.nil?
+                   searcher.find do |spec|
+                     File.fnmatch(File.join(spec.full_gem_path,'*'), file)
+                   end
+                 end
+
+          spec.gem_dir
+        end
+
+
+        def self.possible_config_places(file_of_gem=nil)
+          root = gem_root_path file_of_gem
+          places = FLAVOUR_PLACES[os_flavour].dup
+          places[:internal] = %w(etc config).map do |place|
+            File.join root, place
+          end
+          places
+        end
+
+      end
     end
-
-    def get_internal_config_place
-      [File.expand_path('../../etc', $PROGRAM_NAME), File.expand_path('../../config', $PROGRAM_NAME)]
-    end
-
-    def possible_config_places key
-      POSSIBLE_PLACES[key]
-    end
-
   end
-
-
-  # Defines some places for Unix machines
-  module Unix
-
-    extend Helper
-
-    POSSIBLE_PLACES = {
-
-        internal: self.get_internal_config_place,
-
-        system: ['/etc'],
-
-        # Where could be stored global wide configuration
-        global: ['/etc',
-                 '/usr/local/etc'],
-
-        # Where could be stored user configuration
-        user:  ["#{ENV['HOME']}/.config"]
-    }
-  end
-
-  # Defines some places for Windows machines
-  module Windows
-    extend Helper
-
-    POSSIBLE_PLACES = {
-
-        internal: self.get_internal_config_place,
-
-        system: ["#{ENV['systemRoot']}/Config"],
-
-        # Where could be stored global configuration
-        global: ["#{ENV['systemRoot']}/Config",
-                 "#{ENV['ALLUSERSPROFILE']}/Application Data"],
-
-        # Where could be stored user configuration
-        user: [ENV['APPDATA']]
-    }
-  end
-
-  CONF = {
-      mingw32: Windows,
-      linux: Unix
-  }
-  DEFAULT = Unix
-
-
-  def self.get_os_module
-    conf = CONF[RbConfig::CONFIG['target_os'].to_sym]
-    conf.nil? ? DEFAULT : conf
-  end
-
-
 end

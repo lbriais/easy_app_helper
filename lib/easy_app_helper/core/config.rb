@@ -42,7 +42,6 @@ require 'easy_app_helper/core/merge_policies'
 
 class EasyAppHelper::Core::Config
   include EasyAppHelper::Core::HashesMergePolicies
-  include EasyAppHelper::Core::Config::Places.get_os_module
 
   ADMIN_CONFIG_FILENAME = EasyAppHelper.name
   INTRODUCED_SORTED_LAYERS = [:specific_file, :user, :global, :internal, :system]
@@ -170,9 +169,10 @@ class EasyAppHelper::Core::Config
       if File.exists? filename_or_pattern and !File.directory? filename_or_pattern
         filename = filename_or_pattern
       else
-        filename = find_file POSSIBLE_PLACES[layer], filename_or_pattern
+        places = Places.possible_config_places[layer]
+        filename = find_file places, filename_or_pattern
       end
-      internal_configs[layer] = {content: load_config_file(filename), source: filename, origin: filename_or_pattern}
+      internal_configs[layer] = {content: load_config_file(filename, layer), source: filename, origin: filename_or_pattern}
     end
   ensure
     logger.info "No config file found for layer #{layer}." if filename.nil?
@@ -204,15 +204,15 @@ class EasyAppHelper::Core::Config
     nil
   end
 
-  def load_config_file(conf_filename)
+  def load_config_file(conf_filename, layer=nil)
     conf = {}
     return conf if conf_filename.nil?
-    
+    ext = layer.nil? ? '' : " as layer #{layer}"
     begin
-      logger.debug "Loading config file \"#{conf_filename}\""
+      logger.debug "Loading config file \"#{conf_filename}\"#{ext}"
       conf = Hash[YAML::load(open(conf_filename)).map { |k, v| [k.to_sym, v] }]
     rescue => e
-      logger.error "Invalid config file \"#{conf_filename}\". Skipped as not respecting YAML syntax!\n#{e.message}"
+      logger.error "Invalid config file \"#{conf_filename}\"#{ext}. Skipped as not respecting YAML syntax!\n#{e.message}"
     end
     conf
   end

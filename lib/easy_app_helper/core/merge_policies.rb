@@ -11,6 +11,9 @@ module EasyAppHelper::Core::HashesMergePolicies
   # Performs a merge at the second level of hashes.
   # simple entries and arrays are overridden.
   def hashes_second_level_merge(h1, h2)
+    return [] if h1.nil? && h2.nil?
+    return h1 if h2.nil?
+    return h2 if h1.nil?
     h2.each do |key, v|
       if h1[key] and h1[key].is_a?(Hash)
         # Merges hashes
