@@ -78,7 +78,7 @@ describe "The EasyAppHelper config object" do
           end
         end
 
-        it test_descr, layers: layers.dup  do
+        it test_descr, :layers => layers.dup  do
           layers = example.metadata[:layers]
           expect(subject.find_layer :basic_test).to eq layer
           expect(subject[:basic_test]).to eq "#{SAMPLE_STRING} #{layer.to_s}"
@@ -180,7 +180,7 @@ describe "The EasyAppHelper config object" do
 
     it 'should have the same content using #command_line_config and #internal_configs[:command_line][:content]' do
       subject.add_command_line_section('Scripts analysis') do |slop|
-        slop.on :p, :pipo, 'Directory path where SQL files are located.', argument: false
+        slop.on :p, :pipo, 'Directory path where SQL files are located.', :argument => false
       end
       expect(subject.command_line_config).to eq subject.internal_configs[:command_line][:content]
     end
