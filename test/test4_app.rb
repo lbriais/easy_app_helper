@@ -15,7 +15,7 @@ class MyApp
 
   def initialize
     # Providing this data is optional
-    config.describes_application(app_name: APP_NAME, app_version: VERSION, app_description: DESCRIPTION)
+    config.describes_application(:app_name => APP_NAME, :app_version => VERSION, :app_description => DESCRIPTION)
     add_cmd_line_options
   end
 

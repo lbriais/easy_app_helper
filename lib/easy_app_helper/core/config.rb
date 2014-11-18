@@ -163,7 +163,7 @@ class EasyAppHelper::Core::Config
   # Actual loads
   def fetch_config_layer(layer, filename_or_pattern)
     if filename_or_pattern.nil?
-      internal_configs[layer] = {content: {}}
+      internal_configs[layer] = {:content => {}}
       filename = nil
     else
       if File.exists? filename_or_pattern and !File.directory? filename_or_pattern
@@ -172,7 +172,7 @@ class EasyAppHelper::Core::Config
         places = Places.possible_config_places[layer]
         filename = find_file places, filename_or_pattern
       end
-      internal_configs[layer] = {content: load_config_file(filename, layer), source: filename, origin: filename_or_pattern}
+      internal_configs[layer] = {:content => load_config_file(filename, layer), :source => filename, :origin => filename_or_pattern}
     end
   ensure
     logger.info "No config file found for layer #{layer}." if filename.nil?

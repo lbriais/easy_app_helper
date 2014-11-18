@@ -16,34 +16,34 @@ module EasyAppHelper
       module Places
 
         OS_FLAVOURS = {
-            mingw32: :windows,
-            linux: :unix
+            :mingw32 => :windows,
+            :linux => :unix
         }
         DEFAULT_OS_FLAVOUR = :unix
 
         FLAVOUR_PLACES = {
-            unix: {
-                internal: [],
+            :unix => {
+                :internal => [],
 
-                system: ['/etc'],
+                :system => ['/etc'],
 
                 # Where could be stored global wide configuration
-                global: %w(/etc /usr/local/etc),
+                :global => %w(/etc /usr/local/etc),
 
                 # Where could be stored user configuration
-                user:  ["#{ENV['HOME']}/.config"]
+                :user =>  ["#{ENV['HOME']}/.config"]
             },
-            windows: {
-                internal: [],
+            :windows => {
+                :internal => [],
 
-                system: ["#{ENV['systemRoot']}/Config"],
+                :system => ["#{ENV['systemRoot']}/Config"],
 
                 # Where could be stored global configuration
-                global: ["#{ENV['systemRoot']}/Config",
+                :global => ["#{ENV['systemRoot']}/Config",
                          "#{ENV['ALLUSERSPROFILE']}/Application Data"],
 
                 # Where could be stored user configuration
-                user: [ENV['APPDATA']]
+                :user => [ENV['APPDATA']]
             }
         }
 

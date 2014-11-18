@@ -20,7 +20,7 @@ class EasyAppHelper::Core::Base
   def initialize(logger)
     @app_name = @app_version = @app_description = ""
     @script_filename = File.basename $0, '.*'
-    @internal_configs = {modified: {content: {}, source: CHANGED_BY_CODE}}
+    @internal_configs = {:modified => {:content => {}, :source => CHANGED_BY_CODE}}
     @logger = logger
     @slop_definition = Slop.new
     build_command_line_options
@@ -63,7 +63,7 @@ class EasyAppHelper::Core::Base
   # @param [String] script_filename
   # @param [String] app_version
   # @param [String] app_description
-  def describes_application(app_name: nil, script_filename: nil, app_version: nil, app_description: nil)
+  def describes_application(app_name = nil, script_filename = nil, app_version = nil, app_description = nil)
     self.app_name = app_name unless app_name.nil?
     self.app_version = app_version unless app_version.nil?
     self.app_description = app_description unless app_description.nil?
@@ -100,7 +100,7 @@ class EasyAppHelper::Core::Base
       return
     end
     unless layers.include? layer
-      internal_configs[layer] = {content: {}, source: 'Unknown source'}
+      internal_configs[layer] = {:content => {}, :source => 'Unknown source'}
       logger.warn "Trying to modify a non existing config layer: \"#{layer.to_s}\". Automatically creating it..."
     end
     internal_configs[layer][:content][key] = value
@@ -130,7 +130,7 @@ class EasyAppHelper::Core::Base
 
   # Reset the :modified layer of internal_configs rolling back any change done to the config
   def reset
-    internal_configs[:modified] = {content: {}, source: CHANGED_BY_CODE}
+    internal_configs[:modified] = {:content => {}, :source => CHANGED_BY_CODE}
     self
   end
 
@@ -180,7 +180,7 @@ class EasyAppHelper::Core::Base
   private
 
   def sync!
-    internal_configs[:command_line] = {content: command_line_config, source: 'Command line'}
+    internal_configs[:command_line] = {:content => command_line_config, :source => 'Command line'}
   end
 
 
