@@ -63,7 +63,11 @@ class EasyAppHelper::Core::Base
   # @param [String] script_filename
   # @param [String] app_version
   # @param [String] app_description
-  def describes_application(app_name: nil, script_filename: nil, app_version: nil, app_description: nil)
+  def describes_application(options = {})
+    app_name = options.fetch(:app_name, nil)
+    script_filename = options.fetch(:script_filename, nil)
+    app_version = options.fetch(:app_version, nil)
+    app_description = options.fetch(:app_description, nil)
     self.app_name = app_name unless app_name.nil?
     self.app_version = app_version unless app_version.nil?
     self.app_description = app_description unless app_description.nil?
