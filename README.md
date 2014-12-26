@@ -262,5 +262,5 @@ __That's all folks.__
 
 
 [EAP]:  https://rubygems.org/gems/easy_app_helper                        "EasyAppHelper gem"
-[EAP1]: https://rubygems.org/gems/easy_app_helper/tree/old_release_1_x   "EasyAppHelper gem DEPRECATED branch"
+[EAP1]: https://github.com/lbriais/easy_app_helper/tree/old_release_1_x  "EasyAppHelper gem DEPRECATED branch"
 [SC]:   https://github.com/lbriais/stacked_config                        "The stacked_config Gem"
