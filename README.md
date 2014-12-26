@@ -173,6 +173,82 @@ nevertheless be the case.
 There is a (not perfect) compatibility mode that you can trigger by setting the `easy_app_helper_compatibility_mode`
 property to true in one of your config files.
 
+## Complete example of a script based on `easy_app_helper`
+
+Save the following file somewhere as `example.rb`.
+
+You can use this as a template for your own scripts:
+
+```ruby
+#!/usr/bin/env ruby
+
+require 'easy_app_helper'
+
+class MyApp
+
+  include EasyAppHelper
+
+
+  VERSION = '0.0.1'
+  NAME = 'My brand new Application'
+  DESCRIPTION = 'Best app ever'
+
+  def initialize
+    config.describes_application app_name: NAME,
+                                 app_version: VERSION,
+                                 app_description: DESCRIPTION
+    add_script_options
+  end
+
+
+  def add_script_options
+    config.add_command_line_section('Options for the script') do |slop|
+      slop.on :u, :useless, 'Stupid option', :argument => false
+      slop.on :an_int, 'Stupid option with integer argument', :argument => true, :as => Integer
+    end
+  end
+
+  def run
+    # An example of testing a command line option
+    config[:an_int] ||= 10
+
+    # Displaying command line help
+    if config[:help]
+      puts config.command_line_help
+      exit 0
+    end
+
+    begin
+      do_some_processing
+    rescue => e
+      puts "Program aborted with message: '#{e.message}'."
+      if config[:debug]
+        logger.fatal "#{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
+      else
+        puts '  Use --debug option for more detail.'
+      end
+    end
+  end
+
+  def do_some_processing
+    # Here you would really start your process
+    puts_and_logs 'Starting processing'
+    config[:something] = 'Added something...'
+
+    logger.debug config[].to_yaml
+
+    if config[:verbose]
+      puts ' ## Here is a display of the config sources and contents'
+      puts config.detailed_layers_info
+      puts ' ## This the resulting merged config'
+      puts config[].to_yaml
+    end
+  end
+
+end
+
+MyApp.new.run
+```
 
 ## Contributing
 
