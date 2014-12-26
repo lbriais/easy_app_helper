@@ -3,46 +3,29 @@
  [![Build Status](https://travis-ci.org/lbriais/easy_app_helper.png?branch=master)](https://travis-ci.org/lbriais/easy_app_helper)
  [![Gem Version](https://badge.fury.io/rb/easy_app_helper.png)](http://badge.fury.io/rb/easy_app_helper)
 
-**This [gem][EAP] aims at providing useful helpers for command line applications.**
+Every Ruby script on Earth has basically the same fundamental needs:
 
-This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
-apps designed for easy_app_helper prior to version 1.0.0**, although they could be very easily adapted
-(anyway you always specify your gem dependencies using [semantic versioning](http://semver.org/) and the [pessimistic version operator]
-(http://robots.thoughtbot.com/post/2508037841/rubys-pessimistic-operator), don't you ? More info [here](http://guides.rubygems.org/patterns/#declaring_dependencies)). Older applications should explicitly
-require to use the latest version of the 0.x.x series instead. The config files themselves remain
-compatible with all versions of **EasyAppHelper**, as they are actually just plain Yaml files...
+* Config files everywhere accross the system, some of them belonging to the administrator some to the user
+  running the application, some coming from the command line options and more...
+* Display a nice command-line help
+* Logging stuff either to STDOUT, STDERR or to a specific log file.
 
-The new **EasyAppHelper** module provides:
+__If, like everyone, you have those basic needs, then this [gem][EAP] is definitely for you.__
 
-* A **super charged Config class** that:
- * Manages **multiple sources of configuration**(command line, multiple config files...) in a **layered config**.
- * Provides an **easy to customize merge mechanism** for the different **config layers** that renders a "live view"
-   of the merged configuration, while keeping a way to access or modify independently any of them.
- * Allows **flexibility** when dealing with modification and provides a way to roll back modifications done to config
-   anytime, fully reload it, blast it... Export feature could be very easily added and will probably.
-* A **Logger tightly coupled with the Config** class, that will behave regarding options specified be it from
-  command line or from any source(layer) of the config object...
-* Embeds [Slop][slop] to handle **command line parameters** and keeps all parameters specified from the command
-  line in a **dedicated layer of the config object**.
-* A mechanism that ensures that as soon as you access any of the objects or methods exposed by EasyAppHelper,
-  all of them are **fully configured and ready to be used**.
+This is a complete rewrite of the easy_app_helper gem v 1.x now based on the [stacked_config Gem][SC], but it
+maintains some compatibility with previous version. See [compatibility issues with previous versions]
+(#compatibility-issues-with-previous-versions) for more information.
 
 If you are writing command line applications, I hope you will like it because it's very easy to use,
 and as unobtrusive as possible (you choose when you want to include or use as a module) while providing
 a ready-for-prod config, logger and command line management.
 
 
-Currently the only runtime dependency is the cool [Slop gem][slop] which is used to process the command line options.
-
-[Why this gem][wiki] ?
-
-
-
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'easy_app_helper'
+    gem 'easy_app_helper', '~> 2.0'
 
 And then execute:
 
@@ -53,9 +36,13 @@ Or install it yourself as:
     $ gem install easy_app_helper
 
 
-
-
 ## Usage
+
+### The config part
+
+
+
+
 
 To use it, once you installed them, you just need to require it:
 
@@ -86,44 +73,6 @@ EasyAppHelper.logger.info "Hi guys!... again"
 
 # You can see the internals of the config
 puts config.internal_configs.to_yaml
-# Which will output
-#:modified:
-#  :content:
-#    :log-level: 1
-#    :debug: true
-#    :test: cool
-#  :source: Changed by code
-#:command_line:
-#  :content:
-#    :auto:
-#    :simulate:
-#    :verbose: true
-#    :help:
-#    :config-file:
-#    :config-override:
-#    :debug:
-#    :debug-on-err:
-#    :log-level:
-#    :log-file:
-#  :source: Command line
-#:system:
-#  :content: {}
-#  :source:
-#  :origin: EasyAppHelper
-#:internal:
-#  :content: {}
-#  :source:
-#  :origin: ''
-#:global:
-#  :content: {}
-#  :source:
-#  :origin: ''
-#:user:
-#  :content: {}
-#  :source:
-#  :origin: ''
-#:specific_file:
-#  :content: {}
 
 # You see of course that the three modifications we did appear actually in the modified sub-hash
 # And now the merged config
@@ -525,21 +474,25 @@ I, [2013-06-23T19:43:47.986460 #16294]  INFO -- My super application: Starting s
 You can notice that what **EasyAppHelper** initialisation logged and what you application logged
 did eventually end-up in the same log...
 
+## Compatibility issues with previous versions
+
+help
+internal_layers
 
 ## Contributing
 
-1. Fork it
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create new Pull Request
+1. [Fork it] ( https://github.com/lbriais/easy_app_helper/fork ), clone your fork.
+2. Create your feature branch (`git checkout -b my-new-feature`) and develop your super extra feature.
+3. Commit your changes (`git commit -am 'Add some feature'`).
+4. Push to the branch (`git push origin my-new-feature`).
+5. Create a Pull Request.
 
 
-That's all folks.
+__That's all folks.__
 
 
 [EAP]: https://rubygems.org/gems/easy_app_helper        "EasyAppHelper gem"
-[slop]: https://rubygems.org/gems/slop        "Slop gem"
-[yaml]: http://www.yaml.org/    "The Yaml official site"
+[SC]:  https://github.com/lbriais/stacked_config        "The stacked_config Gem"
+
 [doc]: http://rubydoc.info/github/lbriais/easy_app_helper/master        "EasyAppHelper documentation"
 [wiki]: https://github.com/lbriais/easy_app_helper/wiki          "EasyAppHelper wiki"

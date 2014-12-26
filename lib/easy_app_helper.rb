@@ -3,8 +3,8 @@ require 'stacked_config'
 require 'logger'
 
 require 'easy_app_helper/version'
+require 'easy_app_helper/config/compatibility'
 require 'easy_app_helper/config/initializer'
-require 'easy_app_helper/config/wrapper'
 require 'easy_app_helper/config'
 require 'easy_app_helper/logger/initializer'
 require 'easy_app_helper/logger/wrapper'
@@ -17,7 +17,13 @@ module EasyAppHelper
   end
 
   def safely_exec(message, *args, &block)
-    config.safely_exec message, *args, &block
+    if self[:simulate]
+      puts_and_logs "SIMULATING: #{message}" unless message.nil?
+    else
+      puts_and_logs message
+      yield(*args)
+    end
   end
+
 
 end
