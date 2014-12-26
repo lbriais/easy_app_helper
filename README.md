@@ -1,4 +1,4 @@
-# EasyAppHelper
+# EasyAppHelper v2
  [![Build Status](https://travis-ci.org/lbriais/easy_app_helper.svg)](https://travis-ci.org/lbriais/easy_app_helper)
  [![Gem Version](https://badge.fury.io/rb/easy_app_helper.svg)](http://badge.fury.io/rb/easy_app_helper)
 
