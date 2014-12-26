@@ -8,3 +8,14 @@ require 'easy_app_helper/logger/initializer'
 require 'easy_app_helper/logger/wrapper'
 require 'easy_app_helper/managed_logger'
 
+module EasyAppHelper
+
+  def puts_and_logs(*args)
+    logger.puts_and_logs *args
+  end
+
+  def safely_exec(message, *args, &block)
+    config.safely_exec message, *args, &block
+  end
+
+end
