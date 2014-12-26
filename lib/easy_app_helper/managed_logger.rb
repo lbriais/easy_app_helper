@@ -1,9 +1,9 @@
 module EasyAppHelper
 
-  Logger = EasyAppHelper::Logging::Initializer.build_logger
+  ManagedLogger = EasyAppHelper::Logger::Initializer.build_logger
 
   def logger
-    EasyAppHelper::Logger
+    EasyAppHelper::ManagedLogger
   end
 
 end

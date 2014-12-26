@@ -1,5 +1,5 @@
 module EasyAppHelper
-  module Logging
+  module Logger
 
     module Wrapper
       def puts_and_logs(msg)
