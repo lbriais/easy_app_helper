@@ -12,27 +12,28 @@ module EasyAppHelper
         end
       end
 
-      def self.build_logger
-        if EasyAppHelper.config[:debug]
-          if EasyAppHelper.config[:'log-file']
-            log_device = EasyAppHelper.config[:'log-file']
-          elsif EasyAppHelper.config[:'debug-on-err']
-            log_device = STDERR
-          else
-            log_device = STDOUT
-          end
-          log_level = EasyAppHelper.config[:'log-level'] ? EasyAppHelper.config[:'log-level'] : ::Logger::Severity::WARN
+      def self.setup_logger(logger)
+        logger.level = EasyAppHelper.config[:'log-level'] ? EasyAppHelper.config[:'log-level'] : ::Logger::Severity::WARN
+        logger.extend EasyAppHelper::Logger::Wrapper
+        logger
+      end
 
-          Logger.new log_device
-        else
-          #Humm
-        end
+      def self.build_logger
+        log_device = if EasyAppHelper.config[:debug]
+                       if EasyAppHelper.config[:'log-file']
+                         EasyAppHelper.config[:'log-file']
+                       elsif EasyAppHelper.config[:'debug-on-err']
+                         STDERR
+                       else
+                         STDOUT
+                       end
+                     else
+                       File::NULL
+                     end
+        setup_logger(::Logger.new log_device)
       end
 
       init_command_line_options
-
-
-
 
     end
 

@@ -8,9 +8,5 @@ module EasyAppHelper
       end
     end
 
-    def logger=(logger)
-      logger.extend EasyAppHelper::Logger::Wrapper
-    end
-
   end
 end
