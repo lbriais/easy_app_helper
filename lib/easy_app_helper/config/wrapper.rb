@@ -1,5 +1,5 @@
 module EasyAppHelper
-  module Logger
+  module Config
 
     module Wrapper
       def safely_exec(message, *args, &block)

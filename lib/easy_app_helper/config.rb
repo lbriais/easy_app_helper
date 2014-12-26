@@ -1,11 +1,11 @@
 
 module EasyAppHelper
-  Config = StackedConfig::Orchestrator.new
+  ManagedConfig = EasyAppHelper::Config::Initializer.build_config
 
   extend self
 
   def config
-    EasyAppHelper::Config
+    EasyAppHelper::ManagedConfig
   end
 
 end
