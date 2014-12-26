@@ -3,6 +3,9 @@
  [![Build Status](https://travis-ci.org/lbriais/easy_app_helper.png?branch=master)](https://travis-ci.org/lbriais/easy_app_helper)
  [![Gem Version](https://badge.fury.io/rb/easy_app_helper.png)](http://badge.fury.io/rb/easy_app_helper)
 
+__This branch is deprecated, use the [v2.x branch](https://github.com/lbriais/easy_app_helper) instead !__
+
+
 **This [gem][EAP] aims at providing useful helpers for command line applications.**
 
 This is a complete rewrite of the initial easy_app_helper gem. **It is not compatible with
