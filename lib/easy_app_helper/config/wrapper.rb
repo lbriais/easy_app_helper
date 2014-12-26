@@ -10,6 +10,12 @@ module EasyAppHelper
           yield(*args)
         end
       end
+
+      # For backward compatibility with EasyAppHelper v1.x
+      def help
+        command_line_help
+      end
+
     end
 
   end
