@@ -188,7 +188,6 @@ class MyApp
 
   include EasyAppHelper
 
-
   VERSION = '0.0.1'
   NAME = 'My brand new Application'
   DESCRIPTION = 'Best app ever'
@@ -199,7 +198,6 @@ class MyApp
                                  app_description: DESCRIPTION
     add_script_options
   end
-
 
   def add_script_options
     config.add_command_line_section('Options for the script') do |slop|
@@ -235,6 +233,7 @@ class MyApp
     puts_and_logs 'Starting processing'
     config[:something] = 'Added something...'
 
+    # When in debug mode, will log the config used by the application
     logger.debug config[].to_yaml
 
     if config[:verbose]
