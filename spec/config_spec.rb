@@ -16,6 +16,8 @@ describe EasyAppHelper.config do
       a = A.new
       expect(a.respond_to? :config).to be_truthy
       expect(a.config == EasyAppHelper.config).to be_truthy
+
+      puts EasyAppHelper.config.command_line_help
     end
 
   end
