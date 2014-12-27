@@ -10,9 +10,9 @@ Every Ruby script on Earth has basically the same fundamental needs:
 * Display a nice command-line options help
 * Logging stuff either to STDOUT, STDERR or to a specific log file.
 
-__If, like everyone, you have those basic needs, then this [gem][EAP] is definitely for you.__
+__If, like everyone, you have those basic needs, then this [gem][EAH] is definitely for you.__
 
-This is a complete rewrite of the [easy_app_helper gem v1.x][EAP1] now based on the [stacked_config Gem][SC] for the
+This is a complete rewrite of the [easy_app_helper gem v1.x][EAH1] now based on the [stacked_config Gem][SC] for the
 config file management part, but it maintains some compatibility with previous version. See
 [compatibility issues with previous versions](#compatibility-issues-with-previous-versions) for more information.
 
@@ -103,7 +103,7 @@ puts_and_logs 'Hello world'
 ### The command line options
 
 The command line options is one of the config layers maintained by the [stacked_config Gem][SC], and therefore there
-is not much to say except that [easy_app_helper][EAP] adds itself some options related to the logging as seen in the
+is not much to say except that [easy_app_helper][EAH] adds itself some options related to the logging as seen in the
 [logger part](#the-logger).
 
 Of course as described in the [stacked_config Gem][SC] documentation, you can define your own options:
@@ -168,7 +168,7 @@ See [stacked_config Gem][SC] documentation for more options.
 
 ## Compatibility issues with previous versions
 
-[easy_app_helper][EAP] v2.x is not fully compatible with previous branch 1.x. But for common usage it should
+[easy_app_helper][EAH] v2.x is not fully compatible with previous branch 1.x. But for common usage it should
 nevertheless be the case.
 
 There is a (not perfect) compatibility mode that you can trigger by setting the `easy_app_helper_compatibility_mode`
@@ -262,6 +262,6 @@ MyApp.new.run
 __That's all folks.__
 
 
-[EAP]:  https://rubygems.org/gems/easy_app_helper                        "EasyAppHelper gem"
-[EAP1]: https://github.com/lbriais/easy_app_helper/tree/old_release_1_x  "EasyAppHelper gem DEPRECATED branch"
+[EAH]:  https://rubygems.org/gems/easy_app_helper                        "EasyAppHelper gem"
+[EAH1]: https://github.com/lbriais/easy_app_helper/tree/old_release_1_x  "EasyAppHelper gem DEPRECATED branch"
 [SC]:   https://github.com/lbriais/stacked_config                        "The stacked_config Gem"
