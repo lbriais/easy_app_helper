@@ -4,7 +4,7 @@ require 'spec_helper'
 describe EasyAppHelper do
 
   %i(config logger puts_and_logs safely_exec).each do |m|
-    it "should have module method #{m.to_s}" do
+    it "should have a :#{m.to_s} module method" do
       expect(subject).to respond_to m
     end
   end
@@ -18,7 +18,7 @@ describe EasyAppHelper do
     }
 
     %i(config logger puts_and_logs safely_exec).each do |m|
-      it "should have a #{m.to_s} method " do
+      it "should have a :#{m.to_s} method " do
         expect(subject).to respond_to m
       end
 

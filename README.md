@@ -6,7 +6,8 @@ Every Ruby script on Earth has basically the same fundamental needs:
 
 * Config files everywhere accross the system, some of them belonging to the administrator some to the user
   running the application, some coming from the command line options and more...
-* Display a nice command-line help
+* Support command line options directly overriding some of the properties defined in config files.
+* Display a nice command-line options help
 * Logging stuff either to STDOUT, STDERR or to a specific log file.
 
 __If, like everyone, you have those basic needs, then this [gem][EAP] is definitely for you.__
