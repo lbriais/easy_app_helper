@@ -23,5 +23,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'pry'
   spec.add_development_dependency 'rspec', '~> 2.0'
 
-  spec.add_runtime_dependency 'slop'
+  spec.add_runtime_dependency 'slop', '~> 3.0'
 end
