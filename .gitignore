@@ -46,3 +46,5 @@ tmp
 .idea
 #RedCar
 .redcar
+# bin directory should be ignored as created by the rake task.
+bin

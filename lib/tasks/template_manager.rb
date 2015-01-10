@@ -14,19 +14,27 @@ module EasyAppHelper
         File.read TEMPLATE
       end
 
-      def build_executable(executable_name=current_gem_name)
-        @executable_name = executable_name
-        @gem_name = current_gem_name
-        @gem_module = @gem_name.camelize
-        @current_date = Time.now.strftime('%c')
-        @script_class = executable_name == current_gem_name ? '' : executable_name.camelize
-        @script_class << 'Script'
-        renderer = ERB.new(File.read TEMPLATE)
-        puts renderer.result binding
-
+      def check_bin_dir
+        spec = current_gem_spec
+        rel_bin_dir = spec.bindir.empty? ? 'bin' : spec.bindir
+        bin_dir = Dir.exists?(spec.bin_dir) ? spec.bin_dir : File.join(spec.full_gem_path, rel_bin_dir)
+        FileUtils.mkdir bin_dir unless Dir.exists? bin_dir
+        bin_dir
       end
 
-      def current_gem_name
+      def build_executable(executable_name=current_gem_name)
+        executable_name ||= current_gem_spec.name
+        @executable_name = executable_name
+        @gem_name = current_gem_spec.name
+        @gem_module = @gem_name.camelize
+        @current_date = Time.now.strftime('%c')
+        @script_class = executable_name == current_gem_spec.name ? '' : executable_name.camelize
+        @script_class << 'Script'
+        renderer = ERB.new(File.read(TEMPLATE), nil, '-')
+        script = renderer.result binding
+      end
+
+      def current_gem_spec
         searcher = if Gem::Specification.respond_to? :find
                      # ruby 2.0
                      Gem::Specification
@@ -34,14 +42,15 @@ module EasyAppHelper
                      # ruby 1.8/1.9
                      Gem.searcher.init_gemspecs
                    end
-        spec = unless searcher.nil?
-                 searcher.find do |spec|
-                   File.fnmatch(File.join(spec.full_gem_path,'*'), __FILE__)
-                 end
-               end
-        spec.name
+        unless searcher.nil?
+          searcher.find do |spec|
+            File.fnmatch(File.join(spec.full_gem_path,'*'), __FILE__)
+          end
+        end
       end
 
+
     end
+
   end
 end

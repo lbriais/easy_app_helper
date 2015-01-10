@@ -9,16 +9,14 @@ module <%= gem_module %>
   class <%= script_class %>
 
     # Inserted here, but you may probably have already defined this somewhere else...
-    NAME = 'My script'
-    DESCRIPTION = 'Description of my script'
+    NAME = '<%= executable_name.titleize %>'
+    DESCRIPTION = 'Description of <%= executable_name %>'
 
     include EasyAppHelper
 
     def initialize
-      <% unless executable_name == gem_name %>
-      config.executable = '<%= executable_name %>'
-      <% end %>
-      config.describes_application app_name: NAME,
+      <% unless executable_name == gem_name -%>config.config_file_base_name = '<%= executable_name %>'
+      <% end -%>config.describes_application app_name: NAME,
                                    app_version: <%= gem_module %>::VERSION,
                                    app_description: DESCRIPTION
       add_script_options
@@ -48,12 +46,13 @@ module <%= gem_module %>
     private
 
     def add_script_options
-      config.add_command_line_section do |slop|
-        ## Insert here your extra command-line options
-        ## Here under examples using potentially gem config layer to display default option value...
+      ## Create here your extra command-line options
+      ## Here under are examples using potentially gem config layer to display default option value...
+      ## Check Slop documentation for further info.
+      # config.add_command_line_section do |slop|
         # slop.on :p, :port, "Specify port to bind to. Default #{config.gem_layer[:port]}.", argument: true, as: Integer
         # slop.on :b, :bind, "Specify address to bind to. Default #{config.gem_layer[:bind]}.", argument: true, as: String
-      end
+      # end
     end
 
     def do_process
