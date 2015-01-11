@@ -48,3 +48,4 @@ tmp
 .redcar
 # bin directory should be ignored as created by the rake task.
 bin
+test/foo/bin

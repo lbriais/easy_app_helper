@@ -1,3 +1,4 @@
+puts 'In the Test Gem'
 require 'bundler/gem_tasks'
 
 require 'easy_app_helper'

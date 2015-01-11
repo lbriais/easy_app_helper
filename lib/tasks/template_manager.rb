@@ -6,7 +6,7 @@ module EasyAppHelper
 
     module TemplateManager
 
-      attr_reader :executable_name, :gem_module, :gem_name, :current_date, :script_class
+      attr_reader :executable_name, :gem_module, :gem_name, :current_date, :script_class, :task
 
       TEMPLATE = File.expand_path '../template.rb.erb', __FILE__
 
@@ -14,10 +14,10 @@ module EasyAppHelper
         File.read TEMPLATE
       end
 
-      def check_bin_dir(task = nil)
-        spec = current_gem_spec task
+      def check_bin_dir
+        spec = current_gem_spec
         rel_bin_dir = spec.bindir.empty? ? 'bin' : spec.bindir
-        bin_dir = Dir.exists?(spec.bin_dir) ? spec.bin_dir : File.join(spec.full_gem_path, rel_bin_dir)
+        bin_dir = File.join task.application.original_dir, rel_bin_dir
         FileUtils.mkdir bin_dir unless Dir.exists? bin_dir
         bin_dir
       end
@@ -31,10 +31,10 @@ module EasyAppHelper
         @script_class = executable_name == current_gem_spec.name ? '' : executable_name.camelize
         @script_class << 'Script'
         renderer = ERB.new(File.read(TEMPLATE), nil, '-')
-        script = renderer.result binding
+        renderer.result binding
       end
 
-      def current_gem_spec(task = nil)
+      def current_gem_spec
         searcher = if Gem::Specification.respond_to? :find
                      # ruby 2.0
                      Gem::Specification
