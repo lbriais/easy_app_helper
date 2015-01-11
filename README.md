@@ -211,7 +211,7 @@ File '/home/you/devel/ruby/gems/your_gem/bin/your_gem' created with execution ri
  -> Try: "bundle exec '/home/you/devel/ruby/gems/your_gem/bin/your_gem' --help"
 ```
 
-It means that by default, the rake task will create a executable with the name of the gem you are currently developing.
+By default, the rake task will create a executable with the name of the gem you are currently developing.
 __This task is safe and will never overwrite an existing file__. Instead, if the file already exists, you would get:
 
 ```
