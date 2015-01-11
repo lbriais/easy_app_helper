@@ -202,7 +202,7 @@ The two [easy_app_helper][EAH] tasks are quite self-explanatory.
 
 Basically you will do a:
 
-    $ bundle rake easy_app_helper:create_executable
+    $ bundle exec rake easy_app_helper:create_executable
 
 And it will reply something like:
 
@@ -222,8 +222,8 @@ File '/home/you/devel/ruby/gems/your_gem/bin/your_gem' already exists !
 You can, of course, specify your own file name to the rake task. Depending on your shell, and due to different
 variable expansion mechanisms, you have to do it differently:
 
-* __zsh__ should be something like: `bundle rake easy_app_helper:create_executable\[my_executable\]`
-* whereas in __bash__ more probably: `bundle rake easy_app_helper:create_executable[my_executable]`
+* __zsh__ should be something like: `bundle exec rake easy_app_helper:create_executable\[my_executable\]`
+* whereas in __bash__ more probably: `bundle exec rake easy_app_helper:create_executable[my_executable]`
 
 Check the documentation of your shell for further information.
 You should nevertheless have this kind of answer from the task:
@@ -234,7 +234,7 @@ File '/home/you/devel/ruby/gems/your_gem/bin/my_executable' created with executi
 ```
 
 You can notice the slight changes in terms of code in the two generated scripts ;-). Check the template with
-`bundle rake easy_app_helper:show_template` to understand how the template adapts.
+`bundle exec rake easy_app_helper:show_template` to understand how the template adapts.
 
 
 ## Complete example of a script based on `easy_app_helper`
