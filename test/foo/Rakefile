@@ -1,0 +1,7 @@
+require 'bundler/gem_tasks'
+
+require 'easy_app_helper'
+
+spec = Gem::Specification.find_by_name 'easy_app_helper'
+load "#{spec.gem_dir}/Rakefile"
+
