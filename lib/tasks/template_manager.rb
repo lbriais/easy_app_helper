@@ -14,8 +14,8 @@ module EasyAppHelper
         File.read TEMPLATE
       end
 
-      def check_bin_dir
-        spec = current_gem_spec
+      def check_bin_dir(task = nil)
+        spec = current_gem_spec task
         rel_bin_dir = spec.bindir.empty? ? 'bin' : spec.bindir
         bin_dir = Dir.exists?(spec.bin_dir) ? spec.bin_dir : File.join(spec.full_gem_path, rel_bin_dir)
         FileUtils.mkdir bin_dir unless Dir.exists? bin_dir
@@ -34,7 +34,7 @@ module EasyAppHelper
         script = renderer.result binding
       end
 
-      def current_gem_spec
+      def current_gem_spec(task = nil)
         searcher = if Gem::Specification.respond_to? :find
                      # ruby 2.0
                      Gem::Specification
@@ -44,7 +44,8 @@ module EasyAppHelper
                    end
         unless searcher.nil?
           searcher.find do |spec|
-            File.fnmatch(File.join(spec.full_gem_path,'*'), __FILE__)
+            original_file = task ? File.join(task.application.original_dir, task.application.rakefile) : __FILE__
+            File.fnmatch(File.join(spec.full_gem_path,'*'), original_file)
           end
         end
       end

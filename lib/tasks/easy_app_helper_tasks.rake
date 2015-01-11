@@ -10,7 +10,7 @@ namespace :easy_app_helper do
   desc 'create automatically a new executable in "bin" from a template. Default name is Gem name'
   task :create_executable, [:executable_name] do |tsk, args|
     script_content = build_executable args[:executable_name]
-    bin_dir = check_bin_dir
+    bin_dir = check_bin_dir tsk
     script_name = File.join bin_dir, executable_name
     if File.exists? script_name
       STDERR.puts "File '#{script_name}' already exists !\n -> Aborted."
