@@ -18,6 +18,7 @@ namespace :easy_app_helper do
     end
     File.write script_name, script_content
     FileUtils.chmod 'u=wrx,go=rx', script_name
+    puts "File '#{script_name}' created with execution rights.\n -> Try: \"bundle exec '#{script_name}' --help\" to test it."
   end
 
   desc 'Displays the template used.'
