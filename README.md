@@ -1,4 +1,4 @@
-# EasyAppHelper v2
+# EasyAppHelper v3
  [![Build Status](https://travis-ci.org/lbriais/easy_app_helper.svg)](https://travis-ci.org/lbriais/easy_app_helper)
  [![Gem Version](https://badge.fury.io/rb/easy_app_helper.svg)](http://badge.fury.io/rb/easy_app_helper)
 
@@ -74,7 +74,7 @@ the way it will work. By default the logger will just log to the `File::NULL` de
 By default the `EasyAppHelper.logger` is an instance of a standard `Logger` but can specify your own using the
 `EasyAppHelper::Logger::Initializer.setup_logger` method.
 
-```ruby
+```ruby                                                                               gem 'stacked_config', path: '/home/laurent/devel/ruby/gems/stacked_config'
 require 'easy_app_helper'
 
 # You can directly use the logger according to the command line, or config file, flags
@@ -167,6 +167,15 @@ See [stacked_config Gem][SC] documentation for more options.
 
 
 ## Compatibility issues with previous versions
+
+### With version 2.x
+
+The meaning of the `gem_layer` changed between version 3.x and 2.x (see [stacked_config][SC] which introduced this in
+version 1.x). It has been basically replaced by the `executable_gem_layer`.
+
+For standard easy_app_helper usage it should not change anything.
+
+### With version 1.x
 
 [easy_app_helper][EAH] v2.x is not fully compatible with previous branch 1.x. But for common usage it should
 nevertheless be the case.
