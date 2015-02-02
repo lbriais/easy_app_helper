@@ -190,8 +190,7 @@ property to true in one of your config files.
 For this you just need to include in your own gem `Rakefile`:
 
 ```ruby
-spec = Gem::Specification.find_by_name 'easy_app_helper'
-load "#{spec.gem_dir}/Rakefile"
+require 'easy_app_helper/tasks'
 ```
 This will add two extra rake tasks to your gem. Normally if you created correctly your gem (`bundle gem my_gem`), you
 already have 3 tasks existing coming from the `require "bundler/gem_tasks"` that you probably have in your default
