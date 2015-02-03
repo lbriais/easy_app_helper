@@ -25,7 +25,7 @@ a ready-for-prod config, logger and command line management.
 
 Add this line to your application's Gemfile:
 
-    gem 'easy_app_helper', '~> 2.0'
+    gem 'easy_app_helper', '~> 3.0'
 
 And then execute:
 
