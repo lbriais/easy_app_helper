@@ -332,6 +332,6 @@ MyApp.new.run
 __That's all folks.__
 
 
-[EAH]:  https://rubygems.org/gems/easy_app_helper                        "EasyAppHelper gem"
-[EAH1]: https://github.com/lbriais/easy_app_helper/tree/old_release_1_x  "EasyAppHelper gem DEPRECATED branch"
-[SC]:   https://github.com/lbriais/stacked_config                        "The stacked_config Gem"
+[EAH]:  https://rubygems.org/gems/easy_app_helper                           "EasyAppHelper gem"
+[EAH1]: https://github.com/lbriais/easy_app_helper/tree/old_release_1_x     "EasyAppHelper gem DEPRECATED branch"
+[SC]:   https://github.com/lbriais/stacked_config                           "The stacked_config Gem"
