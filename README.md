@@ -74,7 +74,7 @@ the way it will work. By default the logger will just log to the `File::NULL` de
 By default the `EasyAppHelper.logger` is an instance of a standard `Logger` but can specify your own using the
 `EasyAppHelper::Logger::Initializer.setup_logger` method.
 
-```ruby                                                                               gem 'stacked_config', path: '/home/laurent/devel/ruby/gems/stacked_config'
+```ruby
 require 'easy_app_helper'
 
 # You can directly use the logger according to the command line, or config file, flags
