@@ -50,8 +50,8 @@ module <%= gem_module %>
       ## Here under are examples using potentially gem config layer to display default option value...
       ## Check Slop documentation for further info.
       # config.add_command_line_section do |slop|
-        # slop.on :p, :port, "Specify port to bind to. Default #{config.gem_layer[:port]}.", argument: true, as: Integer
-        # slop.on :b, :bind, "Specify address to bind to. Default #{config.gem_layer[:bind]}.", argument: true, as: String
+        # slop.on :p, :port, "Specify port to bind to. Default #{config.executable_gem_layer[:port]}.", argument: true, as: Integer
+        # slop.on :b, :bind, "Specify address to bind to. Default #{config.executable_gem_layer[:bind]}.", argument: true, as: String
       # end
     end
 
