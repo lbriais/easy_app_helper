@@ -19,12 +19,13 @@ module EasyAppHelper
       end
 
       def self.build_logger
-        log_device = if EasyAppHelper.config[:debug]
-                       if EasyAppHelper.config[:'log-file']
+        log_device = File::NULL
+        if EasyAppHelper.config[:debug]
+          log_device = if EasyAppHelper.config[:'log-file']
                          if File.writable? EasyAppHelper.config[:'log-file']
                            EasyAppHelper.config[:'log-file']
                          else
-                           puts STDERR "WARNING: Log file '#{EasyAppHelper.config[:'log-file']}' is not writable. Switching to STDERR..."
+                           STDERR.puts "WARNING: Log file '#{EasyAppHelper.config[:'log-file']}' is not writable. Switching to STDERR..."
                            EasyAppHelper.config[:'log-file'] = nil
                            STDERR
                          end
@@ -33,9 +34,15 @@ module EasyAppHelper
                        else
                          STDOUT
                        end
-                     else
-                       File::NULL
-                     end
+
+
+        end
+
+
+
+
+
+
         setup_logger(::Logger.new log_device)
       end
 
