@@ -34,6 +34,7 @@ module EasyAppHelper
       process.show_output = show_output
       process.log_output = log_output
       process.execute
+      process.exit_status
     end
   end
 
