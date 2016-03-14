@@ -10,18 +10,28 @@ require 'easy_app_helper/logger/initializer'
 require 'easy_app_helper/logger/wrapper'
 require 'easy_app_helper/managed_logger'
 
+require 'easy_app_helper/processes'
+
+
 module EasyAppHelper
 
   def puts_and_logs(*args)
     logger.puts_and_logs *args
   end
 
-  def safely_exec(message, *args, &block)
-    if self[:simulate]
-      puts_and_logs "SIMULATING: #{message}" unless message.nil?
+  def safely_exec_code(message, *args, &block)
+    if self.config[:simulate]
+      puts_and_logs "[SIMULATION MODE]: #{message}" unless message.nil?
     else
       puts_and_logs message
-      yield(*args)
+      block.call *args
+    end
+  end
+
+  def safely_exec_command(message, command)
+    safely_exec_code message, command do |command|
+      process = EasyAppHelper::Processes::Base.new command
+      process.execute
     end
   end
 
