@@ -21,7 +21,7 @@ module EasyAppHelper
                   begin
                     buffer = ''
                     buffer << io.read_nonblock(1) while buffer[-1] != "\n"
-                    report buffer, io
+                    report buffer, io == stdout
                   rescue IO::WaitReadable
                     next
                   rescue EOFError => e

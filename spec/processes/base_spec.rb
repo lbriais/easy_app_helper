@@ -56,9 +56,13 @@ describe EasyAppHelper::Processes::Base do
 
     let (:command_with_out) {File.expand_path('../../../test/process/test.sh', __FILE__)}
 
+
+
     it 'should capture everything' do
       subject.command = command_with_out
       subject.show_output = true
+      expect(STDOUT).to receive(:puts).exactly(3).times
+      expect(STDERR).to receive(:puts).exactly(2).times
       subject.execute
     end
 

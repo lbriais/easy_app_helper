@@ -30,16 +30,15 @@ module EasyAppHelper
 
       attr_writer :process_state, :exit_status, :last_pid
 
-      def report(message, io = STDOUT)
+      def report(message, to_stdout = true)
         if show_output
-          io == STDOUT ? puts(message) : STDERR.puts(message)
+          to_stdout ? puts(message) : STDERR.puts(message)
         end
         if log_output
             log_line = "[subprocess #{last_pid}] - #{message}"
-            if io == STDOUT
+            if to_stdout
               EasyAppHelper.logger.debug log_line
-            end
-            if io == STDERR
+            else
               EasyAppHelper.logger.warn log_line
             end
         end
