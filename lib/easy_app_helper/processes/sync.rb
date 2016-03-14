@@ -34,11 +34,11 @@ module EasyAppHelper
             debug "End of process #{wait_thread.value.pid}"
           end
           self.exit_status = wait_thread.value
+          return self.exit_status
         end
       ensure
         self.end_time = Time.now
         self.process_state = :terminated
-        return self.exit_status
       end
 
     end
