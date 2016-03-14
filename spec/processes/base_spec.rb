@@ -2,12 +2,19 @@ require 'spec_helper'
 
 describe EasyAppHelper::Processes::Base do
 
-  before(:all) do
-    # EasyAppHelper::Logger::Initializer.setup_logger Logger.new(STDOUT)
-    EasyAppHelper.config[:'log-level'] = 0
-    EasyAppHelper.config[:debug] = true
-    EasyAppHelper.config[:'log-file'] = '/tmp/pipo.log'
+  subject {described_class.new}
 
+  before(:all) do
+    EasyAppHelper.config[:debug] = true
+    EasyAppHelper.config[:'log-level'] = 0
+    io = IO.new File.open('/tmp/pipo.log', 'w').fileno
+    io.sync
+    EasyAppHelper::Logger::Initializer.setup_logger Logger.new(io)
+    EasyAppHelper.logger.info 'Hi World'
+  end
+
+  it 'should be a synchronous job by default' do
+    expect(subject.mode).to eq :synchronous
   end
 
   context 'when the command is invalid' do
@@ -24,7 +31,6 @@ describe EasyAppHelper::Processes::Base do
 
     let (:true_command) { 'true' }
     let (:false_command) { 'false' }
-    subject {described_class.new}
 
     it 'should capture the command exit status' do
       subject.command = true_command
@@ -42,8 +48,20 @@ describe EasyAppHelper::Processes::Base do
       expect(subject.start_time).not_to be_nil
       expect(subject.end_time).not_to be_nil
       expect(subject.duration).to be > 0
-
     end
+
+  end
+
+  context 'when executing a job that has "out" and "err" outputs' do
+
+    let (:command_with_out) {File.expand_path('../../../test/process/test.sh', __FILE__)}
+
+    it 'should capture everything' do
+      subject.command = command_with_out
+      subject.show_output = true
+      subject.execute
+    end
+
 
   end
 
