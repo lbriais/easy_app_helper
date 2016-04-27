@@ -8,6 +8,7 @@ module EasyAppHelper
         self.last_pid = nil
         self.process_state = :running
         self.start_time = Time.now
+        EasyAppHelper.logger.debug "Starting process '#{command}'"
         Open3.popen3(command) do |stdin, stdout, stderr, wait_thread|
           stdin.close
           self.last_pid = wait_thread.pid

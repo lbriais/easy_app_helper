@@ -34,15 +34,7 @@ module EasyAppHelper
                        else
                          STDOUT
                        end
-
-
         end
-
-
-
-
-
-
         setup_logger(::Logger.new log_device)
       end
 
