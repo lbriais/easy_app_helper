@@ -31,7 +31,7 @@ module EasyAppHelper
                   end
                 end
               rescue EOFError
-                report "End of process #{wait_thread.value.pid}"
+                EasyAppHelper.logger.debug "End of process #{wait_thread.value.pid}"
                 break
               end
             end
