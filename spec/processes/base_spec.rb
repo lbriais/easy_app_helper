@@ -59,7 +59,7 @@ describe EasyAppHelper::Processes::Base do
     it 'should capture everything' do
       subject.command = command_with_out
       subject.show_output = true
-      expect(STDOUT).to receive(:puts).exactly(3).times
+      expect(STDOUT).to receive(:puts).exactly(2).times
       expect(STDERR).to receive(:puts).exactly(2).times
       subject.execute
     end
