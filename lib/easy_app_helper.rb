@@ -28,12 +28,12 @@ module EasyAppHelper
     end
   end
 
-  def safely_exec_command(message, command, show_output = false, log_output = true)
+  def safely_exec_command(message, command, show_output = false, log_output = true, &log_processor)
     safely_exec_code message, command, show_output, log_output do |command, show_output, log_output|
       process = EasyAppHelper::Processes::Base.new command
       process.show_output = show_output
       process.log_output = log_output
-      process.execute
+      process.execute &log_processor
       process
     end
   end
