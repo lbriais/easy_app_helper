@@ -3,7 +3,7 @@ module EasyAppHelper
 
     module Synchronous
 
-      def execute
+      def execute(&log_processor)
         self.exit_status = nil
         self.last_pid = nil
         self.process_state = :running
@@ -22,6 +22,7 @@ module EasyAppHelper
                   begin
                     buffer = ''
                     buffer << io.read_nonblock(1) while buffer[-1] != "\n"
+                    log_processor.call buffer if block_given?
                     report buffer, io == stdout
                   rescue IO::WaitReadable
                     next
