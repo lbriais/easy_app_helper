@@ -21,11 +21,22 @@ and as unobtrusive as possible (you choose when you want to include or use as a 
 a ready-for-prod config, logger and command line management.
 
 
+:warning: Versions prior to `4.0.0` were trying to give an indifferent access to the merged config for strings
+and symbols, ie `EasyAppHelper.config[:an_entry]` was giving the same result as `EasyAppHelper.config['an_entry']`.
+
+This is clearly wrong and not consistent everywhere and 
+__starting with version `4.0.0` this is no more the case__. Please check [stacked_config](https://github.com/lbriais/stacked_config/blob/master/README.md#between-version-1x-and-2x)
+for more information. If you want to keep previous behaviour you should specify to continue using the old version
+using the '~> 3.0' operator (also known as the 
+[pessimistic version constraint](http://guides.rubygems.org/patterns/#pessimistic-version-constraint)).
+
+
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'easy_app_helper', '~> 3.0'
+    gem 'easy_app_helper', '~> 4.0'
 
 And then execute:
 
