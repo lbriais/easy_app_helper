@@ -24,5 +24,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec'
 
   spec.add_dependency 'activesupport'
-  spec.add_runtime_dependency 'stacked_config', '~> 1.2.2'
+  spec.add_runtime_dependency 'stacked_config', '~> 2.0.0'
 end
