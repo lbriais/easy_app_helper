@@ -28,7 +28,8 @@ This is clearly wrong and not consistent everywhere and
 __starting with version `4.0.0` this is no more the case__. Please check [stacked_config](https://github.com/lbriais/stacked_config/blob/master/README.md#between-version-1x-and-2x)
 for more information. If you want to keep previous behaviour you should specify to continue using the old version
 using the '~> 3.0' operator (also known as the 
-[pessimistic version constraint](http://guides.rubygems.org/patterns/#pessimistic-version-constraint)).
+[pessimistic version constraint](http://guides.rubygems.org/patterns/#pessimistic-version-constraint)). As an alternative 
+you can as well require this gem in its compatibility mode `require 'easy_app_helper/old`...
 
 
 
