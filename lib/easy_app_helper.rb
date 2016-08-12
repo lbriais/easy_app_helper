@@ -29,7 +29,7 @@ module EasyAppHelper
   end
 
   def safely_exec_command(message, command, show_output = false, log_output = true, &log_processor)
-    message = cmd if message.nil? or message.empty?
+    message = command if message.nil? or message.empty?
     safely_exec_code message, command, show_output, log_output do |command, show_output, log_output|
       process = EasyAppHelper::Processes::Base.new command
       process.show_output = show_output
