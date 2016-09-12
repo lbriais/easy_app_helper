@@ -32,7 +32,13 @@ module EasyAppHelper
       end
 
       def self.sub_command_class(command_name_or_alias, provider=EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
-        candidates = by_provider[provider].select {|sub_command_class| by_name[command_name_or_alias].include? sub_command_class}
+        candidates = by_provider[provider]
+        raise "There is no provider declared for command '#{command_name_or_alias}'" if candidates.nil?
+        candidates.select! do |sub_command_class|
+          command_classes_for_command = by_name[command_name_or_alias]
+          raise "There is no provider declared for command '#{command_name_or_alias}'" if command_classes_for_command.nil?
+          command_classes_for_command.include? sub_command_class
+        end
         raise "Cannot determine provider to use for '#{command_name_or_alias}'. Multiple providers exist !" unless candidates.size == 1
         candidates.first
       end
