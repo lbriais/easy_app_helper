@@ -14,7 +14,7 @@ module EasyAppHelper
         @sub_commands ||= {}
       end
 
-      def delegate_to_sub_command(from_plugin = EasyAppHelper::Scripts::SubCommandBase::DEFAULT_PROVIDER)
+      def delegate_to_sub_command(provider = EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
         # raise 'You have to specify a sub-command !' if extra_parameters.empty?
         sub_command_name = extra_parameters.shift
         candidates = EasyAppHelper::Scripts::SubCommandManager.sub_commands[sub_command_name]
@@ -23,8 +23,8 @@ module EasyAppHelper
         if candidates.size == 1
           sub_command_class = candidates.first
         else
-          candidates.select! {|candidate| candidate.plugin == from_plugin}
-          raise "Cannot determine plugin to use for '#{sub_command_name}'. Multiple providers !" unless candidates.size == 1
+          candidates.select! {|candidate| candidate::PROVIDER == provider}
+          raise "Cannot determine provider to use for '#{sub_command_name}'. Multiple providers exist !" unless candidates.size == 1
           sub_command_class = candidates.first
         end
         sub_command = sub_command_class.new
