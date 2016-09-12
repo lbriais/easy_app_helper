@@ -46,9 +46,9 @@ module EasyAppHelper
             sub_command_classes.each do |sub_command_class|
               result << sub_command_class.help_line
             end
+            result << ''
           end
         end
-        result << ''
         result
       end
 
