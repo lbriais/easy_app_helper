@@ -5,35 +5,43 @@ module EasyAppHelper
 
       def self.register(sub_command_class)
         raise 'Please specify a sub_command class when registering' if sub_command_class.nil?
+        raise "Already registered sub_command '#{sub_command_class.to_s}' !" if sub_command_classes.include? sub_command_class
         EasyAppHelper.logger.debug "Registering handler '#{sub_command_class.to_s}' for sub-command '#{sub_command_class::NAME}'"
-        sub_commands[sub_command_class::NAME] ||= []
-        sub_commands[sub_command_class::NAME] << sub_command_class
+        sub_command_classes << sub_command_class
+        by_provider[sub_command_class::PROVIDER] ||= []
+        raise 'A provider cannot provide the same sub-command multiple times' if by_provider[sub_command_class::PROVIDER].include?(sub_command_class)
+        by_provider[sub_command_class::PROVIDER] << sub_command_class
+        by_name[sub_command_class::NAME] ||= []
+        by_name[sub_command_class::NAME] << sub_command_class
         sub_command_class::ALIASES.each do |command_alias|
-          sub_commands[command_alias] ||= []
-          sub_commands[command_alias] << sub_command_class
+          by_name[command_alias] ||= []
+          by_name[command_alias] << sub_command_class
         end
       end
 
-      def self.sub_commands
-        @sub_commands ||= {}
+      def self.sub_command_classes
+        @sub_command_classes ||= []
+      end
+
+      def self.by_provider
+        @by_provider ||= {}
+      end
+
+      def self.by_name
+        @by_name ||= {}
+      end
+
+      def self.sub_command_class(command_name_or_alias, provider=EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
+        candidates = by_provider[provider].select {|sub_command_class| by_name[command_name_or_alias].include? sub_command_class}
+        raise "Cannot determine provider to use for '#{command_name_or_alias}'. Multiple providers exist !" unless candidates.size == 1
+        candidates.first
       end
 
       def delegate_to_sub_command(provider = EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
-        # raise 'You have to specify a sub-command !' if extra_parameters.empty?
         sub_command_name = extra_parameters.shift
-        candidates = EasyAppHelper::Scripts::SubCommandManager.sub_commands[sub_command_name]
-        raise "Unknown sub-command '#{sub_command_name}' !" if candidates.nil?
-        sub_command_class = nil
-        if candidates.size == 1
-          sub_command_class = candidates.first
-        else
-          candidates.select! {|candidate| candidate::PROVIDER == provider}
-          raise "Cannot determine provider to use for '#{sub_command_name}'. Multiple providers exist !" unless candidates.size == 1
-          sub_command_class = candidates.first
-        end
-        sub_command = sub_command_class.new
-        raise 'You have to implement \'do_process\'' unless sub_command.respond_to? :do_process
+        sub_command = EasyAppHelper::Scripts::SubCommandManager.sub_command_class(sub_command_name, provider).new
         sub_command.pre_process
+        raise 'You have to implement \'do_process\'' unless sub_command.respond_to? :do_process
         sub_command.do_process
       end
 
@@ -41,17 +49,15 @@ module EasyAppHelper
       def display_help
         result = [default_header]
 
-        EasyAppHelper::Scripts::SubCommandManager.sub_commands.group_by do |sub_command_name, sub_command_classes|
-          sub_command_classes.first::CATEGORY
-        end .each_pair do |category, sub_commands_for_category|
+        EasyAppHelper::Scripts::SubCommandManager.sub_command_classes.group_by do |sub_command_classes|
+          sub_command_classes::CATEGORY
+        end .each_pair do |category, sub_command_classes_for_category|
           result << ('  %s:' % category)
           result << ''
-          sub_commands_for_category.each do |sub_command_name, sub_command_classes|
-            sub_command_classes.each do |sub_command_class|
-              result << sub_command_class.help_line
-            end
-            result << ''
+          sub_command_classes_for_category.each do |sub_command_class|
+            result << sub_command_class.help_line
           end
+          result << ''
         end
         result
       end
@@ -75,7 +81,6 @@ Sub-commands:
 
 EOF
       end
-
 
     end
 

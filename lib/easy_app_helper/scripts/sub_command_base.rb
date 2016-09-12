@@ -17,6 +17,13 @@ module EasyAppHelper
         base.extend ClassMethods
       end
 
+      def command_parameters
+        params = extra_parameters
+        command = params.shift
+        raise 'Something weird happened !!' unless command == self.class::NAME or self.class::ALIASES.include? command
+        params
+      end
+
       def do_process
         raise "Process for '#{name}' in '#{self::PROVIDER}' not implemented !"
       end
