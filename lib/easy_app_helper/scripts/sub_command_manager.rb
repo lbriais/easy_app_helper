@@ -8,6 +8,10 @@ module EasyAppHelper
         EasyAppHelper.logger.debug "Registering handler '#{sub_command_class.to_s}' for sub-command '#{sub_command_class::NAME}'"
         sub_commands[sub_command_class::NAME] ||= []
         sub_commands[sub_command_class::NAME] << sub_command_class
+        sub_command_class::ALIASES.each do |command_alias|
+          sub_commands[command_alias] ||= []
+          sub_commands[command_alias] << sub_command_class
+        end
       end
 
       def self.sub_commands
