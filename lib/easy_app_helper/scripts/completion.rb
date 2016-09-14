@@ -6,16 +6,13 @@ module EasyAppHelper
 
     module Completion
 
-      COMPLETION_SCRIPT = File.expand_path '../../etc/_dm', __FILE__
-      COMPLETION_DIR = File.join ENV['HOME'], '.zsh', 'completion'
-
       def deploy_zsh_completion_script(script, target)
         FileUtils.mkpath target
         puts <<EOM
 
 ------------------------------------------------------------------------------------------
 INFORMATION:
-    A new version of the zsh completion for '#{self.app_name} #{self.app_version}' has been installed.
+    A new version of the zsh completion for '#{EasyAppHelper.config.app_name} #{EasyAppHelper.config.app_version}' has been installed.
     You may want to restart a terminal to take it account.
 ------------------------------------------------------------------------------------------
 
