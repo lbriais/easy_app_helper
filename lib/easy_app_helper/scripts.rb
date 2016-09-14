@@ -1,0 +1,6 @@
+require 'easy_app_helper/scripts/common'
+require 'easy_app_helper/scripts/completion'
+require 'easy_app_helper/scripts/parameters_helper'
+require 'easy_app_helper/scripts/sub_command_base'
+require 'easy_app_helper/scripts/sub_command_manager'
+require 'easy_app_helper/scripts/master'

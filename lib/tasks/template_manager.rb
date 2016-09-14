@@ -29,7 +29,7 @@ module EasyAppHelper
         @gem_module = @gem_name.camelize
         @current_date = Time.now.strftime('%c')
         @script_class = executable_name == current_gem_spec.name ? '' : executable_name.camelize
-        @script_class << 'Script'
+        @script_class << 'MasterScript'
         renderer = ERB.new(File.read(TEMPLATE), nil, '-')
         renderer.result binding
       end
