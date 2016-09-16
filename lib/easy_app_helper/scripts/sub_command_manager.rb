@@ -6,7 +6,11 @@ module EasyAppHelper
       def self.register(sub_command_class)
         raise 'Please specify a sub_command class when registering' if sub_command_class.nil?
         raise "Already registered sub_command '#{sub_command_class.to_s}' !" if sub_command_classes.include? sub_command_class
-        EasyAppHelper.logger.debug "Registering handler '#{sub_command_class.to_s}' for sub-command '#{sub_command_class::NAME}'"
+        msg = "Registering handler '#{sub_command_class.to_s}' for sub-command '#{sub_command_class::NAME}'"
+        unless sub_command_class::PROVIDER == EasyAppHelper::Scripts::SubCommandBase::PROVIDER
+          msg += " (provided by '#{sub_command_class::PROVIDER}' plugin)"
+        end
+        EasyAppHelper.logger.debug msg
         sub_command_classes << sub_command_class
         by_provider[sub_command_class::PROVIDER] ||= []
         raise 'A provider cannot provide the same sub-command multiple times' if by_provider[sub_command_class::PROVIDER].include?(sub_command_class)
