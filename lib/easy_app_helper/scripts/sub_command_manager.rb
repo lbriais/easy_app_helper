@@ -35,21 +35,24 @@ module EasyAppHelper
         @by_name ||= {}
       end
 
-      def self.sub_command_class(command_name_or_alias, provider=EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
-        candidates = by_provider[provider]
-        raise "There is no provider declared for command '#{command_name_or_alias}'" if candidates.nil?
-        candidates.select! do |sub_command_class|
+      def self.sub_command_class(command_name_or_alias, preferred_provider=EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
+        candidates = by_name[command_name_or_alias].select do |sub_command_class|
           command_classes_for_command = by_name[command_name_or_alias]
           raise "There is no provider declared for command '#{command_name_or_alias}'" if command_classes_for_command.nil?
           command_classes_for_command.include? sub_command_class
         end
-        raise "Cannot determine provider to use for '#{command_name_or_alias}'. Multiple providers exist !" unless candidates.size == 1
+        if candidates.size > 1
+          candidates.select! do |sub_command_class|
+            sub_command_class::PROVIDER == preferred_provider
+          end
+          raise "Cannot determine provider to use for '#{command_name_or_alias}'. Multiple providers exist !"
+        end
         candidates.first
       end
 
-      def delegate_to_sub_command(provider = EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
+      def delegate_to_sub_command(preferred_provider=EasyAppHelper::Scripts::SubCommandBase::PROVIDER)
         sub_command_name = extra_parameters.shift
-        sub_command = EasyAppHelper::Scripts::SubCommandManager.sub_command_class(sub_command_name, provider).new
+        sub_command = EasyAppHelper::Scripts::SubCommandManager.sub_command_class(sub_command_name, preferred_provider).new
         sub_command.pre_process
         raise 'You have to implement \'do_process\'' unless sub_command.respond_to? :do_process
         sub_command.do_process

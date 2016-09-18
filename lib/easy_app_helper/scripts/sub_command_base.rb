@@ -40,6 +40,9 @@ module EasyAppHelper
           unless self::ALIASES.nil? or self::ALIASES.empty?
             line += ' (aliases: %s).' % [ self::ALIASES.join(', ') ]
           end
+          unless self::PROVIDER == EasyAppHelper::Scripts::SubCommandBase::PROVIDER
+            line += ' Provided by %s plugin.' % [ self::PROVIDER ]
+          end
           line
         end
 
