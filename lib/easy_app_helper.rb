@@ -11,6 +11,7 @@ require 'easy_app_helper/logger/wrapper'
 require 'easy_app_helper/managed_logger'
 
 require 'easy_app_helper/processes'
+require 'easy_app_helper/input'
 
 
 module EasyAppHelper
