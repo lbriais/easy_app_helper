@@ -25,7 +25,7 @@ module EasyAppHelper
       def safe_execution
         yield if block_given?
       rescue => e
-        puts "Program ended with message: '#{e.message}'."
+        STDERR.puts "Program ended with message: '#{e.message}'."
         if config[:debug]
           logger.fatal "#{e.message}\nBacktrace:\n#{e.backtrace.join("\n\t")}"
         else
