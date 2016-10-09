@@ -50,7 +50,7 @@ Or install it yourself as:
 
 ## Usage
 
-### The config files handling
+### The config files handling
 
 Basically all the config files management is delegated to the [stacked_config Gem][SC]. Please check its documentation
 to know how it works. In your own script the 'merged' ([read for more][SC]) configuration is available using the
@@ -72,7 +72,7 @@ puts "The application verbose flag is #{config[:verbose]}"
 
 Check the [stacked_config Gem][SC] help to further understand about the `config` object.
 
-### The logger
+### The logger
 
 The logger behaviour is tightly coupled with config part and there are few config options already available to drive
 the way it will work. By default the logger will just log to the `File::NULL` device (/dev/null on Unix systems).
@@ -195,9 +195,9 @@ nevertheless be the case.
 There is a (not perfect) compatibility mode that you can trigger by setting the `easy_app_helper_compatibility_mode`
 property to true in one of your config files.
 
-## Generate scripts using rake task
+## Generate scripts using rake task
 
-### Including easy_app_helper tasks in your own gems.
+### Including easy_app_helper tasks in your own gems.
 
 For this you just need to include in your own gem `Rakefile`:
 
