@@ -22,12 +22,22 @@ module EasyAppHelper
         log_device = File::NULL
         if EasyAppHelper.config[:debug]
           log_device = if EasyAppHelper.config[:'log-file']
-                         if File.writable? EasyAppHelper.config[:'log-file']
-                           EasyAppHelper.config[:'log-file']
+                         if File.exists? EasyAppHelper.config[:'log-file']
+                           if File.writable? EasyAppHelper.config[:'log-file']
+                             EasyAppHelper.config[:'log-file']
+                           else
+                             STDERR.puts "WARNING: Log file '#{EasyAppHelper.config[:'log-file']}' is not writable. Switching to STDERR..."
+                             EasyAppHelper.config[:'log-file'] = nil
+                             STDERR
+                           end
                          else
-                           STDERR.puts "WARNING: Log file '#{EasyAppHelper.config[:'log-file']}' is not writable. Switching to STDERR..."
-                           EasyAppHelper.config[:'log-file'] = nil
-                           STDERR
+                           if File.writable? File.dirname(EasyAppHelper.config[:'log-file'])
+                             EasyAppHelper.config[:'log-file']
+                           else
+                             STDERR.puts "WARNING: Cannot write log file in '#{File.dirname EasyAppHelper.config[:'log-file']}'. Switching to STDERR..."
+                             EasyAppHelper.config[:'log-file'] = nil
+                             STDERR
+                           end
                          end
                        elsif EasyAppHelper.config[:'debug-on-err']
                          STDERR
