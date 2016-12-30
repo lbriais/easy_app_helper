@@ -6,9 +6,9 @@ module EasyAppHelper
       def self.init_command_line_options
         EasyAppHelper.config.add_command_line_section('Debug and logging options') do |slop|
           slop.on :debug, 'Run in debug mode.', argument: false
-          slop.on 'debug-on-err', 'Run in debug mode with output to stderr.', argument: false
-          slop.on 'log-level', "Log level from 0 to 5, default #{::Logger::Severity::WARN}.", argument: true, as: Integer
-          slop.on 'log-file', 'File to log to.', argument: true, as: String
+          slop.on :'debug-on-err', 'Run in debug mode with output to stderr.', argument: false
+          slop.on :'log-level', "Log level from 0 to 5, default #{::Logger::Severity::WARN}.", argument: true, as: Integer
+          slop.on :'log-file', 'File to log to.', argument: true, as: String
         end
       end
 
